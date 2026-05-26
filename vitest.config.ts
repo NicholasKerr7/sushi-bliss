@@ -10,7 +10,6 @@ export default defineConfig({
     globals: true,
     environment: "node",
     include: ["src/__tests__/**/*.test.ts"],
-    threads: false,
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],

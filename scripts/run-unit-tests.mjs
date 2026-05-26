@@ -17,6 +17,7 @@ try {
       path.join(projectRoot, "src/data/menu.ts"),
       path.join(projectRoot, "src/lib/cart-utils.ts"),
       path.join(projectRoot, "src/lib/menu-utils.ts"),
+      path.join(projectRoot, "src/lib/omakase-utils.ts"),
     ],
     outdir,
     outbase: path.join(projectRoot, "src"),
@@ -43,6 +44,7 @@ try {
   const { sushiMenuData } = await importFromOutdir("data/menu.js");
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
+  const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
 
   const tests = [];
   function test(name, fn) {
@@ -132,6 +134,24 @@ try {
   test("getHighlightDrops respects the limit argument", () => {
     const drops = getHighlightDrops(sushiMenuData, defaultHighlightCategories, 2);
     assert.strictEqual(drops.length, 2);
+  });
+
+  // omakase-utils tests
+  test("buildOmakaseSet returns a deterministic chef set for the selected mood", () => {
+    const set = buildOmakaseSet(sushiMenuData, "Chef's Luxe", 3);
+    assert.strictEqual(set.mood, "Chef's Luxe");
+    assert.strictEqual(set.items.length, 3);
+    assert.ok(
+      set.items.every((item) =>
+        item.categories.some((category) => ["Chef", "Premium", "Signature"].includes(category))
+      )
+    );
+    assert.ok(set.total > 0);
+  });
+
+  test("buildOmakaseSet honors the target count when enough dishes match", () => {
+    const set = buildOmakaseSet(sushiMenuData, "Fire & Crunch", 2);
+    assert.strictEqual(set.items.length, 2);
   });
 
   let failed = 0;

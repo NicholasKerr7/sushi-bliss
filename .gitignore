@@ -3,6 +3,7 @@
 .turbo/
 .vscode/
 node_modules/
+.npm-cache/
 out/
 coverage/
 *.log

@@ -1,10 +1,12 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion, useScroll, useTransform } from "framer-motion";
-import type { MotionValue } from "framer-motion";
-import { Card, CardContent } from "./ui/card";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { DishDetailSheet } from "./sushi/DishDetailSheet";
+import { MenuItemCard } from "./sushi/MenuItemCard";
+import { OmakasePanel } from "./sushi/OmakasePanel";
 import type { LucideIcon } from "lucide-react";
 import {
   Search,
@@ -20,7 +22,6 @@ import {
   MapPin,
   Store,
   X,
-  Check,
   Sparkles,
   Flame,
   Leaf,
@@ -41,6 +42,7 @@ import {
 } from "../data/menu";
 import { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } from "../lib/cart-utils";
 import { defaultHighlightCategories, filterMenuItems, getHighlightDrops } from "../lib/menu-utils";
+import { buildOmakaseSet, type OmakaseMood } from "../lib/omakase-utils";
 
 const categoryFilters = filterCategories;
 const categoryIcons: Record<FilterCategory, LucideIcon> = {
@@ -71,10 +73,47 @@ const rewardItem: SushiMenuItem = {
   price: 0,
   tag: "Reward",
   rating: 5,
-  image: "https://source.unsplash.com/1200x800/?chef%20choice%20sushi",
+  image: sushiMenu[9]?.image ?? sushiMenu[0].image,
   categories: ["Chef"],
   description: "Chef-selected roll, on the house.",
+  ingredients: ["Chef's cut", "Seasoned rice", "House garnish"],
+  chefNote: "A rotating thank-you bite for returning guests.",
+  pairing: "Chef's choice",
+  texture: "Surprise finish",
 };
+
+interface Reservation {
+  id: number;
+  datetime: string;
+  guests: number;
+}
+
+interface GuestProfile {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  dietary: string;
+  marketingOptIn: boolean;
+  deliveryAddress: string;
+}
+
+interface OrderHistoryEntry {
+  id: number;
+  items: SushiMenuItem[];
+  total: number;
+  method: string;
+  type: "Pickup" | "Delivery";
+  ts: number;
+}
+
+type NoticeTone = "success" | "error" | "info";
+
+interface AppNotice {
+  id: number;
+  message: string;
+  tone: NoticeTone;
+}
 
 export default function SushiApp() {
   const [query, setQuery] = useState("");
@@ -93,10 +132,9 @@ export default function SushiApp() {
   const [showReserve, setShowReserve] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showLoyalty, setShowLoyalty] = useState(false);
+  const [storageReady, setStorageReady] = useState(false);
 
-  const [reservations, setReservations] = useState<
-    { id: number; datetime: string; guests: number }[]
-  >([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [reservationDT, setReservationDT] = useState("");
   const [reservationGuests, setReservationGuests] = useState(1);
   const [editingResId, setEditingResId] = useState<number | null>(null);
@@ -109,7 +147,7 @@ export default function SushiApp() {
     setConfirmDlg({ open: true, message, onYes });
   };
 
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<GuestProfile>({
     name: "",
     email: "",
     phone: "",
@@ -119,16 +157,9 @@ export default function SushiApp() {
     deliveryAddress: "",
   });
 
-  const [orderHistory, setOrderHistory] = useState<
-    {
-      id: number;
-      items: any[];
-      total: number;
-      method: string;
-      type: "Pickup" | "Delivery";
-      ts: number;
-    }[]
-  >([]);
+  const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>([]);
+  const [selectedItem, setSelectedItem] = useState<SushiMenuItem | null>(null);
+  const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
 
   const [qtyById, setQtyById] = useState<Record<number, number>>({});
   const incQty = (id: number) => setQtyById((q) => ({ ...q, [id]: (q[id] ?? 1) + 1 }));
@@ -146,6 +177,7 @@ export default function SushiApp() {
     { id: number; start: { x: number; y: number }; end: { x: number; y: number }; emoji: string }[]
   >([]);
   const [toasts, setToasts] = useState<{ id: number; item: string; qty: number }[]>([]);
+  const [notices, setNotices] = useState<AppNotice[]>([]);
   const [cartPulse, setCartPulse] = useState(false);
   const [cartSheetReady, setCartSheetReady] = useState(true);
   const [activeOrderId, setActiveOrderId] = useState<number | null>(null);
@@ -156,6 +188,25 @@ export default function SushiApp() {
   const [dropsPaused, setDropsPaused] = useState(false);
   const newDropsRef = useRef<HTMLDivElement | null>(null);
   const newDropsIndexRef = useRef(0);
+
+  /** Queues a short-lived status message for form, checkout, and persistence feedback. */
+  const showNotice = useCallback((message: string, tone: NoticeTone = "info") => {
+    const id = Date.now();
+    setNotices((prev) => [{ id, message, tone }, ...prev].slice(0, 3));
+    window.setTimeout(() => {
+      setNotices((prev) => prev.filter((notice) => notice.id !== id));
+    }, 3600);
+  }, []);
+
+  /** Persists local app state and surfaces storage failures without breaking the ordering flow. */
+  const persistValue = useCallback((key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      showNotice("Unable to save the latest session on this device.", "error");
+    }
+  }, [showNotice]);
+
   const launchFlyingSushi = (origin: DOMRect | null) => {
     if (!origin || !cartButtonRef.current || prefersReducedMotion) return;
     const cartRect = cartButtonRef.current.getBoundingClientRect();
@@ -231,15 +282,6 @@ export default function SushiApp() {
   }, []);
 
   useEffect(() => {
-    console.assert(Array.isArray(sushiMenu), "sushiMenu should be an array");
-    console.assert(sushiMenu.length >= 6, "sushiMenu should have items");
-    console.assert(sushiMenu.every((i) => i.name && typeof i.price === "number"), "items need name & price");
-    console.assert(Array.isArray(cart), "cart should be an array");
-    console.assert(pointsToNextReward(150) === 50, "pointsToNextReward basic math");
-    console.assert(heroImages.length === 3, "heroImages should include 3 items");
-  }, []);
-
-  useEffect(() => {
     if (!activeOrderId) return;
     setTrackerStep(0);
     const timers = trackerStages.slice(1).map((_, idx) =>
@@ -282,6 +324,15 @@ export default function SushiApp() {
     () => filterMenuItems(sushiMenu, query, activeCategory),
     [query, activeCategory]
   );
+  const omakaseSet = useMemo(() => buildOmakaseSet(sushiMenu, omakaseMood), [omakaseMood]);
+
+  /** Adds the current chef-built set as one cohesive tray. */
+  const addOmakaseSetToCart = () => {
+    if (omakaseSet.items.length === 0) return;
+    setCart((prev) => [...prev, ...omakaseSet.items]);
+    setLoyaltyPoints((points) => points + 5 * omakaseSet.items.length);
+    showNotice(`${omakaseSet.mood} set added to your tray.`, "success");
+  };
 
   const [tipPercent, setTipPercent] = useState<number>(0);
   const [promoCode, setPromoCode] = useState("");
@@ -298,6 +349,7 @@ export default function SushiApp() {
   );
 
   const groupedCart = useMemo(() => groupCartItems(cart), [cart]);
+  const loyaltyProgressSegments = Math.min(10, Math.floor((loyaltyPoints % 100) / 10));
   const incCartItem = (id: number) => {
     setCart((prev) => {
       const found = sushiMenu.find((m) => m.id === id) ?? prev.find((m) => m.id === id);
@@ -323,14 +375,14 @@ export default function SushiApp() {
     const emailOk = profile.email ? /.+@.+\..+/.test(profile.email) : true;
     const phoneOk = profile.phone ? /[0-9+\-() ]{7,}/.test(profile.phone) : true;
     if (!emailOk) {
-      alert("Please enter a valid email address.");
+      showNotice("Please enter a valid email address.", "error");
       return;
     }
     if (!phoneOk) {
-      alert("Please enter a valid phone number.");
+      showNotice("Please enter a valid phone number.", "error");
       return;
     }
-    alert("Profile saved ✅");
+    showNotice("Profile saved.", "success");
   };
 
   const handleRedeemReward = () => {
@@ -339,7 +391,7 @@ export default function SushiApp() {
     setCart((prev) => [rewardItem, ...prev]);
     setShowLoyalty(false);
     setShowCart(true);
-    alert("Reward redeemed! A free roll was added to your cart.");
+    showNotice("Reward redeemed. A free roll was added to your cart.", "success");
   };
 
   useEffect(() => {
@@ -356,19 +408,21 @@ export default function SushiApp() {
       if (savedProf) setProfile(JSON.parse(savedProf));
       if (savedHist) setOrderHistory(JSON.parse(savedHist));
       if (savedPoints) setLoyaltyPoints(Number(savedPoints));
-    } catch (e) {
-      console.warn("Failed to load persisted state", e);
+    } catch {
+      showNotice("Saved session could not be restored.", "error");
+    } finally {
+      setStorageReady(true);
     }
-  }, []);
+  }, [showNotice]);
 
-  useEffect(() => { try { localStorage.setItem("sb_cart", JSON.stringify(cart)); } catch {} }, [cart]);
-  useEffect(() => { try { localStorage.setItem("sb_reservations", JSON.stringify(reservations)); } catch {} }, [reservations]);
-  useEffect(() => { try { localStorage.setItem("sb_dark", darkMode ? "1" : "0"); } catch {} }, [darkMode]);
-  useEffect(() => { try { localStorage.setItem("sb_profile", JSON.stringify(profile)); } catch {} }, [profile]);
-  useEffect(() => { try { localStorage.setItem("sb_orders", JSON.stringify(orderHistory)); } catch {} }, [orderHistory]);
-  useEffect(() => { try { localStorage.setItem("sb_points", String(loyaltyPoints)); } catch {} }, [loyaltyPoints]);
+  useEffect(() => { if (storageReady) persistValue("sb_cart", JSON.stringify(cart)); }, [cart, persistValue, storageReady]);
+  useEffect(() => { if (storageReady) persistValue("sb_reservations", JSON.stringify(reservations)); }, [persistValue, reservations, storageReady]);
+  useEffect(() => { if (storageReady) persistValue("sb_dark", darkMode ? "1" : "0"); }, [darkMode, persistValue, storageReady]);
+  useEffect(() => { if (storageReady) persistValue("sb_profile", JSON.stringify(profile)); }, [persistValue, profile, storageReady]);
+  useEffect(() => { if (storageReady) persistValue("sb_orders", JSON.stringify(orderHistory)); }, [orderHistory, persistValue, storageReady]);
+  useEffect(() => { if (storageReady) persistValue("sb_points", String(loyaltyPoints)); }, [loyaltyPoints, persistValue, storageReady]);
 
-  const startEditReservation = (r: { id: number; datetime: string; guests: number }) => {
+  const startEditReservation = (r: Reservation) => {
     setEditingResId(r.id);
     setReservationDT(r.datetime);
     setReservationGuests(r.guests);
@@ -382,16 +436,16 @@ export default function SushiApp() {
   };
 
   const saveReservation = () => {
-    if (!reservationDT) { alert("Please pick a date & time"); return; }
-    if (reservationGuests < 1) { alert("Guests must be at least 1"); return; }
+    if (!reservationDT) { showNotice("Please pick a date and time.", "error"); return; }
+    if (reservationGuests < 1) { showNotice("Guests must be at least 1.", "error"); return; }
     if (editingResId) {
       setReservations((prev) => prev.map((r) => (r.id === editingResId ? { ...r, datetime: reservationDT, guests: reservationGuests } : r)));
       setEditingResId(null);
-      alert("Reservation updated ✅");
+      showNotice("Reservation updated.", "success");
     } else {
       const r = { id: Date.now(), datetime: reservationDT, guests: reservationGuests };
       setReservations((prev) => [r, ...prev]);
-      alert("Reservation saved ✅");
+      showNotice("Reservation saved.", "success");
     }
     setReservationDT("");
     setReservationGuests(1);
@@ -410,7 +464,7 @@ export default function SushiApp() {
   const handleCheckout = (method: string) => {
     const deliveryAddress = (profile.deliveryAddress || profile.address).trim();
     if (orderType === "Delivery" && !deliveryAddress) {
-      alert("Please enter your delivery address."); return;
+      showNotice("Please enter your delivery address.", "error"); return;
     }
     const order = { id: Date.now(), items: cart, total: grandTotal, method, type: orderType, ts: Date.now() };
     setOrderHistory((prev) => [order, ...prev]);
@@ -421,13 +475,9 @@ export default function SushiApp() {
     setTipPercent(0);
     setAppliedPromo(null);
     setPromoCode("");
-    alert(`Paid with ${method}. Thank you!`);
+    showNotice(`Paid with ${method}. Thank you.`, "success");
   };
 
-  const { scrollYProgress } = useScroll();
-  const bgOpacity = useTransform(scrollYProgress, [0, 1], [1, 0.75]);
-  const heroParallax = useTransform(scrollYProgress, [0, 0.4], [0, 120]);
-  const heroMotionOffset = !prefersReducedMotion && !isCompact ? heroParallax : null;
   const headerActions = [
     { icon: ShoppingCart, label: "Cart", onClick: () => setShowCart(true), badge: cart.length },
     { icon: Calendar, label: "Reserve", onClick: () => setShowReserve(true) },
@@ -436,24 +486,24 @@ export default function SushiApp() {
   ];
 
   return (
-    <div className={`${darkMode ? "bg-brand-midnight text-white" : "bg-brand-ink text-white"} min-h-screen transition-colors relative overflow-x-hidden`}>
-      <DynamicBackground darkMode={darkMode} opacityMotion={bgOpacity} />
+    <div className={`${darkMode ? "bg-brand-midnight text-white" : "bg-brand-ink text-white"} relative min-h-screen overflow-x-hidden pb-28 text-white transition-colors sm:pb-0`}>
+      <DynamicBackground darkMode={darkMode} />
 
       <header className="fixed top-0 left-0 right-0 z-50">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-          <div className="relative mt-4 rounded-[32px] border border-white/15 bg-white/5 px-4 sm:px-6 py-3 sm:py-4 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="relative mt-3 rounded-[24px] border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-4 sm:rounded-[32px] sm:px-6 sm:py-4">
             <div className="pointer-events-none absolute inset-x-8 -bottom-1 h-[2px] bg-gradient-to-r from-transparent via-rose-400/70 to-transparent blur-sm" />
-            <div className="flex flex-wrap items-center gap-3 md:flex-nowrap">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-nowrap items-center gap-2 md:gap-3">
+              <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                 <div className="relative">
                   <span className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-red-500 to-rose-400 blur-2xl opacity-70" />
-                  <span className="relative grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-tr from-red-500 to-rose-400 text-lg font-semibold shadow-glow">
+                  <span className="relative grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-tr from-red-500 to-rose-400 text-base font-semibold shadow-glow sm:h-11 sm:w-11 sm:text-lg">
                     🍣
                   </span>
                 </div>
-                <div>
-                  <p className="font-display text-[11px] uppercase tracking-[0.6em] text-white/60">Sushi OS</p>
-                  <p className="font-semibold text-lg leading-tight">Sushi Bliss</p>
+                <div className="min-w-0">
+                  <p className="hidden font-display text-[11px] uppercase tracking-[0.6em] text-white/60 sm:block">Chef Bar</p>
+                  <p className="truncate text-base font-semibold leading-tight sm:text-lg">Sushi Bliss</p>
                 </div>
               </div>
               <div className="hidden md:flex flex-1 items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm shadow-innerGlass">
@@ -472,8 +522,7 @@ export default function SushiApp() {
                   className="relative hidden sm:flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-1 py-1 text-[11px] font-semibold tracking-wide text-white/70 shadow-innerGlass transition hover:text-white"
                 >
                   <span
-                    className="absolute inset-y-1 left-1 rounded-full bg-white/30 transition-transform duration-300"
-                    style={{ width: "calc(50% - 6px)", transform: darkMode ? "translateX(100%)" : "translateX(0%)" }}
+                    className={`absolute inset-y-1 left-1 w-[calc(50%_-_6px)] rounded-full bg-white/30 transition-transform duration-300 ${darkMode ? "translate-x-full" : "translate-x-0"}`}
                   />
                   <span className={`relative z-10 flex items-center gap-1 px-2 ${darkMode ? "text-white/50" : "text-white"}`}>
                     <span role="img" aria-label="sun">
@@ -496,7 +545,7 @@ export default function SushiApp() {
                       onClick={onClick}
                       aria-label={label}
                       ref={label === "Cart" ? cartButtonRef : undefined}
-                      className="group relative grid h-11 w-11 place-items-center rounded-2xl border border-white/15 bg-white/5 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-300/70 focus-visible:ring-offset-transparent"
+                      className="group relative grid h-10 w-10 place-items-center rounded-2xl border border-white/15 bg-white/5 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-300/70 focus-visible:ring-offset-transparent sm:h-11 sm:w-11"
                     >
                       <div className="absolute inset-0 rounded-2xl border border-white/5 opacity-0 transition group-hover:opacity-100" />
                       <Icon className="w-5 h-5" />
@@ -539,14 +588,13 @@ export default function SushiApp() {
         ))}
       </AnimatePresence>
 
-      <section id="hero" className="relative pt-24 sm:pt-28">
+      <section id="hero" className="relative pt-20 sm:pt-28">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
           <HeroCard
             images={heroImages}
             darkMode={darkMode}
             index={heroIndex}
             onReserve={() => setShowReserve(true)}
-            parallaxOffset={heroMotionOffset}
             compact={isCompact}
           />
         </div>
@@ -571,11 +619,11 @@ export default function SushiApp() {
         <div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Menu Rail</p>
-              <h2 className="text-2xl font-semibold text-white">Signature Modules</h2>
+              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Chef's Menu</p>
+              <h2 className="text-2xl font-semibold text-white">Signature Cuts</h2>
             </div>
             <p className="text-sm text-white/60 max-w-lg">
-              Swipe through curated chips to instantly filter classics, vegan bites, or the hottest rolls in rotation.
+              Filter by mood, market cut, or chef favorite without losing the flow of ordering.
             </p>
           </div>
           <div className="relative mt-4">
@@ -615,6 +663,13 @@ export default function SushiApp() {
           </div>
         </div>
       </section>
+
+      <OmakasePanel
+        activeMood={omakaseMood}
+        set={omakaseSet}
+        onMoodChange={setOmakaseMood}
+        onAddSet={addOmakaseSetToCart}
+      />
 
       {newDrops.length > 0 && (
         <section className="px-4 sm:px-6 md:px-8 mt-10 space-y-4">
@@ -657,8 +712,14 @@ export default function SushiApp() {
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <div className="relative overflow-hidden rounded-2xl border border-white/15">
-                      <img src={item.image} alt={item.name} className="h-40 w-full object-cover" loading="lazy" />
+                    <div className="relative h-40 overflow-hidden rounded-2xl border border-white/15">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        sizes="(min-width: 1024px) 31vw, (min-width: 768px) 48vw, 288px"
+                        className="object-cover"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.35em]">
                         New
@@ -743,6 +804,30 @@ export default function SushiApp() {
         </div>
       )}
 
+      {notices.length > 0 && (
+        <div className="pointer-events-none fixed right-4 top-24 z-[70] flex w-[min(92vw,360px)] flex-col gap-3 sm:top-28">
+          <AnimatePresence>
+            {notices.map((notice) => (
+              <motion.div
+                key={notice.id}
+                initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                className={`pointer-events-auto rounded-2xl border px-4 py-3 text-sm shadow-[0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-2xl ${
+                  notice.tone === "error"
+                    ? "border-rose-300/35 bg-rose-500/15 text-rose-50"
+                    : notice.tone === "success"
+                      ? "border-emerald-200/35 bg-emerald-300/15 text-emerald-50"
+                      : "border-white/20 bg-white/10 text-white"
+                }`}
+              >
+                {notice.message}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+
       {activeOrderId && (
         <div className="pointer-events-none fixed bottom-6 left-4 z-40 w-[min(90vw,360px)] rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
           <p className="text-xs uppercase tracking-[0.4em] text-white/60">Order #{activeOrderId}</p>
@@ -765,105 +850,34 @@ export default function SushiApp() {
 
       <section id="menu" className="mt-8 grid grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:px-6 md:px-8 md:gap-6 lg:grid-cols-3">
         {filteredMenu.map((item) => (
-          <motion.div
+          <MenuItemCard
             key={item.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -8, rotateX: 1.5, rotateY: -1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            style={{ perspective: 1200 }}
-          >
-            <Card className="group relative overflow-hidden rounded-[28px] border border-white/15 bg-white/5 text-white backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,0,0,0.35)]">
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-rose-500/10" />
-              </div>
-              {item.tag && (
-                <span className="pointer-events-none absolute left-6 top-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/30 px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.35em]">
-                  {item.tag}
-                </span>
-              )}
-              <div className="relative mx-5 mt-5 overflow-hidden rounded-[22px] border border-white/15">
-                <img src={item.image} alt={item.name} loading="lazy" className="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-              </div>
-              <CardContent className="relative flex flex-col gap-4 p-6 text-left">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.35em] text-white/50">Chef Module</p>
-                    <h3 className="text-xl font-semibold">{item.name}</h3>
-                  </div>
-                  <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold">${item.price.toFixed(2)}</span>
-                </div>
-                <p className="text-sm text-white/70">{item.description}</p>
-                <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.35em]">
-                  {item.categories.map((category) => {
-                    const Icon = categoryPillIcons[category];
-                    const className =
-                      categoryPillClasses[category] ?? "border-white/15 bg-white/5 text-white/60";
-                    return (
-                      <span
-                        key={category}
-                        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 ${className}`}
-                      >
-                        {Icon && <Icon className="h-3 w-3" />}
-                        {category}
-                      </span>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center justify-between text-sm text-white/80">
-                  <div className="flex items-center gap-1">
-                    <svg className="h-4 w-4 text-yellow-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                      <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.869 1.4-8.168L.132 9.21l8.2-1.192z" />
-                    </svg>
-                    {item.rating.toFixed(1)} / 5
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      aria-label="Decrease quantity"
-                      className="grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-white/5 text-lg text-white transition hover:bg-white/10 active:scale-95"
-                      onClick={() => decQty(item.id)}
-                    >
-                      –
-                    </button>
-                    <span className="min-w-[2ch] text-base font-semibold">{qtyById[item.id] ?? 1}</span>
-                    <button
-                      aria-label="Increase quantity"
-                      className="grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-white/5 text-lg text-white transition hover:bg-white/10 active:scale-95"
-                      onClick={() => incQty(item.id)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-                <Button
-                  className="group relative mt-1 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
-                  onClick={(e) => handleAddToCart(item, (e.currentTarget as HTMLButtonElement).getBoundingClientRect())}
-                  disabled={!!justAdded[item.id]}
-                >
-                  <span className="absolute inset-0 bg-white/10 opacity-0 transition group-hover:opacity-100" />
-                  <span className="relative inline-flex items-center justify-center gap-2">
-                    {justAdded[item.id] ? (
-                      <>
-                        <Check className="h-4 w-4" /> Added!
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingCart className="h-4 w-4" />
-                        Add {qtyById[item.id] ?? 1} to Cart
-                      </>
-                    )}
-                  </span>
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
+            item={item}
+            quantity={qtyById[item.id] ?? 1}
+            justAdded={!!justAdded[item.id]}
+            onAddToCart={handleAddToCart}
+            onDecreaseQuantity={decQty}
+            onIncreaseQuantity={incQty}
+            onViewDetails={setSelectedItem}
+          />
         ))}
       </section>
 
+      <AnimatePresence>
+        {selectedItem && (
+          <DishDetailSheet
+            item={selectedItem}
+            onClose={() => setSelectedItem(null)}
+            onAddToCart={(item, origin) => {
+              handleAddToCart(item, origin);
+              setSelectedItem(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <nav
-        className="fixed bottom-4 left-4 right-4 z-40 rounded-[30px] border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] sm:hidden"
-        style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+        className="fixed bottom-3 left-4 right-4 z-40 rounded-[28px] border border-white/15 bg-white/10 px-4 pb-[calc(env(safe-area-inset-bottom,0px)_+_0.5rem)] pt-3 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] sm:hidden"
       >
         <div className="flex items-center justify-between text-white/80">
           <button
@@ -920,8 +934,8 @@ export default function SushiApp() {
               </div>
               <div className="mt-3 flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-white/50">Module: Cart</p>
-                  <h2 className="text-2xl font-semibold">Checkout Console</h2>
+                  <p className="text-xs uppercase tracking-[0.4em] text-white/50">Your Tray</p>
+                  <h2 className="text-2xl font-semibold">Checkout</h2>
                 </div>
                 <button
                   onClick={() => setShowCart(false)}
@@ -937,7 +951,7 @@ export default function SushiApp() {
                     <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/5 py-12 text-center">
                       <span className="mb-3 text-5xl">🍣</span>
                       <p className="text-lg font-semibold">Your tray is empty</p>
-                      <p className="text-sm text-white/60">Add something tasty to boot up the order.</p>
+                      <p className="text-sm text-white/60">Start with a chef favorite or build an omakase set.</p>
                       <button
                         type="button"
                         onClick={() => {
@@ -1093,8 +1107,8 @@ export default function SushiApp() {
           <div className="w-[90vw] max-w-md rounded-[32px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Module: Payment</p>
-                <h2 className="text-2xl font-semibold">Choose a rail</h2>
+                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Payment</p>
+                <h2 className="text-2xl font-semibold">Finish Order</h2>
               </div>
               <button onClick={() => setShowPayment(false)} aria-label="Close payment" className="rounded-full border border-white/20 bg-white/5 p-2 text-white/70 hover:text-white">
                 <X className="h-5 w-5" />
@@ -1149,8 +1163,8 @@ export default function SushiApp() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Module: Reservations</p>
-                <h2 className="text-2xl font-semibold">Table Console</h2>
+                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Reservations</p>
+                <h2 className="text-2xl font-semibold">Reserve the Counter</h2>
               </div>
               <button
                 onClick={() => {
@@ -1238,8 +1252,8 @@ export default function SushiApp() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Module: Loyalty</p>
-                <h2 className="text-2xl font-semibold">Rewards Engine</h2>
+                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Loyalty</p>
+                <h2 className="text-2xl font-semibold">Sushi Bliss Rewards</h2>
               </div>
               <button onClick={() => setShowLoyalty(false)} aria-label="Close loyalty" className="rounded-full border border-white/20 bg-white/5 p-2 text-white/70 hover:text-white">
                 <X className="h-5 w-5" />
@@ -1251,11 +1265,24 @@ export default function SushiApp() {
                 <p className="text-sm uppercase tracking-[0.4em] text-white/50">Current cycle</p>
                 <p className="text-lg font-semibold">{loyaltyPoints} pts</p>
               </div>
-              <div className="mt-3 h-3 rounded-full bg-white/10">
-                <div
-                  className="h-3 rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-rose-400 shadow-neon"
-                  style={{ width: `${Math.min(100, loyaltyPoints % 100)}%` }}
-                />
+              <div
+                className="mt-3 grid grid-cols-10 gap-1"
+                role="progressbar"
+                aria-label="Loyalty reward progress"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={loyaltyPoints % 100}
+              >
+                {Array.from({ length: 10 }, (_, segment) => segment).map((segment) => (
+                  <span
+                    key={segment}
+                    className={`h-3 rounded-full ${
+                      segment < loyaltyProgressSegments
+                        ? "bg-gradient-to-r from-emerald-400 via-cyan-400 to-rose-400 shadow-neon"
+                        : "bg-white/10"
+                    }`}
+                  />
+                ))}
               </div>
               <p className="mt-2 text-xs uppercase tracking-[0.4em] text-white/60">
                 {pointsToNextReward(loyaltyPoints)} pts until next roll
@@ -1277,8 +1304,8 @@ export default function SushiApp() {
         <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[40px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_-20px_80px_rgba(0,0,0,0.7)]">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Module: Profile</p>
-              <h2 className="text-2xl font-semibold">Sushi ID</h2>
+              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Profile</p>
+              <h2 className="text-2xl font-semibold">Guest Profile</h2>
             </div>
             <button onClick={() => setShowProfile(false)} aria-label="Close profile" className="rounded-full border border-white/15 bg-white/5 p-2 text-white/70 hover:text-white">
               <X className="h-5 w-5" />
@@ -1447,103 +1474,94 @@ export default function SushiApp() {
   );
 }
 
-function DynamicBackground({ darkMode, opacityMotion }: { darkMode: boolean; opacityMotion: MotionValue<number> }) {
-  const [t, setT] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setT((v) => (v + 1) % 3), 8000);
-    return () => clearInterval(id);
-  }, []);
-
-  const palette = darkMode
-    ? [["#111827", "#0b1220"], ["#0f172a", "#111827"], ["#0b1220", "#0a0f1e"]]
-    : [["#0d0b10", "#1a0f1f"], ["#160d1b", "#0d0b10"], ["#1a0f1f", "#140c18"]];
-
-  const base = `linear-gradient(180deg, ${palette[t][0]}, ${palette[t][1]})`;
-  const glyphs = ["🍣", "🥢", "🍥", "🍱"];
+/** Paints the ambient restaurant backdrop with CSS classes so the app keeps a strict no-inline-styles rule. */
+function DynamicBackground({ darkMode }: { darkMode: boolean }) {
+  const glyphs = [
+    { icon: "🍣", className: "left-[5%] top-[10%]", rotate: 6 },
+    { icon: "🥢", className: "left-[30%] top-[28%]", rotate: -6 },
+    { icon: "🍥", className: "left-[54%] top-[46%]", rotate: 5 },
+    { icon: "🍱", className: "left-[76%] top-[64%]", rotate: -5 },
+  ];
 
   return (
-    <motion.div className="fixed inset-0 -z-10 overflow-hidden" style={{ opacity: opacityMotion }}>
-      <div className="absolute inset-0" style={{ backgroundImage: base }} />
-      <div
-        className="absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 20% 20%, rgba(244,63,94,0.25), transparent 55%), radial-gradient(circle at 80% 0%, rgba(52,245,197,0.18), transparent 45%)",
-        }}
-      />
+    <div className={`fixed inset-0 -z-10 overflow-hidden ${darkMode ? "app-background-night" : "app-background"}`}>
+      <div className="absolute inset-0 ambient-grid opacity-20" />
       <motion.div
-        className="absolute -top-32 -left-32 w-[60vw] h-[60vw] rounded-full blur-3xl"
-        style={{ background: darkMode ? "radial-gradient(circle, rgba(239,68,68,0.18), rgba(244,63,94,0.08))" : "radial-gradient(circle, rgba(244,114,182,0.20), rgba(251,191,36,0.10))" }}
+        className="absolute -left-32 -top-32 h-[60vw] w-[60vw] rounded-full bg-rose-500/20 blur-3xl"
         animate={{ x: ["-10%", "5%", "-10%"], y: ["-8%", "2%", "-8%"], scale: [1, 1.08, 1] }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute -bottom-40 -right-40 w-[65vw] h-[65vw] rounded-full blur-3xl"
-        style={{ background: darkMode ? "radial-gradient(circle, rgba(59,130,246,0.16), rgba(37,99,235,0.08))" : "radial-gradient(circle, rgba(147,197,253,0.22), rgba(254,215,170,0.10))" }}
+        className="absolute -bottom-40 -right-40 h-[65vw] w-[65vw] rounded-full bg-cyan-300/15 blur-3xl"
         animate={{ x: ["10%", "-4%", "10%"], y: ["6%", "-2%", "6%"], scale: [1.05, 1.12, 1.05] }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute inset-0"
-        style={{ backgroundImage: "radial-gradient(circle at 50% 40%, rgba(255,255,255,0.08), transparent 55%)" }}
+        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.08),transparent_55%)]"
         animate={{ opacity: [0.4, 0.65, 0.4], rotate: [0, 2, 0] }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
-      {glyphs.map((glyph, idx) => (
+      {glyphs.map((glyph, index) => (
         <motion.div
-          key={glyph + idx}
-          className="pointer-events-none absolute select-none text-5xl text-white opacity-[0.08] sm:text-6xl"
-          style={{ top: `${10 + idx * 18}%`, left: `${(idx * 23) % 70 + 5}%` }}
-          animate={{ y: ["0%", "12%", "-8%"], rotate: [0, idx % 2 === 0 ? 6 : -6, 0] }}
-          transition={{ duration: 24 + idx * 3, repeat: Infinity, ease: "easeInOut", delay: idx * 1.5 }}
+          key={glyph.icon}
+          className={`pointer-events-none absolute select-none text-5xl text-white opacity-[0.08] sm:text-6xl ${glyph.className}`}
+          animate={{ y: ["0%", "12%", "-8%"], rotate: [0, glyph.rotate, 0] }}
+          transition={{ duration: 24 + index * 3, repeat: Infinity, ease: "easeInOut", delay: index * 1.5 }}
         >
-          {glyph}
+          {glyph.icon}
         </motion.div>
       ))}
-    </motion.div>
+    </div>
   );
 }
 
+/** Renders the first-viewport brand moment with food-first imagery and direct ordering actions. */
 function HeroCard({
   images,
   darkMode,
   index,
   onReserve,
-  parallaxOffset,
   compact,
 }: {
   images: string[];
   darkMode: boolean;
   index: number;
   onReserve: () => void;
-  parallaxOffset: MotionValue<number> | null;
   compact?: boolean;
 }) {
-  const currentImage = images[index];
-  const articlePadding = compact ? "px-5 py-8" : "px-6 py-10 sm:px-10 sm:py-14";
-  const gridGap = compact ? "gap-6" : "gap-10";
+  const currentImage = images[index] ?? images[0];
+  const heightClass = "min-h-[640px]";
+  const heroHighlights = [
+    { title: "Signature flight", subtitle: "Chef-curated omakase tonight", icon: Sparkles },
+    { title: "Fresh drop", subtitle: "Hokkaido uni arrives daily", icon: Compass },
+    { title: "Plant set", subtitle: "Garden-focused maki and nigiri", icon: Leaf },
+    { title: "Torch finish", subtitle: "Scallop, eel glaze, and spice", icon: Flame },
+  ];
+  const visibleHighlights = compact ? heroHighlights.slice(0, 2) : heroHighlights;
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`relative overflow-hidden rounded-[36px] border border-white/15 bg-white/5 ${articlePadding} backdrop-blur-[36px] shadow-[0_30px_120px_rgba(0,0,0,0.45)]`}
+      className={`relative overflow-hidden rounded-[30px] border border-white/15 bg-black/30 ${heightClass} premium-edge sm:rounded-[36px]`}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)", backgroundSize: "140px 140px" }} />
+      <Image
+        src={currentImage}
+        alt=""
+        fill
+        priority
+        sizes="(min-width: 1024px) 1100px, 100vw"
+        className="object-cover"
+      />
+      <div className={`absolute inset-0 ${darkMode ? "hero-vignette-night" : "hero-vignette"}`} />
+      <div className="pointer-events-none absolute inset-0 ambient-grid opacity-20" />
       <motion.div
-        className="pointer-events-none absolute -top-24 -right-12 h-72 w-72 rounded-full blur-[120px]"
-        style={{ background: darkMode ? "linear-gradient(140deg, rgba(244,63,94,0.6), rgba(14,165,233,0.35))" : "linear-gradient(140deg, rgba(244,114,182,0.5), rgba(52,245,197,0.4))" }}
+        className="pointer-events-none absolute -right-20 top-10 h-72 w-72 rounded-full bg-rose-400/25 blur-[110px]"
         animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0] }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
-      <motion.div
-        className="pointer-events-none absolute -bottom-20 -left-10 h-80 w-80 rounded-full blur-[130px]"
-        style={{ background: "linear-gradient(220deg, rgba(52,245,197,0.45), rgba(59,130,246,0.35))" }}
-        animate={{ scale: [1.1, 0.95, 1.1], rotate: [0, -6, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <div className={`relative grid ${gridGap} md:grid-cols-2`}>
-        <div className="text-white">
+      <div className="relative flex min-h-[inherit] flex-col justify-between px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
+        <div className="max-w-2xl text-white">
           <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-white/70">
             <span className="relative flex h-3 w-3">
               <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
@@ -1551,11 +1569,11 @@ function HeroCard({
             </span>
             Now open • 12–10 PM • 20 min avg prep
           </div>
-          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-            Futuristic dining by <span className="font-display text-transparent bg-gradient-to-r from-rose-400 via-red-400 to-orange-300 bg-clip-text">Sushi Bliss</span>
+          <h1 className="mt-6 font-display text-5xl font-extrabold leading-none text-white sm:text-6xl lg:text-7xl">
+            Sushi Bliss
           </h1>
-          <p className="mt-4 max-w-xl text-base text-white/85 sm:text-lg">
-            Tap into our chef OS: omakase flights, signature tech-forward nigiri, and immersive plating with glowing glassware.
+          <p className="mt-4 max-w-xl text-base leading-7 text-white/85 sm:text-lg">
+            Futuristic omakase, market-fresh nigiri, and glass-lit ordering built for nights that feel like an event.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <a href="#menu" className="inline-flex">
@@ -1575,14 +1593,11 @@ function HeroCard({
               <Calendar className="mr-2 h-4 w-4" /> Reserve a Table
             </Button>
           </div>
-          <div className="mt-8 grid gap-3 text-sm text-white/80 sm:grid-cols-2">
-            {[
-              { title: "Signature flight", subtitle: "Chef-curated omakase tonight", icon: Sparkles },
-              { title: "Fresh drop", subtitle: "Hokkaido uni arrives daily", icon: Compass },
-              { title: "Vegan lab", subtitle: "Plant-forward nigiri modules", icon: Leaf },
-              { title: "Hot streak", subtitle: "Torch-seared Specials", icon: Flame },
-            ].map((card) => (
-              <div key={card.title} className="glass-panel flex items-center gap-3 rounded-2xl border-white/10 bg-white/5 px-4 py-3 text-left shadow-innerGlass">
+        </div>
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="grid gap-3 text-sm text-white/80 sm:grid-cols-2">
+            {visibleHighlights.map((card) => (
+              <div key={card.title} className="hero-lens flex items-center gap-3 rounded-2xl border border-white/10 px-4 py-3 text-left shadow-innerGlass backdrop-blur-2xl">
                 <card.icon className="h-5 w-5 text-white/70" />
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-white/50">{card.subtitle}</p>
@@ -1591,43 +1606,36 @@ function HeroCard({
               </div>
             ))}
           </div>
+          {!compact && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="hero-lens rounded-2xl border border-white/20 p-4 text-sm shadow-innerGlass backdrop-blur-2xl"
+            >
+              <p className="text-xs uppercase tracking-[0.35em] text-white/60">Status: Live</p>
+              <p className="text-lg font-semibold text-white mt-1">Tonight's Chef Feed</p>
+              <div className="mt-3 space-y-1 text-white/80">
+                <div className="flex items-center justify-between">
+                  <span>Now open</span>
+                  <span className="text-emerald-300">•</span>
+                </div>
+                <div className="flex items-center justify-between text-white/60 text-xs">
+                  <span>Avg prep</span>
+                  <span>20 min</span>
+                </div>
+                <div className="flex items-center justify-between text-white/60 text-xs">
+                  <span>Seats</span>
+                  <span>12 left</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
-        <div className="relative">
-          <motion.div
-            className="relative overflow-hidden rounded-[32px] border border-white/20 bg-black/30 shadow-[0_40px_120px_rgba(0,0,0,0.55)]"
-            style={{ y: parallaxOffset ?? 0 }}
-          >
-            <img src={currentImage} alt="Hero sushi" className={`w-full object-cover ${compact ? "h-64" : "h-[360px]"}`} />
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 mix-blend-screen" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="glass-panel absolute -bottom-8 right-6 w-60 rounded-2xl border border-white/20 bg-white/10 p-4 text-sm shadow-innerGlass"
-          >
-            <p className="text-xs uppercase tracking-[0.35em] text-white/60">Status: Live</p>
-            <p className="text-lg font-semibold text-white mt-1">Tonight's Chef Feed</p>
-            <div className="mt-3 space-y-1 text-white/80">
-              <div className="flex items-center justify-between">
-                <span>Now open</span>
-                <span className="text-emerald-300">•</span>
-              </div>
-              <div className="flex items-center justify-between text-white/60 text-xs">
-                <span>Avg prep</span>
-                <span>20 min</span>
-              </div>
-              <div className="flex items-center justify-between text-white/60 text-xs">
-                <span>Seats</span>
-                <span>12 left</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+        <a href="#menu" className="mt-8 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white">
+          <span className="animate-bounce text-lg">↓</span> Explore Menu
+        </a>
       </div>
-      <a href="#menu" className="relative mt-10 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white">
-        <span className="animate-bounce text-lg">↓</span> Explore Menu
-      </a>
     </motion.article>
   );
 }
