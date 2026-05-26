@@ -7,6 +7,8 @@ import { Input } from "./ui/input";
 import { DishDetailSheet } from "./sushi/DishDetailSheet";
 import { MenuItemCard } from "./sushi/MenuItemCard";
 import { OmakasePanel } from "./sushi/OmakasePanel";
+import { OrderConfirmationSheet } from "./sushi/OrderConfirmationSheet";
+import { ReservationSheet } from "./sushi/ReservationSheet";
 import type { LucideIcon } from "lucide-react";
 import {
   Search,
@@ -43,6 +45,18 @@ import {
 import { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } from "../lib/cart-utils";
 import { defaultHighlightCategories, filterMenuItems, getHighlightDrops } from "../lib/menu-utils";
 import { buildOmakaseSet, type OmakaseMood } from "../lib/omakase-utils";
+import { buildOrderSummary, hydrateOrders, type FulfillmentType, type OrderHistoryEntry } from "../lib/order-utils";
+import {
+  createDefaultReservationForm,
+  createLocalDateTimeValue,
+  createReservationCode,
+  formatReservationDateTime,
+  hydrateReservations,
+  parseReservationDateTime,
+  validateReservationForm,
+  type Reservation,
+  type ReservationFormState,
+} from "../lib/reservation-utils";
 
 const categoryFilters = filterCategories;
 const categoryIcons: Record<FilterCategory, LucideIcon> = {
@@ -82,12 +96,6 @@ const rewardItem: SushiMenuItem = {
   texture: "Surprise finish",
 };
 
-interface Reservation {
-  id: number;
-  datetime: string;
-  guests: number;
-}
-
 interface GuestProfile {
   name: string;
   email: string;
@@ -96,15 +104,6 @@ interface GuestProfile {
   dietary: string;
   marketingOptIn: boolean;
   deliveryAddress: string;
-}
-
-interface OrderHistoryEntry {
-  id: number;
-  items: SushiMenuItem[];
-  total: number;
-  method: string;
-  type: "Pickup" | "Delivery";
-  ts: number;
 }
 
 type NoticeTone = "success" | "error" | "info";
@@ -122,7 +121,8 @@ export default function SushiApp() {
   const [darkMode, setDarkMode] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
-  const [orderType, setOrderType] = useState<"Pickup" | "Delivery">("Pickup");
+  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
+  const [orderType, setOrderType] = useState<FulfillmentType>("Pickup");
   const [loyaltyPoints, setLoyaltyPoints] = useState(50);
   const pointsToNextReward = (pts: number) => {
     const mod = pts % 100;
@@ -135,8 +135,7 @@ export default function SushiApp() {
   const [storageReady, setStorageReady] = useState(false);
 
   const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [reservationDT, setReservationDT] = useState("");
-  const [reservationGuests, setReservationGuests] = useState(1);
+  const [reservationForm, setReservationForm] = useState<ReservationFormState>(() => createDefaultReservationForm());
   const [editingResId, setEditingResId] = useState<number | null>(null);
   const [confirmDlg, setConfirmDlg] = useState<{
     open: boolean;
@@ -158,6 +157,7 @@ export default function SushiApp() {
   });
 
   const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>([]);
+  const [latestOrder, setLatestOrder] = useState<OrderHistoryEntry | null>(null);
   const [selectedItem, setSelectedItem] = useState<SushiMenuItem | null>(null);
   const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
 
@@ -403,10 +403,18 @@ export default function SushiApp() {
       const savedHist = localStorage.getItem("sb_orders");
       const savedPoints = localStorage.getItem("sb_points");
       if (savedCart) setCart(JSON.parse(savedCart));
-      if (savedRes) setReservations(JSON.parse(savedRes));
+      if (savedRes) setReservations(hydrateReservations(JSON.parse(savedRes)));
       if (savedDark) setDarkMode(savedDark === "1");
-      if (savedProf) setProfile(JSON.parse(savedProf));
-      if (savedHist) setOrderHistory(JSON.parse(savedHist));
+      if (savedProf) {
+        const parsedProfile = JSON.parse(savedProf) as Partial<GuestProfile>;
+        setProfile((previousProfile) => ({ ...previousProfile, ...parsedProfile }));
+        setReservationForm((previousForm) => ({
+          ...previousForm,
+          name: parsedProfile.name || previousForm.name,
+          phone: parsedProfile.phone || previousForm.phone,
+        }));
+      }
+      if (savedHist) setOrderHistory(hydrateOrders(JSON.parse(savedHist)));
       if (savedPoints) setLoyaltyPoints(Number(savedPoints));
     } catch {
       showNotice("Saved session could not be restored.", "error");
@@ -422,10 +430,40 @@ export default function SushiApp() {
   useEffect(() => { if (storageReady) persistValue("sb_orders", JSON.stringify(orderHistory)); }, [orderHistory, persistValue, storageReady]);
   useEffect(() => { if (storageReady) persistValue("sb_points", String(loyaltyPoints)); }, [loyaltyPoints, persistValue, storageReady]);
 
+  /** Applies small reservation form edits without losing the rest of the in-progress booking. */
+  const updateReservationForm = (patch: Partial<ReservationFormState>) => {
+    setReservationForm((previousForm) => ({ ...previousForm, ...patch }));
+  };
+
+  const resetReservationForm = (guestProfile: Pick<GuestProfile, "name" | "phone"> = profile) => {
+    setReservationForm(createDefaultReservationForm(new Date(), guestProfile));
+  };
+
+  const openReservationSheet = () => {
+    setEditingResId(null);
+    resetReservationForm();
+    setShowReserve(true);
+  };
+
+  const closeReservationSheet = () => {
+    setShowReserve(false);
+    setEditingResId(null);
+    resetReservationForm();
+  };
+
   const startEditReservation = (r: Reservation) => {
+    const parsedDateTime = parseReservationDateTime(r.datetime);
     setEditingResId(r.id);
-    setReservationDT(r.datetime);
-    setReservationGuests(r.guests);
+    setReservationForm({
+      date: parsedDateTime.date,
+      time: parsedDateTime.time,
+      guests: r.guests,
+      name: r.name,
+      phone: r.phone,
+      seating: r.seating,
+      occasion: r.occasion,
+      notes: r.notes,
+    });
     setShowReserve(true);
   };
 
@@ -436,51 +474,98 @@ export default function SushiApp() {
   };
 
   const saveReservation = () => {
-    if (!reservationDT) { showNotice("Please pick a date and time.", "error"); return; }
-    if (reservationGuests < 1) { showNotice("Guests must be at least 1.", "error"); return; }
+    const validation = validateReservationForm(reservationForm, reservations, editingResId);
+    if (!validation.valid) {
+      showNotice(validation.message, "error");
+      return;
+    }
+
+    const now = Date.now();
+    const datetime = createLocalDateTimeValue(reservationForm.date, reservationForm.time);
+    const reservationPayload = {
+      datetime,
+      guests: reservationForm.guests,
+      name: reservationForm.name.trim(),
+      phone: reservationForm.phone.trim(),
+      seating: reservationForm.seating,
+      occasion: reservationForm.occasion,
+      notes: reservationForm.notes.trim(),
+    };
+
     if (editingResId) {
-      setReservations((prev) => prev.map((r) => (r.id === editingResId ? { ...r, datetime: reservationDT, guests: reservationGuests } : r)));
+      setReservations((prev) =>
+        prev.map((reservation) =>
+          reservation.id === editingResId
+            ? {
+                ...reservation,
+                ...reservationPayload,
+              }
+            : reservation
+        )
+      );
       setEditingResId(null);
       showNotice("Reservation updated.", "success");
     } else {
-      const r = { id: Date.now(), datetime: reservationDT, guests: reservationGuests };
-      setReservations((prev) => [r, ...prev]);
-      showNotice("Reservation saved.", "success");
+      const reservationId = now;
+      const reservation: Reservation = {
+        id: reservationId,
+        ...reservationPayload,
+        confirmationCode: createReservationCode(reservationId),
+        createdAt: now,
+      };
+      setReservations((prev) => [reservation, ...prev]);
+      showNotice(`Reservation confirmed: ${reservation.confirmationCode}`, "success");
     }
-    setReservationDT("");
-    setReservationGuests(1);
+    setProfile((previousProfile) => ({
+      ...previousProfile,
+      name: previousProfile.name || reservationForm.name.trim(),
+      phone: previousProfile.phone || reservationForm.phone.trim(),
+    }));
+    resetReservationForm({ name: reservationPayload.name, phone: reservationPayload.phone });
     setShowReserve(false);
   };
 
-  const formatDT = (dt: string) => {
-    try {
-      const d = new Date(dt);
-      const date = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-      const time = d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-      return `${date} • ${time}`;
-    } catch { return dt; }
-  };
-
   const handleCheckout = (method: string) => {
+    if (cart.length === 0) {
+      showNotice("Add at least one item before checkout.", "error");
+      return;
+    }
     const deliveryAddress = (profile.deliveryAddress || profile.address).trim();
     if (orderType === "Delivery" && !deliveryAddress) {
       showNotice("Please enter your delivery address.", "error"); return;
     }
-    const order = { id: Date.now(), items: cart, total: grandTotal, method, type: orderType, ts: Date.now() };
+    const orderId = Date.now();
+    const order = buildOrderSummary({
+      id: orderId,
+      items: cart,
+      subtotal,
+      promoDiscount,
+      tax,
+      tip,
+      total: grandTotal,
+      method,
+      type: orderType,
+      placedAt: orderId,
+      deliveryAddress,
+      customerName: profile.name,
+    });
     setOrderHistory((prev) => [order, ...prev]);
+    setLatestOrder(order);
     setActiveOrderId(order.id);
     setTrackerStep(0);
     setCart([]);
+    setShowCart(false);
     setShowPayment(false);
+    setShowOrderConfirmation(true);
     setTipPercent(0);
     setAppliedPromo(null);
     setPromoCode("");
-    showNotice(`Paid with ${method}. Thank you.`, "success");
+    showNotice(`Order ${order.confirmationCode} confirmed.`, "success");
   };
 
   const headerActions = [
     { icon: ShoppingCart, label: "Cart", onClick: () => setShowCart(true), badge: cart.length },
-    { icon: Calendar, label: "Reserve", onClick: () => setShowReserve(true) },
+    { icon: Calendar, label: "Reserve", onClick: openReservationSheet },
     { icon: Gift, label: "Loyalty", onClick: () => setShowLoyalty(true) },
     { icon: User, label: "Profile", onClick: () => setShowProfile(true) },
   ];
@@ -594,7 +679,7 @@ export default function SushiApp() {
             images={heroImages}
             darkMode={darkMode}
             index={heroIndex}
-            onReserve={() => setShowReserve(true)}
+            onReserve={openReservationSheet}
             compact={isCompact}
           />
         </div>
@@ -890,7 +975,7 @@ export default function SushiApp() {
             Cart
           </button>
           <button
-            onClick={() => setShowReserve(true)}
+            onClick={openReservationSheet}
             className="flex flex-col items-center gap-1 text-xs font-semibold uppercase tracking-[0.3em]"
           >
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10">
@@ -1063,7 +1148,7 @@ export default function SushiApp() {
                   ].map(({ type, icon: Icon }) => (
                     <button
                       key={type}
-                      onClick={() => setOrderType(type as "Pickup" | "Delivery")}
+                      onClick={() => setOrderType(type as FulfillmentType)}
                       className={`flex flex-1 items-center justify-center gap-2 rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
                         orderType === type ? "border-white/60 bg-white/20" : "border-white/15 bg-white/5 hover:border-white/30"
                       }`}
@@ -1090,8 +1175,9 @@ export default function SushiApp() {
                   </div>
                 </div>
                 <Button
-                  className="group relative mt-4 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow"
+                  className="group relative mt-4 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={() => setShowPayment(true)}
+                  disabled={cart.length === 0}
                 >
                   <span className="absolute inset-0 bg-white/10 opacity-0 transition group-hover:opacity-100" />
                   <span className="relative">Checkout</span>
@@ -1154,94 +1240,33 @@ export default function SushiApp() {
         </motion.div>
       )}
 
-      {showReserve && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-[92vw] max-w-2xl rounded-[32px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_30px_80px_rgba(0,0,0,0.65)]"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Reservations</p>
-                <h2 className="text-2xl font-semibold">Reserve the Counter</h2>
-              </div>
-              <button
-                onClick={() => {
-                  setShowReserve(false);
-                  setEditingResId(null);
-                }}
-                aria-label="Close reservations"
-                className="rounded-full border border-white/20 bg-white/5 p-2 text-white/70 hover:text-white"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="sm:col-span-2">
-                <label className="text-xs uppercase tracking-[0.4em] text-white/50">Date & Time</label>
-                <Input
-                  type="datetime-local"
-                  value={reservationDT}
-                  onChange={(e) => setReservationDT(e.target.value)}
-                  className="mt-2 h-11 rounded-2xl border-white/20 bg-transparent text-white focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-              <div>
-                <label className="text-xs uppercase tracking-[0.4em] text-white/50">Guests</label>
-                <Input
-                  type="number"
-                  min={1}
-                  value={reservationGuests}
-                  onChange={(e) => setReservationGuests(Math.max(1, Number(e.target.value)))}
-                  className="mt-2 h-11 rounded-2xl border-white/20 bg-transparent text-white focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-            </div>
-            <Button
-              className="group relative mt-4 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow"
-              onClick={saveReservation}
-            >
-              <span className="absolute inset-0 bg-white/10 opacity-0 transition group-hover:opacity-100" />
-              <span className="relative">{editingResId ? "Update Reservation" : "Save Reservation"}</span>
-            </Button>
-            <div className="mt-4 rounded-2xl border border-dashed border-white/20 bg-white/5 p-4">
-              <div className="mb-3 flex items-center gap-2 text-sm uppercase tracking-[0.4em] text-white/60">
-                <Calendar className="h-4 w-4" />
-                Upcoming tables
-              </div>
-              {reservations.length === 0 ? (
-                <p className="text-sm text-white/60">Your table is waiting in the future. Book the first slot!</p>
-              ) : (
-                <div className="space-y-3 max-h-56 overflow-y-auto pr-2">
-                  {reservations.map((r) => (
-                    <div key={r.id} className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold">{formatDT(r.datetime)}</span>
-                        <span className="text-white/60">{r.guests} guests</span>
-                      </div>
-                      <div className="mt-3 flex items-center justify-end gap-2 text-xs uppercase tracking-[0.3em]">
-                        <button
-                          onClick={() => startEditReservation(r)}
-                          className="rounded-full border border-white/20 bg-white/5 px-3 py-1 hover:border-white/40"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => cancelReservation(r.id)}
-                          className="rounded-full border border-rose-400/60 bg-rose-500/20 px-3 py-1 text-rose-100 hover:bg-rose-500/30"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {showOrderConfirmation && latestOrder && (
+          <OrderConfirmationSheet
+            order={latestOrder}
+            onClose={() => setShowOrderConfirmation(false)}
+            onViewHistory={() => {
+              setShowOrderConfirmation(false);
+              setShowProfile(true);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showReserve && (
+          <ReservationSheet
+            form={reservationForm}
+            reservations={reservations}
+            editingReservationId={editingResId}
+            onFormChange={updateReservationForm}
+            onSave={saveReservation}
+            onEdit={startEditReservation}
+            onCancelReservation={cancelReservation}
+            onClose={closeReservationSheet}
+          />
+        )}
+      </AnimatePresence>
 
       {showLoyalty && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
@@ -1387,12 +1412,20 @@ export default function SushiApp() {
               ) : (
                 <div className="space-y-2">
                   {reservations.map((r) => (
-                    <div key={r.id} className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
-                      <div>
-                        <p className="font-semibold">{formatDT(r.datetime)}</p>
-                        <p className="text-white/60">{r.guests} guests</p>
+                    <div key={r.id} className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">{r.confirmationCode}</p>
+                          <p className="mt-1 font-semibold">{formatReservationDateTime(r.datetime)}</p>
+                          <p className="text-white/60">
+                            {r.guests} guests • {r.seating} • {r.occasion}
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-50">
+                          Confirmed
+                        </span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="mt-3 flex justify-end gap-2">
                         <button className="rounded-full border border-white/20 px-3 py-1" onClick={() => startEditReservation(r)}>
                           Edit
                         </button>
@@ -1418,14 +1451,26 @@ export default function SushiApp() {
                     <div key={o.id} className="rounded-xl border border-white/10 bg-white/5 p-3">
                       <details>
                         <summary className="cursor-pointer text-sm">
-                          <span className="font-semibold">Order #{o.id}</span> • {o.type} • {new Date(o.ts).toLocaleDateString()}
+                          <span className="font-semibold">{o.confirmationCode}</span> • {o.type} • {new Date(o.placedAt).toLocaleDateString()}
                           <span className="float-right font-semibold text-white">${o.total.toFixed(2)}</span>
                         </summary>
-                        <div className="mt-2 text-sm text-white/70">
-                          {o.items.map((it, idx) => (
-                            <div key={idx} className="flex items-center justify-between py-1">
-                              <span>{it.name}</span>
-                              <span>${(it.price ?? 0).toFixed(2)}</span>
+                        <div className="mt-3 space-y-2 text-sm text-white/70">
+                          <div className="rounded-xl border border-white/10 bg-black/15 p-3">
+                            <p className="font-semibold text-white">
+                              {o.type === "Delivery" ? "Delivery" : "Pickup"} around{" "}
+                              {new Date(o.fulfillmentTime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+                            </p>
+                            <p className="mt-1 text-xs text-white/55">
+                              Paid with {o.method}
+                              {o.deliveryAddress ? ` • ${o.deliveryAddress}` : ""}
+                            </p>
+                          </div>
+                          {groupCartItems(o.items).map(({ item, qty }) => (
+                            <div key={item.id} className="flex items-center justify-between py-1">
+                              <span>
+                                {item.name} <span className="text-white/45">x{qty}</span>
+                              </span>
+                              <span>${(item.price * qty).toFixed(2)}</span>
                             </div>
                           ))}
                         </div>

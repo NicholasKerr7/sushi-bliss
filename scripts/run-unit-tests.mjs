@@ -18,6 +18,8 @@ try {
       path.join(projectRoot, "src/lib/cart-utils.ts"),
       path.join(projectRoot, "src/lib/menu-utils.ts"),
       path.join(projectRoot, "src/lib/omakase-utils.ts"),
+      path.join(projectRoot, "src/lib/order-utils.ts"),
+      path.join(projectRoot, "src/lib/reservation-utils.ts"),
     ],
     outdir,
     outbase: path.join(projectRoot, "src"),
@@ -45,6 +47,13 @@ try {
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
   const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
+  const { buildOrderSummary, createOrderCode, getOrderEtaMinutes } = await importFromOutdir("lib/order-utils.js");
+  const {
+    createDefaultReservationForm,
+    createLocalDateTimeValue,
+    getReservationSlots,
+    validateReservationForm,
+  } = await importFromOutdir("lib/reservation-utils.js");
 
   const tests = [];
   function test(name, fn) {
@@ -152,6 +161,79 @@ try {
   test("buildOmakaseSet honors the target count when enough dishes match", () => {
     const set = buildOmakaseSet(sushiMenuData, "Fire & Crunch", 2);
     assert.strictEqual(set.items.length, 2);
+  });
+
+  // order-utils tests
+  test("buildOrderSummary creates a confirmation-ready pickup order", () => {
+    const order = buildOrderSummary({
+      id: 123456,
+      items: sampleCart,
+      subtotal: 14.5,
+      promoDiscount: 1.45,
+      tax: 1.16,
+      tip: 2,
+      total: 16.21,
+      method: "Credit Card",
+      type: "Pickup",
+      placedAt: 1_800_000,
+      customerName: "Nick",
+    });
+
+    assert.strictEqual(order.confirmationCode, "SB-123456");
+    assert.strictEqual(order.fulfillmentTime, order.placedAt + order.etaMinutes * 60 * 1000);
+    assert.strictEqual(order.customerName, "Nick");
+  });
+
+  test("getOrderEtaMinutes uses a longer delivery ETA than pickup", () => {
+    assert.ok(getOrderEtaMinutes("Delivery", 3) > getOrderEtaMinutes("Pickup", 3));
+  });
+
+  test("createOrderCode pads short ids", () => {
+    assert.strictEqual(createOrderCode(42), "SB-000042");
+  });
+
+  // reservation-utils tests
+  const bookedReservation = {
+    id: 100,
+    datetime: "2026-05-26T18:00",
+    guests: 8,
+    name: "Aki Tanaka",
+    phone: "+1 555 0100",
+    seating: "Counter",
+    occasion: "Dinner",
+    notes: "",
+    confirmationCode: "SB-RSV-000100",
+    createdAt: 100,
+  };
+
+  test("getReservationSlots marks fully booked slots unavailable", () => {
+    const slots = getReservationSlots("2026-05-26", 1, [bookedReservation]);
+    const bookedSlot = slots.find((slot) => slot.time === "18:00");
+    assert.strictEqual(bookedSlot?.disabled, true);
+    assert.strictEqual(bookedSlot?.seatsRemaining, 0);
+  });
+
+  test("getReservationSlots ignores the reservation being edited", () => {
+    const slots = getReservationSlots("2026-05-26", 8, [bookedReservation], bookedReservation.id);
+    const editedSlot = slots.find((slot) => slot.time === "18:00");
+    assert.strictEqual(editedSlot?.disabled, false);
+    assert.strictEqual(editedSlot?.seatsRemaining, 8);
+  });
+
+  test("validateReservationForm requires usable contact details", () => {
+    const form = {
+      ...createDefaultReservationForm(new Date(2026, 4, 26)),
+      date: "2026-05-26",
+      time: "18:30",
+      guests: 2,
+      name: "",
+      phone: "555",
+    };
+    assert.strictEqual(validateReservationForm(form, []).valid, false);
+  });
+
+  test("createLocalDateTimeValue combines date and time", () => {
+    assert.strictEqual(createLocalDateTimeValue("2026-05-26", "19:30"), "2026-05-26T19:30");
   });
 
   let failed = 0;
