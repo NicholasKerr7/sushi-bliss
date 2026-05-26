@@ -5,7 +5,7 @@ import type { FilterCategory } from "../data/menu";
 
 describe("filterMenuItems", () => {
   it("matches query regardless of case", () => {
-    const result = filterMenuItems(sushiMenuData, "salMon", "All");
+    const result = filterMenuItems(sushiMenuData, "salMon nigiri", "All");
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe("Salmon Nigiri");
   });

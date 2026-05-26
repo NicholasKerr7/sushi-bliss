@@ -115,7 +115,7 @@ try {
 
   // menu-utils tests
   test("filterMenuItems matches query regardless of case", () => {
-    const result = filterMenuItems(sushiMenuData, "salMon", "All");
+    const result = filterMenuItems(sushiMenuData, "salMon nigiri", "All");
     assert.strictEqual(result.length, 1);
     assert.strictEqual(result[0].name, "Salmon Nigiri");
   });
