@@ -1,342 +1,213 @@
-'use client';
+"use client";
+
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Award,
+  Calendar,
+  CheckCircle2,
+  ChefHat,
+  ChevronRight,
+  Clock3,
+  CreditCard,
+  Flame,
+  Gift,
+  Heart,
+  Home,
+  Leaf,
+  Mail,
+  MapPin,
+  Minus,
+  PackageCheck,
+  Phone,
+  Plus,
+  ReceiptText,
+  Search,
+  Send,
+  ShoppingBag,
+  ShoppingCart,
+  Sparkles,
+  Star,
+  Store,
+  User,
+  Utensils,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { HomeView } from "./home/HomeView";
+import { AppShell } from "./layout/AppShell";
+import { PageContainer } from "./layout/PageContainer";
+import { SectionHeader } from "./layout/SectionHeader";
+import { ProfileView } from "./profile/ProfileView";
+import type { GuestProfile } from "./profile/types";
+import type { AppView, NavItem } from "./layout/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { DishDetailSheet } from "./sushi/DishDetailSheet";
-import { MenuItemCard } from "./sushi/MenuItemCard";
-import { OmakasePanel } from "./sushi/OmakasePanel";
-import { OrderConfirmationSheet } from "./sushi/OrderConfirmationSheet";
-import { ReservationSheet } from "./sushi/ReservationSheet";
-import type { LucideIcon } from "lucide-react";
-import {
-  Search,
-  ShoppingCart,
-  Calendar,
-  Gift,
-  User,
-  CreditCard,
-  Smartphone,
-  Facebook,
-  Instagram,
-  Twitter,
-  MapPin,
-  Store,
-  X,
-  Sparkles,
-  Flame,
-  Leaf,
-  Star,
-  Compass,
-  Crown,
-  ChefHat,
-  ArrowRight,
-} from "lucide-react";
 import {
   filterCategories,
-  heroImagesData,
-  menuCategories,
-  sushiMenuData,
   type FilterCategory,
   type MenuCategory,
   type SushiMenuItem,
 } from "../data/menu";
+import {
+  getAssetById,
+  getAssetsByFolder,
+  getBrand,
+  getChefs,
+  getFeaturedAssets,
+  getFeaturedItems,
+  getItemById,
+  getMenuItems,
+  getPairings,
+  getRelatedItems,
+  getReservationExperiences,
+  getRewards,
+} from "../data/selectors";
 import { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } from "../lib/cart-utils";
-import { defaultHighlightCategories, filterMenuItems, getHighlightDrops } from "../lib/menu-utils";
-import { buildOmakaseSet, type OmakaseMood } from "../lib/omakase-utils";
+import { formatClockTime, formatCurrency } from "../lib/format-utils";
+import { filterMenuItems } from "../lib/menu-utils";
+import { buildOmakaseSet, omakaseMoods, type OmakaseMood } from "../lib/omakase-utils";
 import { buildOrderSummary, hydrateOrders, type FulfillmentType, type OrderHistoryEntry } from "../lib/order-utils";
 import {
   createDefaultReservationForm,
   createLocalDateTimeValue,
   createReservationCode,
   formatReservationDateTime,
+  getReservationSlots,
   hydrateReservations,
-  parseReservationDateTime,
+  occasionOptions,
+  seatingOptions,
   validateReservationForm,
   type Reservation,
   type ReservationFormState,
 } from "../lib/reservation-utils";
+import type { AssetRef, Chef, Reward, SakePairing } from "../data/types";
 
-const categoryFilters = filterCategories;
-const categoryIcons: Record<FilterCategory, LucideIcon> = {
-  All: Sparkles,
-  Signature: Sparkles,
-  Classic: Compass,
-  Vegan: Leaf,
-  Hot: Flame,
-  Popular: Star,
-  Premium: Crown,
-  Chef: ChefHat,
-};
-const categoryPillIcons: Partial<Record<MenuCategory, LucideIcon>> = {
-  Premium: Crown,
-  Chef: ChefHat,
-};
-const categoryPillClasses: Partial<Record<MenuCategory, string>> = {
-  Premium: "border-amber-400/70 bg-amber-400/10 text-amber-50",
-  Chef: "border-emerald-300/70 bg-emerald-300/10 text-emerald-50",
-};
-const highlightCategories: MenuCategory[] = defaultHighlightCategories;
-const trackerStages = ["Received", "Preparing", "Ready", "On the way"] as const;
-const sushiMenu = sushiMenuData;
-const heroImages = heroImagesData;
-const rewardItem: SushiMenuItem = {
-  id: 1001,
-  name: "Free Chef's Choice Roll",
-  price: 0,
-  tag: "Reward",
-  rating: 5,
-  image: sushiMenu[9]?.image ?? sushiMenu[0].image,
-  categories: ["Chef"],
-  description: "Chef-selected roll, on the house.",
-  ingredients: ["Chef's cut", "Seasoned rice", "House garnish"],
-  chefNote: "A rotating thank-you bite for returning guests.",
-  pairing: "Chef's choice",
-  texture: "Surprise finish",
-};
-
-interface GuestProfile {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  dietary: string;
-  marketingOptIn: boolean;
-  deliveryAddress: string;
-}
-
-type NoticeTone = "success" | "error" | "info";
-
-interface AppNotice {
+interface Notice {
   id: number;
   message: string;
-  tone: NoticeTone;
+  tone: "success" | "error" | "info";
 }
 
+const brand = getBrand();
+const featuredAssets = getFeaturedAssets();
+const menuItems = getMenuItems();
+const chefs = getChefs();
+const rewards = getRewards();
+const pairings = getPairings();
+const ambienceAssets = getAssetsByFolder("ambience");
+const editorialAssets = getAssetsByFolder("editorial");
+const specialtyAssets = getAssetsByFolder("specialties");
+const ingredientAssets = getAssetsByFolder("ingredients");
+const chefProfile = chefs.find((chef) => chef.id === "hiroshi-tanaka") ?? chefs[0];
+const profileImage = chefProfile.profileImage?.publicUrl ?? chefProfile.standingImage.publicUrl;
+const heroAsset = featuredAssets.heroSushi;
+
+const iconAssets = {
+  about: getAssetById("golden-chef-s-crest-emblem")?.publicUrl,
+  bell: getAssetById("golden-notification-bell")?.publicUrl,
+  cart: getAssetById("golden-shopping-cart-icon")?.publicUrl,
+  contact: getAssetById("luxury-gold-envelope-icon-on-black")?.publicUrl,
+  home: getAssetById("elegant-gold-house-icon-with-red-glow")?.publicUrl,
+  loyalty: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
+  menu: getAssetById("gold-neon-sushi-menu-icon")?.publicUrl,
+  orders: getAssetById("gold-takeaway-bag-with-receipt-icon")?.publicUrl,
+  pairings: getAssetById("luxurious-gold-sushi-emblem")?.publicUrl,
+  profile: getAssetById("minimalist-person-icon-with-glowing-rim")?.publicUrl,
+  reservations: getAssetById("golden-calendar-icon-with-red-highlight")?.publicUrl,
+  settings: getAssetById("user-settings-icon-with-gold-gear")?.publicUrl,
+};
+
+const desktopNav: NavItem[] = [
+  { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
+  { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
+  { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
+  { key: "menu", id: "order-online", label: "Order Online", icon: ShoppingBag, assetIcon: iconAssets.orders, target: "menu" },
+  { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
+  { key: "about", label: "About Us", icon: ChefHat, assetIcon: iconAssets.about },
+  { key: "contact", label: "Contact", icon: Mail, assetIcon: iconAssets.contact },
+];
+
+const mobileNav: NavItem[] = [
+  { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
+  { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
+  { key: "reservations", label: "Reserve", icon: Calendar, assetIcon: iconAssets.reservations },
+  { key: "orders", label: "Orders", icon: ShoppingBag, assetIcon: iconAssets.orders },
+  { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
+];
+
+const categoryIcons: Partial<Record<MenuCategory, typeof Sparkles>> = {
+  "Chef Specials": ChefHat,
+  Classic: Star,
+  Gunkan: Sparkles,
+  Hot: Flame,
+  Nigiri: Sparkles,
+  Popular: Heart,
+  Premium: Award,
+  Rolls: Utensils,
+  Sashimi: Utensils,
+  Temaki: ShoppingBag,
+  Vegetarian: Leaf,
+};
+
+/** Returns the human-readable label for a menu filter category. */
+function categoryLabel(category: FilterCategory): string {
+  return category === "All" ? "All" : category;
+}
+
+/** Resolves optional asset references before handing them to image components. */
+function assetUrl(asset: AssetRef | undefined, fallback = heroAsset.publicUrl): string {
+  return asset?.publicUrl ?? fallback;
+}
+
+/** Formats ISO date values into compact month/day reservation labels. */
+function compactDate(dateValue: string): string {
+  const date = new Date(`${dateValue}T12:00`);
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+/** Coordinates app view state, persistence, ordering, reservations, and modals. */
 export default function SushiApp() {
+  const [activeView, setActiveView] = useState<AppView>("home");
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<FilterCategory>("All");
   const [cart, setCart] = useState<SushiMenuItem[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [showCart, setShowCart] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
-  const [orderType, setOrderType] = useState<FulfillmentType>("Pickup");
-  const [loyaltyPoints, setLoyaltyPoints] = useState(50);
-  const pointsToNextReward = (pts: number) => {
-    const mod = pts % 100;
-    return mod === 0 ? 100 : 100 - mod;
-  };
-
-  const [showReserve, setShowReserve] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [showLoyalty, setShowLoyalty] = useState(false);
-  const [storageReady, setStorageReady] = useState(false);
-
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [reservationForm, setReservationForm] = useState<ReservationFormState>(() => createDefaultReservationForm());
-  const [editingResId, setEditingResId] = useState<number | null>(null);
-  const [confirmDlg, setConfirmDlg] = useState<{
-    open: boolean;
-    message: string;
-    onYes: null | (() => void);
-  }>({ open: false, message: "", onYes: null });
-  const askConfirm = (message: string, onYes: () => void) => {
-    setConfirmDlg({ open: true, message, onYes });
-  };
-
-  const [profile, setProfile] = useState<GuestProfile>({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    dietary: "",
-    marketingOptIn: false,
-    deliveryAddress: "",
-  });
-
-  const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>([]);
-  const [latestOrder, setLatestOrder] = useState<OrderHistoryEntry | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<SushiMenuItem | null>(null);
-  const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
-
-  const [qtyById, setQtyById] = useState<Record<number, number>>({});
-  const incQty = (id: number) => setQtyById((q) => ({ ...q, [id]: (q[id] ?? 1) + 1 }));
-  const decQty = (id: number) => setQtyById((q) => ({ ...q, [id]: Math.max(1, (q[id] ?? 1) - 1) }));
-  const addToCartWithQty = (item: SushiMenuItem, count?: number) => {
-    const n = typeof count === "number" ? count : qtyById[item.id] ?? 1;
-    if (n <= 0) return;
-    setCart((prev) => [...prev, ...Array.from({ length: n }, () => item)]);
-    setLoyaltyPoints((p) => p + 5 * n);
-  };
-
-  const [justAdded, setJustAdded] = useState<Record<number, boolean>>({});
-  const cartButtonRef = useRef<HTMLButtonElement | null>(null);
-  const [flyingSushis, setFlyingSushis] = useState<
-    { id: number; start: { x: number; y: number }; end: { x: number; y: number }; emoji: string }[]
-  >([]);
-  const [toasts, setToasts] = useState<{ id: number; item: string; qty: number }[]>([]);
-  const [notices, setNotices] = useState<AppNotice[]>([]);
-  const [cartPulse, setCartPulse] = useState(false);
-  const [cartSheetReady, setCartSheetReady] = useState(true);
-  const [activeOrderId, setActiveOrderId] = useState<number | null>(null);
-  const [trackerStep, setTrackerStep] = useState(0);
-  const [isCompact, setIsCompact] = useState(false);
-  const [isTabletUp, setIsTabletUp] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [dropsPaused, setDropsPaused] = useState(false);
-  const newDropsRef = useRef<HTMLDivElement | null>(null);
-  const newDropsIndexRef = useRef(0);
-
-  /** Queues a short-lived status message for form, checkout, and persistence feedback. */
-  const showNotice = useCallback((message: string, tone: NoticeTone = "info") => {
-    const id = Date.now();
-    setNotices((prev) => [{ id, message, tone }, ...prev].slice(0, 3));
-    window.setTimeout(() => {
-      setNotices((prev) => prev.filter((notice) => notice.id !== id));
-    }, 3600);
-  }, []);
-
-  /** Persists local app state and surfaces storage failures without breaking the ordering flow. */
-  const persistValue = useCallback((key: string, value: string) => {
-    try {
-      localStorage.setItem(key, value);
-    } catch {
-      showNotice("Unable to save the latest session on this device.", "error");
-    }
-  }, [showNotice]);
-
-  const launchFlyingSushi = (origin: DOMRect | null) => {
-    if (!origin || !cartButtonRef.current || prefersReducedMotion) return;
-    const cartRect = cartButtonRef.current.getBoundingClientRect();
-    const id = Date.now();
-    const emojiPool = ["🍣", "🍥", "🥢", "🍱"];
-    const start = { x: origin.left + origin.width / 2, y: origin.top + origin.height / 2 };
-    const end = { x: cartRect.left + cartRect.width / 2, y: cartRect.top + cartRect.height / 2 };
-    setFlyingSushis((prev) => [...prev, { id, start, end, emoji: emojiPool[id % emojiPool.length] }]);
-    window.setTimeout(() => {
-      setFlyingSushis((prev) => prev.filter((s) => s.id !== id));
-    }, 900);
-  };
-
-  const pushToast = (itemName: string, qty: number) => {
-    const id = Date.now();
-    setToasts((prev) => [{ id, item: itemName, qty }, ...prev].slice(0, 3));
-    window.setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    }, 3200);
-  };
-
-  const handleAddToCart = (item: SushiMenuItem, origin?: DOMRect | null) => {
-    const quantity = qtyById[item.id] ?? 1;
-    addToCartWithQty(item, quantity);
-    setJustAdded((m) => ({ ...m, [item.id]: true }));
-    setTimeout(() => setJustAdded((m) => ({ ...m, [item.id]: false })), 900);
-    launchFlyingSushi(origin ?? null);
-    pushToast(item.name, quantity);
-  };
-
-  useEffect(() => {
-    if (!cart.length || prefersReducedMotion) return;
-    setCartPulse(true);
-    const t = window.setTimeout(() => setCartPulse(false), 800);
-    return () => window.clearTimeout(t);
-  }, [cart.length, prefersReducedMotion]);
-
-  useEffect(() => {
-    if (!showCart) return;
-    setCartSheetReady(false);
-    const t = window.setTimeout(() => setCartSheetReady(true), 450);
-    return () => window.clearTimeout(t);
-  }, [showCart]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const attach = (query: string, setter: (matches: boolean) => void) => {
-      const mq = window.matchMedia(query);
-      const handler = (event: MediaQueryListEvent) => setter(event.matches);
-      setter(mq.matches);
-      if (mq.addEventListener) {
-        mq.addEventListener("change", handler);
-        return () => mq.removeEventListener("change", handler);
-      }
-      mq.addListener(handler);
-      return () => mq.removeListener(handler);
-    };
-    const detachCompact = attach("(max-width: 640px)", setIsCompact);
-    const detachTabletUp = attach("(min-width: 768px)", setIsTabletUp);
-    const detachMotion = attach("(prefers-reduced-motion: reduce)", setPrefersReducedMotion);
-    return () => {
-      detachCompact?.();
-      detachTabletUp?.();
-      detachMotion?.();
-    };
-  }, []);
-
-  const newDrops = useMemo(() => getHighlightDrops(sushiMenu, highlightCategories), []);
-  const [heroIndex, setHeroIndex] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setHeroIndex((i) => (i + 1) % heroImages.length), 5000);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    if (!activeOrderId) return;
-    setTrackerStep(0);
-    const timers = trackerStages.slice(1).map((_, idx) =>
-      window.setTimeout(() => setTrackerStep(idx + 1), (idx + 1) * 2000)
-    );
-    const hideTimer = window.setTimeout(() => setActiveOrderId(null), trackerStages.length * 2200);
-    return () => {
-      timers.forEach((t) => window.clearTimeout(t));
-      window.clearTimeout(hideTimer);
-    };
-  }, [activeOrderId]);
-
-  useEffect(() => {
-    if (prefersReducedMotion || newDrops.length === 0 || dropsPaused || isTabletUp) return;
-    const container = newDropsRef.current;
-    if (!container) return;
-    if (container.scrollWidth <= container.clientWidth + 1) return;
-    let raf: number;
-    let timeout: number;
-    const scrollNext = () => {
-      const cards = Array.from(container.querySelectorAll<HTMLElement>("[data-drop-card]"));
-      if (!cards.length) return;
-      newDropsIndexRef.current = (newDropsIndexRef.current + 1) % cards.length;
-      const target = cards[newDropsIndexRef.current];
-      target.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-      timeout = window.setTimeout(() => {
-        raf = window.requestAnimationFrame(scrollNext);
-      }, 5000);
-    };
-    timeout = window.setTimeout(() => {
-      raf = window.requestAnimationFrame(scrollNext);
-    }, 4000);
-    return () => {
-      window.clearTimeout(timeout);
-      window.cancelAnimationFrame(raf);
-    };
-  }, [prefersReducedMotion, dropsPaused, newDrops.length, isTabletUp]);
-
-  const filteredMenu = useMemo(
-    () => filterMenuItems(sushiMenu, query, activeCategory),
-    [query, activeCategory]
-  );
-  const omakaseSet = useMemo(() => buildOmakaseSet(sushiMenu, omakaseMood), [omakaseMood]);
-
-  /** Adds the current chef-built set as one cohesive tray. */
-  const addOmakaseSetToCart = () => {
-    if (omakaseSet.items.length === 0) return;
-    setCart((prev) => [...prev, ...omakaseSet.items]);
-    setLoyaltyPoints((points) => points + 5 * omakaseSet.items.length);
-    showNotice(`${omakaseSet.mood} set added to your tray.`, "success");
-  };
-
-  const [tipPercent, setTipPercent] = useState<number>(0);
+  const [showCart, setShowCart] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState("Visa **** 4242");
+  const [fulfillment, setFulfillment] = useState<FulfillmentType>("Delivery");
+  const [tipPercent, setTipPercent] = useState(15);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(3250);
+  const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [reservationForm, setReservationForm] = useState<ReservationFormState>(() => createDefaultReservationForm());
+  const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>([]);
+  const [latestOrder, setLatestOrder] = useState<OrderHistoryEntry | null>(null);
+  const [storageReady, setStorageReady] = useState(false);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [profile, setProfile] = useState<GuestProfile>({
+    name: "Hiroshi Tanaka",
+    email: "hiroshi.tanaka@email.com",
+    phone: "+1 555 0188",
+    address: "123 Kai Street, Tokyo",
+    deliveryAddress: "123 Kai Street, Tokyo",
+    dietary: "No shellfish, gluten sensitive",
+    marketingOptIn: true,
+  });
+
+  const groupedCart = useMemo(() => groupCartItems(cart), [cart]);
+  const filteredMenu = useMemo(() => filterMenuItems(menuItems, query, activeCategory), [query, activeCategory]);
+  const featuredItems = useMemo(() => getFeaturedItems(8), []);
+  const omakaseSet = useMemo(() => buildOmakaseSet(menuItems, omakaseMood, 5), [omakaseMood]);
+  const favoriteItems = useMemo(
+    () => favorites.map((id) => getItemById(id)).filter((item): item is SushiMenuItem => Boolean(item)),
+    [favorites]
+  );
   const { subtotal, promoDiscount, tax, tip, grandTotal } = useMemo(
     () =>
       calculateCartTotals({
@@ -345,76 +216,166 @@ export default function SushiApp() {
         tipPercent,
         taxRate: DEFAULT_TAX_RATE,
       }),
-    [cart, appliedPromo, tipPercent]
+    [appliedPromo, cart, tipPercent]
   );
+  const deliveryFee = fulfillment === "Delivery" && cart.length > 0 ? 4 : 0;
+  const serviceFee = cart.length > 0 ? 2.5 : 0;
+  const checkoutTotal = grandTotal + deliveryFee + serviceFee;
+  const rewardsEarned = Math.round(checkoutTotal);
 
-  const groupedCart = useMemo(() => groupCartItems(cart), [cart]);
-  const loyaltyProgressSegments = Math.min(10, Math.floor((loyaltyPoints % 100) / 10));
-  const incCartItem = (id: number) => {
-    setCart((prev) => {
-      const found = sushiMenu.find((m) => m.id === id) ?? prev.find((m) => m.id === id);
-      return found ? [...prev, found] : prev;
-    });
+  const showNotice = useCallback((message: string, tone: Notice["tone"] = "info") => {
+    const id = Date.now();
+    setNotices((current) => [{ id, message, tone }, ...current].slice(0, 3));
+    window.setTimeout(() => {
+      setNotices((current) => current.filter((notice) => notice.id !== id));
+    }, 3200);
+  }, []);
+
+  /** Changes the active in-app view and returns the viewport to the top. */
+  const navigate = (view: AppView) => {
+    setActiveView(view);
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const decCartItem = (id: number) => {
+
+  /** Adds one or more menu items to the cart and awards lightweight mock points. */
+  const addToCart = (item: SushiMenuItem, quantity = 1) => {
+    if (quantity < 1) return;
+    setCart((current) => [...current, ...Array.from({ length: quantity }, () => item)]);
+    setLoyaltyPoints((points) => points + quantity * 5);
+    showNotice(`${item.name} added to your order.`, "success");
+  };
+
+  /** Adds the generated omakase set to the cart as a bundled tasting order. */
+  const addOmakaseSet = () => {
+    setCart((current) => [...current, ...omakaseSet.items]);
+    setLoyaltyPoints((points) => points + omakaseSet.items.length * 5);
+    showNotice(`${omakaseMood} tasting added.`, "success");
+  };
+
+  /** Adds another quantity of an existing cart item. */
+  const increaseCartItem = (item: SushiMenuItem) => setCart((current) => [...current, item]);
+
+  /** Removes exactly one quantity for the given cart item id. */
+  const decreaseCartItem = (id: string) => {
     let removed = false;
-    setCart((prev) => {
-      const out: SushiMenuItem[] = [];
-      for (const it of prev) {
-        if (!removed && it.id === id) { removed = true; continue; }
-        out.push(it);
-      }
-      return out;
+    setCart((current) =>
+      current.filter((item) => {
+        if (!removed && item.id === id) {
+          removed = true;
+          return false;
+        }
+        return true;
+      })
+    );
+  };
+  /** Removes every quantity of a menu item from the cart. */
+  const removeCartItem = (id: string) => setCart((current) => current.filter((item) => item.id !== id));
+
+  /** Toggles an item id in the persisted favorites list. */
+  const toggleFavorite = (id: string) => {
+    setFavorites((current) => (current.includes(id) ? current.filter((itemId) => itemId !== id) : [id, ...current]));
+  };
+
+  /** Applies partial updates to the reservation form state. */
+  const updateReservationForm = (patch: Partial<ReservationFormState>) => {
+    setReservationForm((current) => ({ ...current, ...patch }));
+  };
+
+  /** Validates and saves a mock reservation into profile history. */
+  const saveReservation = () => {
+    const formToSave = {
+      ...reservationForm,
+      name: reservationForm.name || profile.name,
+      phone: reservationForm.phone || profile.phone,
+    };
+    const validation = validateReservationForm(formToSave, reservations);
+    if (!validation.valid) {
+      showNotice(validation.message, "error");
+      return;
+    }
+    const id = Date.now();
+    const reservation: Reservation = {
+      id,
+      datetime: createLocalDateTimeValue(formToSave.date, formToSave.time),
+      guests: formToSave.guests,
+      name: formToSave.name.trim(),
+      phone: formToSave.phone.trim(),
+      seating: formToSave.seating,
+      occasion: formToSave.occasion,
+      notes: formToSave.notes.trim(),
+      confirmationCode: createReservationCode(id),
+      createdAt: id,
+    };
+    setReservations((current) => [reservation, ...current]);
+    setProfile((current) => ({
+      ...current,
+      name: current.name || reservation.name,
+      phone: current.phone || reservation.phone,
+    }));
+    setReservationForm(createDefaultReservationForm(new Date(), { name: reservation.name, phone: reservation.phone }));
+    showNotice(`Reservation confirmed: ${reservation.confirmationCode}`, "success");
+    navigate("profile");
+  };
+
+  /** Validates checkout state and creates a mock order history entry. */
+  const placeOrder = () => {
+    if (cart.length === 0) {
+      showNotice("Add at least one item before checkout.", "error");
+      return;
+    }
+    if (fulfillment === "Delivery" && !profile.deliveryAddress.trim()) {
+      showNotice("Add a delivery address before placing the order.", "error");
+      return;
+    }
+    const id = Date.now();
+    const order = buildOrderSummary({
+      id,
+      items: cart,
+      subtotal,
+      promoDiscount,
+      tax: tax + serviceFee + deliveryFee,
+      tip,
+      total: checkoutTotal,
+      method: selectedPayment,
+      type: fulfillment,
+      placedAt: id,
+      deliveryAddress: profile.deliveryAddress,
+      customerName: profile.name,
     });
-  };
-  const removeLine = (id: number) => setCart((prev) => prev.filter((it) => it.id !== id));
-
-  const toggleDarkMode = () => setDarkMode(!darkMode);
-
-  const saveProfile = () => {
-    const emailOk = profile.email ? /.+@.+\..+/.test(profile.email) : true;
-    const phoneOk = profile.phone ? /[0-9+\-() ]{7,}/.test(profile.phone) : true;
-    if (!emailOk) {
-      showNotice("Please enter a valid email address.", "error");
-      return;
-    }
-    if (!phoneOk) {
-      showNotice("Please enter a valid phone number.", "error");
-      return;
-    }
-    showNotice("Profile saved.", "success");
-  };
-
-  const handleRedeemReward = () => {
-    if (loyaltyPoints < 100) return;
-    setLoyaltyPoints((p) => p - 100);
-    setCart((prev) => [rewardItem, ...prev]);
-    setShowLoyalty(false);
-    setShowCart(true);
-    showNotice("Reward redeemed. A free roll was added to your cart.", "success");
+    setOrderHistory((current) => [order, ...current]);
+    setLatestOrder(order);
+    setLoyaltyPoints((points) => points + rewardsEarned);
+    setCart([]);
+    setShowCart(false);
+    setShowCheckout(false);
+    setAppliedPromo(null);
+    setPromoCode("");
+    showNotice(`Order ${order.confirmationCode} confirmed.`, "success");
+    navigate("orders");
   };
 
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem("sb_cart");
-      const savedRes = localStorage.getItem("sb_reservations");
-      const savedDark = localStorage.getItem("sb_dark");
-      const savedProf = localStorage.getItem("sb_profile");
-      const savedHist = localStorage.getItem("sb_orders");
+      const savedCart = localStorage.getItem("sb_cart_ids");
+      const savedFavorites = localStorage.getItem("sb_favorites");
+      const savedProfile = localStorage.getItem("sb_profile");
+      const savedReservations = localStorage.getItem("sb_reservations");
+      const savedOrders = localStorage.getItem("sb_orders");
       const savedPoints = localStorage.getItem("sb_points");
-      if (savedCart) setCart(JSON.parse(savedCart));
-      if (savedRes) setReservations(hydrateReservations(JSON.parse(savedRes)));
-      if (savedDark) setDarkMode(savedDark === "1");
-      if (savedProf) {
-        const parsedProfile = JSON.parse(savedProf) as Partial<GuestProfile>;
-        setProfile((previousProfile) => ({ ...previousProfile, ...parsedProfile }));
-        setReservationForm((previousForm) => ({
-          ...previousForm,
-          name: parsedProfile.name || previousForm.name,
-          phone: parsedProfile.phone || previousForm.phone,
-        }));
+
+      if (savedCart) {
+        const ids = JSON.parse(savedCart);
+        if (Array.isArray(ids)) {
+          setCart(ids.map((id) => getItemById(String(id))).filter((item): item is SushiMenuItem => Boolean(item)));
+        }
       }
-      if (savedHist) setOrderHistory(hydrateOrders(JSON.parse(savedHist)));
+      if (savedFavorites) {
+        const ids = JSON.parse(savedFavorites);
+        if (Array.isArray(ids)) setFavorites(ids.map(String));
+      }
+      if (savedProfile) setProfile((current) => ({ ...current, ...JSON.parse(savedProfile) }));
+      if (savedReservations) setReservations(hydrateReservations(JSON.parse(savedReservations)));
+      if (savedOrders) setOrderHistory(hydrateOrders(JSON.parse(savedOrders)));
       if (savedPoints) setLoyaltyPoints(Number(savedPoints));
     } catch {
       showNotice("Saved session could not be restored.", "error");
@@ -423,1264 +384,1083 @@ export default function SushiApp() {
     }
   }, [showNotice]);
 
-  useEffect(() => { if (storageReady) persistValue("sb_cart", JSON.stringify(cart)); }, [cart, persistValue, storageReady]);
-  useEffect(() => { if (storageReady) persistValue("sb_reservations", JSON.stringify(reservations)); }, [persistValue, reservations, storageReady]);
-  useEffect(() => { if (storageReady) persistValue("sb_dark", darkMode ? "1" : "0"); }, [darkMode, persistValue, storageReady]);
-  useEffect(() => { if (storageReady) persistValue("sb_profile", JSON.stringify(profile)); }, [persistValue, profile, storageReady]);
-  useEffect(() => { if (storageReady) persistValue("sb_orders", JSON.stringify(orderHistory)); }, [orderHistory, persistValue, storageReady]);
-  useEffect(() => { if (storageReady) persistValue("sb_points", String(loyaltyPoints)); }, [loyaltyPoints, persistValue, storageReady]);
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_cart_ids", JSON.stringify(cart.map((item) => item.id)));
+  }, [cart, storageReady]);
 
-  /** Applies small reservation form edits without losing the rest of the in-progress booking. */
-  const updateReservationForm = (patch: Partial<ReservationFormState>) => {
-    setReservationForm((previousForm) => ({ ...previousForm, ...patch }));
-  };
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_favorites", JSON.stringify(favorites));
+  }, [favorites, storageReady]);
 
-  const resetReservationForm = (guestProfile: Pick<GuestProfile, "name" | "phone"> = profile) => {
-    setReservationForm(createDefaultReservationForm(new Date(), guestProfile));
-  };
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_profile", JSON.stringify(profile));
+  }, [profile, storageReady]);
 
-  const openReservationSheet = () => {
-    setEditingResId(null);
-    resetReservationForm();
-    setShowReserve(true);
-  };
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_reservations", JSON.stringify(reservations));
+  }, [reservations, storageReady]);
 
-  const closeReservationSheet = () => {
-    setShowReserve(false);
-    setEditingResId(null);
-    resetReservationForm();
-  };
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_orders", JSON.stringify(orderHistory));
+  }, [orderHistory, storageReady]);
 
-  const startEditReservation = (r: Reservation) => {
-    const parsedDateTime = parseReservationDateTime(r.datetime);
-    setEditingResId(r.id);
-    setReservationForm({
-      date: parsedDateTime.date,
-      time: parsedDateTime.time,
-      guests: r.guests,
-      name: r.name,
-      phone: r.phone,
-      seating: r.seating,
-      occasion: r.occasion,
-      notes: r.notes,
-    });
-    setShowReserve(true);
-  };
-
-  const cancelReservation = (id: number) => {
-    askConfirm("Cancel this reservation?", () => {
-      setReservations((prev) => prev.filter((r) => r.id !== id));
-    });
-  };
-
-  const saveReservation = () => {
-    const validation = validateReservationForm(reservationForm, reservations, editingResId);
-    if (!validation.valid) {
-      showNotice(validation.message, "error");
-      return;
-    }
-
-    const now = Date.now();
-    const datetime = createLocalDateTimeValue(reservationForm.date, reservationForm.time);
-    const reservationPayload = {
-      datetime,
-      guests: reservationForm.guests,
-      name: reservationForm.name.trim(),
-      phone: reservationForm.phone.trim(),
-      seating: reservationForm.seating,
-      occasion: reservationForm.occasion,
-      notes: reservationForm.notes.trim(),
-    };
-
-    if (editingResId) {
-      setReservations((prev) =>
-        prev.map((reservation) =>
-          reservation.id === editingResId
-            ? {
-                ...reservation,
-                ...reservationPayload,
-              }
-            : reservation
-        )
-      );
-      setEditingResId(null);
-      showNotice("Reservation updated.", "success");
-    } else {
-      const reservationId = now;
-      const reservation: Reservation = {
-        id: reservationId,
-        ...reservationPayload,
-        confirmationCode: createReservationCode(reservationId),
-        createdAt: now,
-      };
-      setReservations((prev) => [reservation, ...prev]);
-      showNotice(`Reservation confirmed: ${reservation.confirmationCode}`, "success");
-    }
-    setProfile((previousProfile) => ({
-      ...previousProfile,
-      name: previousProfile.name || reservationForm.name.trim(),
-      phone: previousProfile.phone || reservationForm.phone.trim(),
-    }));
-    resetReservationForm({ name: reservationPayload.name, phone: reservationPayload.phone });
-    setShowReserve(false);
-  };
-
-  const handleCheckout = (method: string) => {
-    if (cart.length === 0) {
-      showNotice("Add at least one item before checkout.", "error");
-      return;
-    }
-    const deliveryAddress = (profile.deliveryAddress || profile.address).trim();
-    if (orderType === "Delivery" && !deliveryAddress) {
-      showNotice("Please enter your delivery address.", "error"); return;
-    }
-    const orderId = Date.now();
-    const order = buildOrderSummary({
-      id: orderId,
-      items: cart,
-      subtotal,
-      promoDiscount,
-      tax,
-      tip,
-      total: grandTotal,
-      method,
-      type: orderType,
-      placedAt: orderId,
-      deliveryAddress,
-      customerName: profile.name,
-    });
-    setOrderHistory((prev) => [order, ...prev]);
-    setLatestOrder(order);
-    setActiveOrderId(order.id);
-    setTrackerStep(0);
-    setCart([]);
-    setShowCart(false);
-    setShowPayment(false);
-    setShowOrderConfirmation(true);
-    setTipPercent(0);
-    setAppliedPromo(null);
-    setPromoCode("");
-    showNotice(`Order ${order.confirmationCode} confirmed.`, "success");
-  };
-
-  const headerActions = [
-    { icon: ShoppingCart, label: "Cart", onClick: () => setShowCart(true), badge: cart.length },
-    { icon: Calendar, label: "Reserve", onClick: openReservationSheet },
-    { icon: Gift, label: "Loyalty", onClick: () => setShowLoyalty(true) },
-    { icon: User, label: "Profile", onClick: () => setShowProfile(true) },
-  ];
+  useEffect(() => {
+    if (!storageReady) return;
+    localStorage.setItem("sb_points", String(loyaltyPoints));
+  }, [loyaltyPoints, storageReady]);
 
   return (
-    <div className={`${darkMode ? "bg-brand-midnight text-white" : "bg-brand-ink text-white"} relative min-h-screen overflow-x-hidden pb-28 text-white transition-colors sm:pb-0`}>
-      <DynamicBackground darkMode={darkMode} />
-
-      <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-          <div className="relative mt-3 rounded-[24px] border border-white/15 bg-white/10 px-3 py-2.5 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:mt-4 sm:rounded-[32px] sm:px-6 sm:py-4">
-            <div className="pointer-events-none absolute inset-x-8 -bottom-1 h-[2px] bg-gradient-to-r from-transparent via-rose-400/70 to-transparent blur-sm" />
-            <div className="flex flex-nowrap items-center gap-2 md:gap-3">
-              <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                <div className="relative">
-                  <span className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-red-500 to-rose-400 blur-2xl opacity-70" />
-                  <span className="relative grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-tr from-red-500 to-rose-400 text-base font-semibold shadow-glow sm:h-11 sm:w-11 sm:text-lg">
-                    🍣
-                  </span>
-                </div>
-                <div className="min-w-0">
-                  <p className="hidden font-display text-[11px] uppercase tracking-[0.6em] text-white/60 sm:block">Chef Bar</p>
-                  <p className="truncate text-base font-semibold leading-tight sm:text-lg">Sushi Bliss</p>
-                </div>
-              </div>
-              <div className="hidden md:flex flex-1 items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm shadow-innerGlass">
-                <Search className="w-4 h-4 text-white/50" />
-                <Input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search menu..."
-                  className="h-8 border-none bg-transparent text-sm text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={toggleDarkMode}
-                  className="relative hidden sm:flex items-center gap-1 rounded-full border border-white/15 bg-white/10 px-1 py-1 text-[11px] font-semibold tracking-wide text-white/70 shadow-innerGlass transition hover:text-white"
-                >
-                  <span
-                    className={`absolute inset-y-1 left-1 w-[calc(50%_-_6px)] rounded-full bg-white/30 transition-transform duration-300 ${darkMode ? "translate-x-full" : "translate-x-0"}`}
-                  />
-                  <span className={`relative z-10 flex items-center gap-1 px-2 ${darkMode ? "text-white/50" : "text-white"}`}>
-                    <span role="img" aria-label="sun">
-                      🌞
-                    </span>
-                    Day
-                  </span>
-                  <span className={`relative z-10 flex items-center gap-1 px-2 ${darkMode ? "text-white" : "text-white/50"}`}>
-                    <span role="img" aria-label="moon">
-                      🌙
-                    </span>
-                    Night
-                  </span>
-                </button>
-                <div className="flex items-center gap-2">
-                  {headerActions.map(({ icon: Icon, label, onClick, badge }) => (
-                    <button
-                      key={label}
-                      type="button"
-                      onClick={onClick}
-                      aria-label={label}
-                      ref={label === "Cart" ? cartButtonRef : undefined}
-                      className="group relative grid h-10 w-10 place-items-center rounded-2xl border border-white/15 bg-white/5 text-white/80 transition hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rose-300/70 focus-visible:ring-offset-transparent sm:h-11 sm:w-11"
-                    >
-                      <div className="absolute inset-0 rounded-2xl border border-white/5 opacity-0 transition group-hover:opacity-100" />
-                      <Icon className="w-5 h-5" />
-                      {badge ? (
-                        <motion.div
-                          key={`${label}-${badge}`}
-                          initial={{ scale: 0.6, opacity: 0 }}
-                          animate={{
-                            scale: cartPulse && label === "Cart" ? [1, 1.25, 1] : 1,
-                            opacity: 1,
-                            boxShadow: cartPulse && label === "Cart" ? "0 0 25px rgba(244,63,94,0.6)" : "0 0 18px rgba(244,63,94,0.45)",
-                          }}
-                          transition={{ duration: 0.8 }}
-                          className="absolute -top-1 -right-1 grid h-5 min-w-[20px] place-items-center rounded-full bg-gradient-to-r from-red-500 to-rose-400 text-[10px] font-bold text-white"
-                        >
-                          {badge}
-                        </motion.div>
-                      ) : null}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <AnimatePresence>
-        {flyingSushis.map((sushi) => (
+    <AppShell
+      brand={brand}
+      activeView={activeView}
+      cartCount={cart.length}
+      iconUrls={{ bell: iconAssets.bell, cart: iconAssets.cart, menu: iconAssets.settings }}
+      navItems={desktopNav}
+      mobileNavItems={mobileNav}
+      profileName={profile.name}
+      profileImage={profileImage}
+      onNavigate={navigate}
+      onCartClick={() => setShowCart(true)}
+    >
+      <PageContainer variant={activeView === "home" ? "home" : "default"}>
+        <AnimatePresence mode="wait">
           <motion.div
-            key={sushi.id}
-            className="pointer-events-none fixed z-[60] text-3xl drop-shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
-            initial={{ x: sushi.start.x, y: sushi.start.y, scale: 0.9, opacity: 1 }}
-            animate={{ x: sushi.end.x, y: sushi.end.y, scale: 0.2, opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.85, ease: "easeInOut" }}
+            key={activeView}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35 }}
           >
-            {sushi.emoji}
+            {activeView === "home" ? (
+              <HomeView
+                featuredItems={featuredItems}
+                query={query}
+                activeCategory={activeCategory}
+                reservations={reservations}
+                loyaltyPoints={loyaltyPoints}
+                onNavigate={navigate}
+                onQueryChange={setQuery}
+                onCategoryChange={setActiveCategory}
+                onAddToCart={addToCart}
+                onSelectItem={setSelectedItem}
+              />
+            ) : null}
+            {activeView === "menu" ? (
+              <MenuView
+                query={query}
+                activeCategory={activeCategory}
+                items={filteredMenu}
+                favorites={favorites}
+                onQueryChange={setQuery}
+                onCategoryChange={setActiveCategory}
+                onAddToCart={addToCart}
+                onSelectItem={setSelectedItem}
+                onToggleFavorite={toggleFavorite}
+              />
+            ) : null}
+            {activeView === "pairings" ? <PairingsView items={menuItems} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "reservations" ? (
+              <ReservationsView
+                form={reservationForm}
+                reservations={reservations}
+                profile={profile}
+                onFormChange={updateReservationForm}
+                onSave={saveReservation}
+                onProfileChange={setProfile}
+              />
+            ) : null}
+            {activeView === "orders" ? (
+              <OrdersView
+                latestOrder={latestOrder ?? orderHistory[0] ?? null}
+                orderHistory={orderHistory}
+                onNavigate={navigate}
+                onReorder={(items) => {
+                  setCart((current) => [...current, ...items]);
+                  setShowCart(true);
+                }}
+              />
+            ) : null}
+            {activeView === "profile" ? (
+              <ProfileView
+                profile={profile}
+                profileImage={profileImage}
+                favorites={favoriteItems}
+                reservations={reservations}
+                orderHistory={orderHistory}
+                loyaltyPoints={loyaltyPoints}
+                onProfileChange={setProfile}
+                onNavigate={navigate}
+                onSelectItem={setSelectedItem}
+              />
+            ) : null}
+            {activeView === "loyalty" ? (
+              <LoyaltyView
+                loyaltyPoints={loyaltyPoints}
+                rewards={rewards}
+                onRedeem={(reward) => {
+                  const rewardItem = getItemById(reward.id);
+                  if (loyaltyPoints < reward.points) {
+                    showNotice("More points are needed for that reward.", "error");
+                    return;
+                  }
+                  setLoyaltyPoints((points) => points - reward.points);
+                  if (rewardItem) addToCart(rewardItem, 1);
+                  showNotice(`${reward.title} redeemed.`, "success");
+                }}
+              />
+            ) : null}
+            {activeView === "about" ? <AboutView chefs={chefs} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "contact" ? <ContactView onNavigate={navigate} showNotice={showNotice} /> : null}
           </motion.div>
-        ))}
-      </AnimatePresence>
-
-      <section id="hero" className="relative pt-20 sm:pt-28">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8">
-          <HeroCard
-            images={heroImages}
-            darkMode={darkMode}
-            index={heroIndex}
-            onReserve={openReservationSheet}
-            compact={isCompact}
-          />
-        </div>
-      </section>
-
-      <section className="px-4 sm:px-6 md:px-8 mt-6 space-y-6">
-        <div className="md:hidden rounded-3xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur-2xl shadow-innerGlass">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/50">Search</p>
-          <div className="mt-3 flex gap-2">
-            <Input
-              placeholder="Find a roll..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="h-12 rounded-2xl border-white/20 bg-transparent text-base text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-            />
-            <Button className="h-12 w-12 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 p-0">
-              <Search className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-
-        <div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Chef's Menu</p>
-              <h2 className="text-2xl font-semibold text-white">Signature Cuts</h2>
-            </div>
-            <p className="text-sm text-white/60 max-w-lg">
-              Filter by mood, market cut, or chef favorite without losing the flow of ordering.
-            </p>
-          </div>
-          <div className="relative mt-4">
-            <span className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-ink via-brand-ink/70 to-transparent md:hidden" />
-            <span className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-ink via-brand-ink/70 to-transparent md:hidden" />
-            <div className="overflow-x-auto pb-2 pl-2 pr-4 md:overflow-visible md:pl-0 md:pr-0">
-              <LayoutGroup>
-                <div className="flex min-w-max gap-3 pr-4 md:min-w-0 md:flex-wrap md:pr-0">
-                  {categoryFilters.map((filter) => {
-                    const Icon = categoryIcons[filter];
-                    const active = activeCategory === filter;
-                    return (
-                      <motion.button
-                        key={filter}
-                        type="button"
-                        onClick={() => setActiveCategory(filter)}
-                        className={`relative flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
-                          active ? "border-white/50 text-white" : "border-white/10 text-white/70 hover:text-white"
-                        }`}
-                      >
-                        {active && (
-                          <motion.div
-                            layoutId="chip-glow"
-                            className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-500/40 via-red-500/40 to-orange-400/40 blur"
-                          />
-                        )}
-                        <span className="relative flex items-center gap-2">
-                          <Icon className="h-4 w-4" />
-                          {filter}
-                        </span>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </LayoutGroup>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <OmakasePanel
-        activeMood={omakaseMood}
-        set={omakaseSet}
-        onMoodChange={setOmakaseMood}
-        onAddSet={addOmakaseSetToCart}
-      />
-
-      {newDrops.length > 0 && (
-        <section className="px-4 sm:px-6 md:px-8 mt-10 space-y-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">New Drops</p>
-              <h2 className="text-2xl font-semibold text-white">Chef-curated arrivals</h2>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-white/70">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.4em]">
-                <span
-                  className={`h-2 w-2 rounded-full ${dropsPaused ? "bg-white/30" : "bg-emerald-300 animate-pulse"}`}
-                  aria-hidden
-                />
-                {dropsPaused ? "Paused" : "Auto"}
-              </div>
-              <a href="#menu" className="inline-flex items-center gap-2 text-white/70 hover:text-white">
-                View full menu <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-          <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-ink via-brand-ink/70 to-transparent md:hidden" />
-            <span className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand-ink via-brand-ink/70 to-transparent md:hidden" />
-            <div
-              className="overflow-x-auto pb-4 pl-2 pr-4 md:overflow-visible md:pb-0 md:pl-0 md:pr-0"
-              ref={newDropsRef}
-              onMouseEnter={() => setDropsPaused(true)}
-              onMouseLeave={() => setDropsPaused(false)}
-              onTouchStart={() => setDropsPaused(true)}
-              onTouchEnd={() => setDropsPaused(false)}
-              onTouchCancel={() => setDropsPaused(false)}
-            >
-              <div className="flex min-w-full snap-x snap-mandatory gap-4 md:grid md:min-w-0 md:grid-cols-2 md:gap-6 md:snap-none lg:grid-cols-3">
-                {newDrops.map((item) => (
-                  <motion.article
-                    key={`drop-${item.id}`}
-                    className="snap-start w-72 shrink-0 rounded-[28px] border border-white/15 bg-white/5 p-4 text-white backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:w-80 md:w-full md:shrink md:snap-none"
-                    data-drop-card
-                    whileHover={{ y: -6 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <div className="relative h-40 overflow-hidden rounded-2xl border border-white/15">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        sizes="(min-width: 1024px) 31vw, (min-width: 768px) 48vw, 288px"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.35em]">
-                        New
-                      </div>
-                    </div>
-                    <div className="mt-4 space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.35em] text-white/50">Chef’s lab</p>
-                          <h3 className="text-lg font-semibold">{item.name}</h3>
-                        </div>
-                        <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm font-semibold">
-                          ${item.price.toFixed(2)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-white/70">{item.description}</p>
-                      <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.35em]">
-                        {item.categories
-                          .filter((category) => highlightCategories.includes(category))
-                          .map((category) => {
-                            const Icon = categoryPillIcons[category];
-                            const className =
-                              categoryPillClasses[category] ?? "border-white/15 bg-white/5 text-white/60";
-                            return (
-                              <span
-                                key={`${item.id}-${category}-drop`}
-                                className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 ${className}`}
-                              >
-                                {Icon && <Icon className="h-3 w-3" />}
-                                {category}
-                              </span>
-                            );
-                          })}
-                      </div>
-                      <Button
-                        className="w-full rounded-2xl bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-2 text-sm font-semibold shadow-glow"
-                        onClick={() => handleAddToCart(item)}
-                      >
-                        Add to cart
-                      </Button>
-                    </div>
-                  </motion.article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {toasts.length > 0 && (
-        <div className="pointer-events-none fixed bottom-6 right-4 z-50 flex flex-col gap-3">
-          <AnimatePresence>
-            {toasts.map((toast) => (
-              <motion.div
-                key={toast.id}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ duration: 0.35 }}
-                className="pointer-events-auto rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white shadow-[0_15px_35px_rgba(0,0,0,0.35)] backdrop-blur-2xl"
-              >
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Cart Updated</p>
-                <div className="mt-1 flex items-center justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">{toast.item}</p>
-                    <p className="text-white/70 text-xs">x{toast.qty} added</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowCart(true);
-                      setToasts((prev) => prev.filter((t) => t.id !== toast.id));
-                    }}
-                    className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white/80 hover:text-white"
-                  >
-                    View Cart →
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
-
-      {notices.length > 0 && (
-        <div className="pointer-events-none fixed right-4 top-24 z-[70] flex w-[min(92vw,360px)] flex-col gap-3 sm:top-28">
-          <AnimatePresence>
-            {notices.map((notice) => (
-              <motion.div
-                key={notice.id}
-                initial={{ opacity: 0, y: -12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                className={`pointer-events-auto rounded-2xl border px-4 py-3 text-sm shadow-[0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-2xl ${
-                  notice.tone === "error"
-                    ? "border-rose-300/35 bg-rose-500/15 text-rose-50"
-                    : notice.tone === "success"
-                      ? "border-emerald-200/35 bg-emerald-300/15 text-emerald-50"
-                      : "border-white/20 bg-white/10 text-white"
-                }`}
-              >
-                {notice.message}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
-
-      {activeOrderId && (
-        <div className="pointer-events-none fixed bottom-6 left-4 z-40 w-[min(90vw,360px)] rounded-2xl border border-white/15 bg-white/10 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
-          <p className="text-xs uppercase tracking-[0.4em] text-white/60">Order #{activeOrderId}</p>
-          <div className="mt-3 flex justify-between text-[10px] uppercase tracking-[0.3em]">
-            {trackerStages.map((stage, index) => (
-              <span key={stage} className={index <= trackerStep ? "text-white" : "text-white/40"}>
-                {stage}
-              </span>
-            ))}
-          </div>
-          <div className="relative mt-3 h-1.5 rounded-full bg-white/10">
-            <motion.div
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-red-500 via-rose-500 to-orange-400"
-              animate={{ width: `${(trackerStep / (trackerStages.length - 1)) * 100}%` }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            />
-          </div>
-        </div>
-      )}
-
-      <section id="menu" className="mt-8 grid grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:px-6 md:px-8 md:gap-6 lg:grid-cols-3">
-        {filteredMenu.map((item) => (
-          <MenuItemCard
-            key={item.id}
-            item={item}
-            quantity={qtyById[item.id] ?? 1}
-            justAdded={!!justAdded[item.id]}
-            onAddToCart={handleAddToCart}
-            onDecreaseQuantity={decQty}
-            onIncreaseQuantity={incQty}
-            onViewDetails={setSelectedItem}
-          />
-        ))}
-      </section>
+        </AnimatePresence>
+      </PageContainer>
 
       <AnimatePresence>
-        {selectedItem && (
-          <DishDetailSheet
+        {selectedItem ? (
+          <ProductDetailModal
             item={selectedItem}
+            isFavorite={favorites.includes(selectedItem.id)}
             onClose={() => setSelectedItem(null)}
-            onAddToCart={(item, origin) => {
-              handleAddToCart(item, origin);
+            onAddToCart={(item, quantity) => {
+              addToCart(item, quantity);
               setSelectedItem(null);
             }}
+            onToggleFavorite={toggleFavorite}
+            onSelectItem={setSelectedItem}
           />
-        )}
+        ) : null}
       </AnimatePresence>
 
-      <nav
-        className="fixed bottom-3 left-4 right-4 z-40 rounded-[28px] border border-white/15 bg-white/10 px-4 pb-[calc(env(safe-area-inset-bottom,0px)_+_0.5rem)] pt-3 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] sm:hidden"
-      >
-        <div className="flex items-center justify-between text-white/80">
-          <button
-            onClick={() => setShowCart(true)}
-            className="flex flex-col items-center gap-1 text-xs font-semibold uppercase tracking-[0.3em]"
-          >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10">
-              <ShoppingCart className="h-5 w-5" />
-            </span>
-            Cart
-          </button>
-          <button
-            onClick={openReservationSheet}
-            className="flex flex-col items-center gap-1 text-xs font-semibold uppercase tracking-[0.3em]"
-          >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10">
-              <Calendar className="h-5 w-5" />
-            </span>
-            Book
-          </button>
-          <button
-            onClick={() => setShowLoyalty(true)}
-            className="flex flex-col items-center gap-1 text-xs font-semibold uppercase tracking-[0.3em]"
-          >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10">
-              <Gift className="h-5 w-5" />
-            </span>
-            Rewards
-          </button>
-          <button
-            onClick={() => setShowProfile(true)}
-            className="flex flex-col items-center gap-1 text-xs font-semibold uppercase tracking-[0.3em]"
-          >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10">
-              <User className="h-5 w-5" />
-            </span>
-            Profile
-          </button>
-        </div>
-      </nav>
-
       <AnimatePresence>
-        {showCart && (
-          <motion.div
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 260, damping: 32 }}
-            className="fixed inset-x-0 bottom-0 z-[55] rounded-t-[40px] border border-white/15 bg-brand-midnight/95 text-white shadow-[0_-20px_80px_rgba(0,0,0,0.75)] backdrop-blur-2xl"
-          >
-            <div className="mx-auto w-full max-w-4xl px-4 py-4 sm:px-6">
-              <div className="flex justify-center">
-                <span className="h-1.5 w-16 rounded-full bg-white/25" />
-              </div>
-              <div className="mt-3 flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-white/50">Your Tray</p>
-                  <h2 className="text-2xl font-semibold">Checkout</h2>
-                </div>
-                <button
-                  onClick={() => setShowCart(false)}
-                  aria-label="Close cart"
-                  className="rounded-full border border-white/15 bg-white/5 p-2 text-white/80 transition hover:bg-white/10"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              <div className="mt-4 max-h-[52vh] overflow-y-auto pr-2">
-                {cartSheetReady ? (
-                  cart.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/20 bg-white/5 py-12 text-center">
-                      <span className="mb-3 text-5xl">🍣</span>
-                      <p className="text-lg font-semibold">Your tray is empty</p>
-                      <p className="text-sm text-white/60">Start with a chef favorite or build an omakase set.</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          document.querySelector("#menu")?.scrollIntoView({ behavior: "smooth" });
-                          setShowCart(false);
-                        }}
-                        className="mt-4 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white/80 hover:text-white"
-                      >
-                        Browse menu
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="space-y-3">
-                        {groupedCart.map(({ item, qty }) => (
-                          <div key={item.id} className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-innerGlass">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="font-semibold">{item.name}</p>
-                                <p className="text-xs text-white/60">${item.price.toFixed(2)} each</p>
-                              </div>
-                              <div className="text-right text-sm text-white/70">
-                                <p>Total</p>
-                                <p className="text-lg font-semibold text-white">${(item.price * qty).toFixed(2)}</p>
-                              </div>
-                            </div>
-                            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-white/15 pt-3 text-sm">
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() => decCartItem(item.id)}
-                                  className="grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-white/5 text-lg text-white transition hover:bg-white/10 active:scale-95"
-                                >
-                                  –
-                                </button>
-                                <span className="min-w-[2ch] text-lg font-semibold">{qty}</span>
-                                <button
-                                  onClick={() => incCartItem(item.id)}
-                                  className="grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-white/5 text-lg text-white transition hover:bg-white/10 active:scale-95"
-                                >
-                                  +
-                                </button>
-                              </div>
-                              <button
-                                onClick={() => removeLine(item.id)}
-                                className="text-xs uppercase tracking-[0.3em] text-white/60 hover:text-white"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-4 grid gap-4">
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                          <label className="text-xs uppercase tracking-[0.4em] text-white/50">Promo</label>
-                          <div className="mt-2 flex gap-2">
-                            <Input
-                              placeholder="WELCOME10"
-                              value={promoCode}
-                              onChange={(e) => setPromoCode(e.target.value)}
-                              className="h-11 rounded-2xl border-white/20 bg-transparent text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-                            />
-                            <Button
-                              variant="outline"
-                              className="rounded-2xl border-white/30 bg-white/10 text-white hover:bg-white/15"
-                              onClick={() => setAppliedPromo(promoCode || null)}
-                            >
-                              Apply
-                            </Button>
-                          </div>
-                          {appliedPromo && <p className="mt-2 text-xs text-emerald-300">Applied {appliedPromo.toUpperCase()}</p>}
-                        </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                          <label className="text-xs uppercase tracking-[0.4em] text-white/50">Tip</label>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {[0, 10, 15, 20].map((p) => (
-                              <button
-                                key={p}
-                                onClick={() => setTipPercent(p)}
-                                className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition ${
-                                  tipPercent === p ? "border-white/60 bg-white/20" : "border-white/15 bg-white/5 hover:border-white/25"
-                                }`}
-                              >
-                                {p === 0 ? "No tip" : `${p}%`}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )
-                ) : (
-                  <div className="space-y-3">
-                    {[0, 1, 2].map((idx) => (
-                      <div key={idx} className="animate-pulse rounded-3xl border border-white/10 bg-white/5 p-5">
-                        <div className="h-4 w-1/2 rounded bg-white/20" />
-                        <div className="mt-3 h-3 w-full rounded bg-white/10" />
-                        <div className="mt-3 h-3 w-2/3 rounded bg-white/10" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-4 shadow-innerGlass">
-                <div className="flex flex-wrap items-center gap-2">
-                  {[
-                    { type: "Pickup", icon: Store },
-                    { type: "Delivery", icon: MapPin },
-                  ].map(({ type, icon: Icon }) => (
-                    <button
-                      key={type}
-                      onClick={() => setOrderType(type as FulfillmentType)}
-                      className={`flex flex-1 items-center justify-center gap-2 rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
-                        orderType === type ? "border-white/60 bg-white/20" : "border-white/15 bg-white/5 hover:border-white/30"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" /> {type}
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-4 space-y-2 text-sm text-white/70">
-                  <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-                  {appliedPromo && promoDiscount > 0 && (
-                    <div className="flex justify-between text-emerald-300">
-                      <span>Promo</span>
-                      <span>- ${promoDiscount.toFixed(2)}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between"><span>Tax</span><span>${tax.toFixed(2)}</span></div>
-                  {tipPercent > 0 && (
-                    <div className="flex justify-between"><span>Tip</span><span>${tip.toFixed(2)}</span></div>
-                  )}
-                  <div className="flex justify-between border-t border-white/10 pt-2 text-base font-semibold text-white">
-                    <span>Total</span>
-                    <span>${grandTotal.toFixed(2)}</span>
-                  </div>
-                </div>
-                <Button
-                  className="group relative mt-4 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={() => setShowPayment(true)}
-                  disabled={cart.length === 0}
-                >
-                  <span className="absolute inset-0 bg-white/10 opacity-0 transition group-hover:opacity-100" />
-                  <span className="relative">Checkout</span>
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {showPayment && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-[90vw] max-w-md rounded-[32px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Payment</p>
-                <h2 className="text-2xl font-semibold">Finish Order</h2>
-              </div>
-              <button onClick={() => setShowPayment(false)} aria-label="Close payment" className="rounded-full border border-white/20 bg-white/5 p-2 text-white/70 hover:text-white">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            {orderType === "Delivery" && (
-              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Delivery address</p>
-                <Input
-                  placeholder="Street, City"
-                  value={profile.deliveryAddress}
-                  onChange={(e) => setProfile((prev) => ({
-                    ...prev,
-                    deliveryAddress: e.target.value,
-                    address: prev.address || e.target.value,
-                  }))}
-                  className="mt-2 h-11 rounded-2xl border-white/20 bg-transparent text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-            )}
-            <div className="mt-4 flex flex-col gap-3">
-              <Button
-                className="flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/15 text-white hover:bg-white/20"
-                onClick={() => handleCheckout("Credit Card")}
-              >
-                <CreditCard className="h-4 w-4" /> Pay with Card
-              </Button>
-              <Button
-                className="flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/15 text-white hover:bg-white/20"
-                onClick={() => handleCheckout("Apple Pay")}
-              >
-                <Smartphone className="h-4 w-4" /> Apple Pay
-              </Button>
-              <Button
-                variant="outline"
-                className="rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10"
-                onClick={() => setShowPayment(false)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      <AnimatePresence>
-        {showOrderConfirmation && latestOrder && (
-          <OrderConfirmationSheet
-            order={latestOrder}
-            onClose={() => setShowOrderConfirmation(false)}
-            onViewHistory={() => {
-              setShowOrderConfirmation(false);
-              setShowProfile(true);
+        {showCart ? (
+          <CartDrawer
+            groupedCart={groupedCart}
+            subtotal={subtotal}
+            promoDiscount={promoDiscount}
+            tax={tax}
+            tip={tip}
+            grandTotal={grandTotal}
+            deliveryFee={deliveryFee}
+            serviceFee={serviceFee}
+            total={checkoutTotal}
+            promoCode={promoCode}
+            appliedPromo={appliedPromo}
+            tipPercent={tipPercent}
+            fulfillment={fulfillment}
+            onPromoChange={setPromoCode}
+            onApplyPromo={() => setAppliedPromo(promoCode.trim() || null)}
+            onTipChange={setTipPercent}
+            onFulfillmentChange={setFulfillment}
+            onIncrease={increaseCartItem}
+            onDecrease={decreaseCartItem}
+            onRemove={removeCartItem}
+            onClose={() => setShowCart(false)}
+            onCheckout={() => setShowCheckout(true)}
+            onNavigateMenu={() => {
+              setShowCart(false);
+              navigate("menu");
             }}
           />
-        )}
+        ) : null}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showReserve && (
-          <ReservationSheet
-            form={reservationForm}
-            reservations={reservations}
-            editingReservationId={editingResId}
-            onFormChange={updateReservationForm}
-            onSave={saveReservation}
-            onEdit={startEditReservation}
-            onCancelReservation={cancelReservation}
-            onClose={closeReservationSheet}
+        {showCheckout ? (
+          <CheckoutModal
+            groupedCart={groupedCart}
+            profile={profile}
+            fulfillment={fulfillment}
+            selectedPayment={selectedPayment}
+            tipPercent={tipPercent}
+            subtotal={subtotal}
+            promoDiscount={promoDiscount}
+            tax={tax}
+            tip={tip}
+            deliveryFee={deliveryFee}
+            serviceFee={serviceFee}
+            total={checkoutTotal}
+            onClose={() => setShowCheckout(false)}
+            onFulfillmentChange={setFulfillment}
+            onProfileChange={setProfile}
+            onPaymentChange={setSelectedPayment}
+            onTipChange={setTipPercent}
+            onPlaceOrder={placeOrder}
           />
-        )}
+        ) : null}
       </AnimatePresence>
 
-      {showLoyalty && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-[90vw] max-w-md rounded-[32px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/50">Loyalty</p>
-                <h2 className="text-2xl font-semibold">Sushi Bliss Rewards</h2>
-              </div>
-              <button onClick={() => setShowLoyalty(false)} aria-label="Close loyalty" className="rounded-full border border-white/20 bg-white/5 p-2 text-white/70 hover:text-white">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <p className="mt-3 text-sm text-white/70">Earn 5 points every time you add an item to your cart.</p>
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="flex items-baseline justify-between">
-                <p className="text-sm uppercase tracking-[0.4em] text-white/50">Current cycle</p>
-                <p className="text-lg font-semibold">{loyaltyPoints} pts</p>
-              </div>
-              <div
-                className="mt-3 grid grid-cols-10 gap-1"
-                role="progressbar"
-                aria-label="Loyalty reward progress"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={loyaltyPoints % 100}
-              >
-                {Array.from({ length: 10 }, (_, segment) => segment).map((segment) => (
-                  <span
-                    key={segment}
-                    className={`h-3 rounded-full ${
-                      segment < loyaltyProgressSegments
-                        ? "bg-gradient-to-r from-emerald-400 via-cyan-400 to-rose-400 shadow-neon"
-                        : "bg-white/10"
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="mt-2 text-xs uppercase tracking-[0.4em] text-white/60">
-                {pointsToNextReward(loyaltyPoints)} pts until next roll
-              </p>
-            </div>
-            <div className="mt-4 rounded-2xl border border-dashed border-white/25 bg-white/5 p-4 text-sm text-white/70">
-              <p>Collect 100 points to unlock a chef’s choice roll on the house.</p>
-              {loyaltyPoints >= 100 && (
-                <Button className="group relative mt-4 w-full overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-emerald-400 via-cyan-400 to-rose-400 py-3 font-semibold text-brand-ink" onClick={handleRedeemReward}>
-                  Redeem Free Roll
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
+      <NoticeStack notices={notices} />
+    </AppShell>
+  );
+}
 
-      {showProfile && (
-        <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[40px] border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_-20px_80px_rgba(0,0,0,0.7)]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-white/50">Profile</p>
-              <h2 className="text-2xl font-semibold">Guest Profile</h2>
-            </div>
-            <button onClick={() => setShowProfile(false)} aria-label="Close profile" className="rounded-full border border-white/15 bg-white/5 p-2 text-white/70 hover:text-white">
-              <X className="h-5 w-5" />
-            </button>
+interface MenuViewProps {
+  query: string;
+  activeCategory: FilterCategory;
+  items: SushiMenuItem[];
+  favorites: string[];
+  onQueryChange: (query: string) => void;
+  onCategoryChange: (category: FilterCategory) => void;
+  onAddToCart: (item: SushiMenuItem) => void;
+  onSelectItem: (item: SushiMenuItem) => void;
+  onToggleFavorite: (id: string) => void;
+}
+
+/** Renders the searchable ordering menu with category filters and favorite controls. */
+function MenuView({ query, activeCategory, items, favorites, onQueryChange, onCategoryChange, onAddToCart, onSelectItem, onToggleFavorite }: MenuViewProps) {
+  return (
+    <div className="space-y-6">
+      <PageHero
+        eyebrow="Our Menu"
+        title="Handcrafted With Precision"
+        copy="Browse nigiri, sashimi, rolls, vegetarian pieces, and chef-only cuts from the final data set."
+        image={heroAsset.publicUrl}
+      />
+      <div className="luxury-panel p-4 sm:p-5">
+        <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
+          <div className="flex min-h-12 items-center gap-3 rounded-2xl border border-[var(--sb-border)] bg-black/35 px-4">
+            <Search className="h-4 w-4 text-[var(--sb-gold)]" />
+            <Input
+              value={query}
+              onChange={(event) => onQueryChange(event.target.value)}
+              placeholder="Search menu, ingredient, or sake..."
+              className="h-11 border-none bg-transparent px-0 text-white placeholder:text-[var(--sb-muted)] focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
           </div>
-          <div className="mt-4 max-h-[65vh] overflow-y-auto pr-2">
-            <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                { label: "Name", value: profile.name, onChange: (val: string) => setProfile({ ...profile, name: val }), type: "text", placeholder: "Full name" },
-                { label: "Email", value: profile.email, onChange: (val: string) => setProfile({ ...profile, email: val }), type: "email", placeholder: "you@example.com" },
-                { label: "Phone", value: profile.phone, onChange: (val: string) => setProfile({ ...profile, phone: val }), type: "text", placeholder: "+81 ..." },
-                {
-                  label: "Address",
-                  value: profile.address,
-                  onChange: (val: string) => setProfile((prev) => ({
-                    ...prev,
-                    address: val,
-                    deliveryAddress: prev.deliveryAddress || val,
-                  })),
-                  type: "text",
-                  placeholder: "Street, City, Country",
-                },
-              ].map((field) => (
-                <div key={field.label}>
-                  <label className="text-xs uppercase tracking-[0.4em] text-white/50">{field.label}</label>
-                  <Input
-                    type={field.type as "text" | "email"}
-                    value={field.value}
-                    onChange={(e) => field.onChange(e.target.value)}
-                    placeholder={field.placeholder}
-                    className="mt-2 h-11 rounded-2xl border-white/20 bg-transparent text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-                  />
-                </div>
-              ))}
-              <div className="sm:col-span-2">
-                <label className="text-xs uppercase tracking-[0.4em] text-white/50">Dietary preferences</label>
-                <Input
-                  value={profile.dietary}
-                  onChange={(e) => setProfile({ ...profile, dietary: e.target.value })}
-                  placeholder="Vegan, no peanuts..."
-                  className="mt-2 h-11 rounded-2xl border-white/20 bg-transparent text-white placeholder:text-white/40 focus-visible:ring-0 focus-visible:ring-offset-0"
-                />
-              </div>
-            </div>
-            <div className="mt-4 rounded-2xl border border-white/15 bg-white/5 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-white/50">Marketing Opt-in</p>
-                  <p className="text-sm text-white/70">Receive deals, drops, and omakase alerts.</p>
-                </div>
+          <div className="app-scrollbar flex gap-2 overflow-x-auto">
+            {filterCategories.map((category) => {
+              const active = activeCategory === category;
+              const Icon = category === "All" ? Sparkles : categoryIcons[category];
+              return (
                 <button
-                  onClick={() => setProfile({ ...profile, marketingOptIn: !profile.marketingOptIn })}
-                  className={`relative flex h-10 w-20 items-center rounded-full border border-white/20 px-1 transition ${
-                    profile.marketingOptIn ? "bg-gradient-to-r from-emerald-400 to-cyan-400" : "bg-white/10"
+                  key={category}
+                  type="button"
+                  onClick={() => onCategoryChange(category)}
+                  className={`flex h-12 shrink-0 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold transition ${
+                    active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/30 text-white" : "border-[var(--sb-border)] bg-white/[0.03] text-[var(--sb-muted)] hover:text-[var(--sb-gold)]"
                   }`}
                 >
-                  <span
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-ink transition ${
-                      profile.marketingOptIn ? "translate-x-9" : "translate-x-0"
-                    }`}
-                  >
-                    <Gift className="h-4 w-4" />
-                  </span>
+                  {Icon ? <Icon className="h-4 w-4" /> : null}
+                  {categoryLabel(category)}
                 </button>
-              </div>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button className="rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 px-6 py-3 font-semibold" onClick={saveProfile}>
-                Save Profile
-              </Button>
-            </div>
-            <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-white/5 p-4">
-              <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/60">
-                <Calendar className="h-4 w-4" />
-                Reservations
-              </div>
-              {reservations.length === 0 ? (
-                <p className="text-sm text-white/60">No reservations yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {reservations.map((r) => (
-                    <div key={r.id} className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-[0.28em] text-white/45">{r.confirmationCode}</p>
-                          <p className="mt-1 font-semibold">{formatReservationDateTime(r.datetime)}</p>
-                          <p className="text-white/60">
-                            {r.guests} guests • {r.seating} • {r.occasion}
-                          </p>
-                        </div>
-                        <span className="rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-50">
-                          Confirmed
-                        </span>
-                      </div>
-                      <div className="mt-3 flex justify-end gap-2">
-                        <button className="rounded-full border border-white/20 px-3 py-1" onClick={() => startEditReservation(r)}>
-                          Edit
-                        </button>
-                        <button className="rounded-full border border-rose-400/60 px-3 py-1 text-rose-200" onClick={() => cancelReservation(r.id)}>
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-white/5 p-4">
-              <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/60">
-                <ShoppingCart className="h-4 w-4" />
-                Order history
-              </div>
-              {orderHistory.length === 0 ? (
-                <p className="text-sm text-white/60">No orders yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {orderHistory.map((o) => (
-                    <div key={o.id} className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <details>
-                        <summary className="cursor-pointer text-sm">
-                          <span className="font-semibold">{o.confirmationCode}</span> • {o.type} • {new Date(o.placedAt).toLocaleDateString()}
-                          <span className="float-right font-semibold text-white">${o.total.toFixed(2)}</span>
-                        </summary>
-                        <div className="mt-3 space-y-2 text-sm text-white/70">
-                          <div className="rounded-xl border border-white/10 bg-black/15 p-3">
-                            <p className="font-semibold text-white">
-                              {o.type === "Delivery" ? "Delivery" : "Pickup"} around{" "}
-                              {new Date(o.fulfillmentTime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-                            </p>
-                            <p className="mt-1 text-xs text-white/55">
-                              Paid with {o.method}
-                              {o.deliveryAddress ? ` • ${o.deliveryAddress}` : ""}
-                            </p>
-                          </div>
-                          {groupCartItems(o.items).map(({ item, qty }) => (
-                            <div key={item.id} className="flex items-center justify-between py-1">
-                              <span>
-                                {item.name} <span className="text-white/45">x{qty}</span>
-                              </span>
-                              <span>${(item.price * qty).toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+              );
+            })}
           </div>
-        </motion.div>
-      )}
-
-      {confirmDlg.open && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-[90vw] max-w-sm rounded-2xl border border-white/15 bg-brand-midnight/95 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
-            <h2 className="mb-3 text-lg font-semibold">Confirm</h2>
-            <p className="mb-4 text-sm text-white/70">{confirmDlg.message}</p>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" className="rounded-xl border-white/20 bg-white/5 text-white hover:bg-white/10" onClick={() => setConfirmDlg({ open: false, message: "", onYes: null })}>
-                No
-              </Button>
-              <Button className="rounded-xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 px-5" onClick={() => { const ok = confirmDlg.onYes; setConfirmDlg({ open: false, message: "", onYes: null }); ok && ok(); }}>
-                Yes
-              </Button>
+        </div>
+      </div>
+      {items.length === 0 ? (
+        <EmptyState title="No matching dishes" copy="Try another category or search term." actionLabel="Show all" onAction={() => onCategoryChange("All")} />
+      ) : (
+        <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
+          <aside className="luxury-panel hidden h-max p-5 lg:block">
+            <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">Filters</p>
+            <div className="mt-4 space-y-2">
+              {filterCategories.slice(0, 10).map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => onCategoryChange(category)}
+                  className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-sm transition ${
+                    activeCategory === category ? "border-[var(--sb-red-bright)] text-white" : "border-white/10 text-[var(--sb-muted)] hover:text-[var(--sb-gold)]"
+                  }`}
+                >
+                  <span>{categoryLabel(category)}</span>
+                  <span>{category === "All" ? menuItems.length : menuItems.filter((item) => item.categories.includes(category)).length}</span>
+                </button>
+              ))}
             </div>
-          </div>
-        </motion.div>
+          </aside>
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {items.map((item) => (
+              <MenuCard
+                key={item.id}
+                item={item}
+                isFavorite={favorites.includes(item.id)}
+                onAddToCart={onAddToCart}
+                onSelectItem={onSelectItem}
+                onToggleFavorite={onToggleFavorite}
+              />
+            ))}
+          </section>
+        </div>
       )}
-
-      <footer className="mt-12 border-t border-white/10 p-6 text-center text-white/70">
-        <div className="mb-3 flex justify-center gap-4">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><Facebook className="h-6 w-6 text-white/70" /></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><Instagram className="h-6 w-6 text-white/70" /></a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><Twitter className="h-6 w-6 text-white/70" /></a>
-        </div>
-        <p className="text-sm">Sushi Bliss Restaurant</p>
-        <p className="text-sm text-white/60">123 Ocean Avenue, Tokyo, Japan</p>
-        <div className="mt-1 flex items-center justify-center gap-1 text-sm text-white/60">
-          <MapPin className="h-4 w-4" />
-          <span>Open: Mon–Sun 11 AM – 10 PM</span>
-        </div>
-        <p className="mt-4 text-xs text-white/40">© 2025 Sushi Bliss — Crafted with ❤️ by Nick</p>
-      </footer>
     </div>
   );
 }
 
-/** Paints the ambient restaurant backdrop with CSS classes so the app keeps a strict no-inline-styles rule. */
-function DynamicBackground({ darkMode }: { darkMode: boolean }) {
-  const glyphs = [
-    { icon: "🍣", className: "left-[5%] top-[10%]", rotate: 6 },
-    { icon: "🥢", className: "left-[30%] top-[28%]", rotate: -6 },
-    { icon: "🍥", className: "left-[54%] top-[46%]", rotate: 5 },
-    { icon: "🍱", className: "left-[76%] top-[64%]", rotate: -5 },
-  ];
+/** Renders the sake pairing gallery using menu-linked pairing data. */
+function PairingsView({ items, onSelectItem }: { items: SushiMenuItem[]; onSelectItem: (item: SushiMenuItem) => void }) {
+  return (
+    <div className="space-y-6">
+      <PageHero
+        eyebrow="Sake Pairings"
+        title="A Signature Part Of The Experience"
+        copy="Every pairing image is used as atmosphere while the pairing text is rendered from structured data."
+        image={assetUrl(featuredAssets.sakeSets[1], heroAsset.publicUrl)}
+      />
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {items.map((item) => (
+          <button
+            key={item.sakePairing.id}
+            type="button"
+            onClick={() => onSelectItem(item)}
+            className="luxury-panel group overflow-hidden text-left transition hover:-translate-y-1 hover:border-[var(--sb-gold)]"
+          >
+            <div className="relative h-56">
+              <Image src={item.sakePairing.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/24 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <span className="rounded-full border border-[var(--sb-border)] bg-black/45 px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{item.categoryLabel}</span>
+                <h3 className="mt-3 text-xl font-semibold text-white">{item.name}</h3>
+                <p className="text-sm text-[var(--sb-gold)]">{item.sakePairing.sakeName}</p>
+              </div>
+            </div>
+            <div className="p-5">
+              <p className="text-sm leading-6 text-[var(--sb-muted)]">{item.sakePairing.whyItWorks}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {item.sakePairing.flavorNotes.map((note) => (
+                  <span key={note} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-[var(--sb-muted)]">{note}</span>
+                ))}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface ReservationsViewProps {
+  form: ReservationFormState;
+  reservations: Reservation[];
+  profile: GuestProfile;
+  onFormChange: (patch: Partial<ReservationFormState>) => void;
+  onSave: () => void;
+  onProfileChange: (profile: GuestProfile | ((profile: GuestProfile) => GuestProfile)) => void;
+}
+
+/** Renders the complete reservation booking flow and live summary. */
+function ReservationsView({ form, reservations, profile, onFormChange, onSave, onProfileChange }: ReservationsViewProps) {
+  const slots = getReservationSlots(form.date, form.guests, reservations);
+  const experiences = getReservationExperiences();
 
   return (
-    <div className={`fixed inset-0 -z-10 overflow-hidden ${darkMode ? "app-background-night" : "app-background"}`}>
-      <div className="absolute inset-0 ambient-grid opacity-20" />
-      <motion.div
-        className="absolute -left-32 -top-32 h-[60vw] w-[60vw] rounded-full bg-rose-500/20 blur-3xl"
-        animate={{ x: ["-10%", "5%", "-10%"], y: ["-8%", "2%", "-8%"], scale: [1, 1.08, 1] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute -bottom-40 -right-40 h-[65vw] w-[65vw] rounded-full bg-cyan-300/15 blur-3xl"
-        animate={{ x: ["10%", "-4%", "10%"], y: ["6%", "-2%", "6%"], scale: [1.05, 1.12, 1.05] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.08),transparent_55%)]"
-        animate={{ opacity: [0.4, 0.65, 0.4], rotate: [0, 2, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-      />
-      {glyphs.map((glyph, index) => (
-        <motion.div
-          key={glyph.icon}
-          className={`pointer-events-none absolute select-none text-5xl text-white opacity-[0.08] sm:text-6xl ${glyph.className}`}
-          animate={{ y: ["0%", "12%", "-8%"], rotate: [0, glyph.rotate, 0] }}
-          transition={{ duration: 24 + index * 3, repeat: Infinity, ease: "easeInOut", delay: index * 1.5 }}
-        >
-          {glyph.icon}
-        </motion.div>
+    <div className="space-y-6">
+      <PageHero eyebrow="Reservations" title="Reserve Your Experience" copy="Choose your seat, time, occasion, and guest details." image={heroAsset.publicUrl} />
+      <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
+        <section className="grid gap-5 lg:grid-cols-[320px_1fr]">
+          <div className="luxury-panel p-5">
+            <NumberedTitle number="1" title="Party Details" />
+            <div className="mt-4 rounded-2xl border border-[var(--sb-border)] bg-black/30 p-3">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-muted)]">Party Size</p>
+              <div className="mt-3 flex items-center justify-between">
+                <button type="button" onClick={() => onFormChange({ guests: Math.max(1, form.guests - 1) })} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><Minus className="h-4 w-4" /></button>
+                <span className="text-2xl font-semibold text-white">{form.guests} Guests</span>
+                <button type="button" onClick={() => onFormChange({ guests: Math.min(8, form.guests + 1) })} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><Plus className="h-4 w-4" /></button>
+              </div>
+            </div>
+            <NumberedTitle number="2" title="Select Date" className="mt-6" />
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {Array.from({ length: 6 }, (_, index) => {
+                const date = new Date();
+                date.setDate(date.getDate() + index);
+                const value = date.toISOString().slice(0, 10);
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => onFormChange({ date: value })}
+                    className={`rounded-2xl border p-3 text-left transition ${form.date === value ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24" : "border-[var(--sb-border)] bg-white/[0.03]"}`}
+                  >
+                    <span className="block text-xs uppercase tracking-[0.18em] text-[var(--sb-muted)]">{index === 0 ? "Today" : compactDate(value)}</span>
+                    <span className="mt-1 block text-lg font-semibold text-white">{date.toLocaleDateString(undefined, { weekday: "short" })}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-5">
+            <div className="luxury-panel p-5">
+              <NumberedTitle number="3" title="Select Time" />
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {slots.map((slot) => (
+                  <button
+                    key={slot.time}
+                    type="button"
+                    disabled={slot.disabled}
+                    onClick={() => onFormChange({ time: slot.time })}
+                    className={`rounded-2xl border p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                      form.time === slot.time ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24" : "border-[var(--sb-border)] bg-white/[0.03] hover:border-[var(--sb-gold)]"
+                    }`}
+                  >
+                    <span className="block font-semibold text-white">{slot.label}</span>
+                    <span className="mt-1 block text-xs text-[var(--sb-muted)]">{slot.seatsRemaining} open</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="luxury-panel p-5">
+              <NumberedTitle number="4" title="Choose Your Experience" />
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {experiences.map((experience) => (
+                  <button
+                    key={experience.id}
+                    type="button"
+                    onClick={() => onFormChange({ seating: experience.id === "sushi-bar" ? "Counter" : experience.id === "main-dining-room" ? "Dining Room" : "Window" })}
+                    className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] text-left transition hover:border-[var(--sb-gold)]"
+                  >
+                    <div className="relative h-28">
+                      <Image src={experience.image.publicUrl} alt="" fill sizes="320px" className="object-cover transition group-hover:scale-105" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/82 to-transparent" />
+                      {experience.premium ? <span className="absolute right-3 top-3 rounded-full bg-[var(--sb-red)] px-2 py-1 text-[10px] uppercase text-white">Premium</span> : null}
+                    </div>
+                    <div className="p-4">
+                      <p className="font-semibold text-white">{experience.title}</p>
+                      <p className="mt-1 text-xs leading-5 text-[var(--sb-muted)]">{experience.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="luxury-panel p-5">
+              <NumberedTitle number="5" title="Guest Details" />
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <Input value={form.name || profile.name} onChange={(event) => onFormChange({ name: event.target.value })} placeholder="Full name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+                <Input value={form.phone || profile.phone} onChange={(event) => onFormChange({ phone: event.target.value })} placeholder="Phone" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+                <select value={form.occasion} onChange={(event) => onFormChange({ occasion: event.target.value as ReservationFormState["occasion"] })} className="h-12 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 text-sm text-white sm:col-span-2">
+                  {occasionOptions.map((occasion) => <option key={occasion}>{occasion}</option>)}
+                </select>
+                <textarea value={form.notes} onChange={(event) => onFormChange({ notes: event.target.value })} placeholder="Allergies, celebrations, accessibility requests..." className="min-h-28 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)] sm:col-span-2" />
+              </div>
+              <label className="mt-4 flex items-center justify-between rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3 text-sm text-[var(--sb-muted)]">
+                Save reservation contact to profile
+                <input
+                  type="checkbox"
+                  checked={profile.marketingOptIn}
+                  onChange={(event) => onProfileChange((current) => ({ ...current, marketingOptIn: event.target.checked }))}
+                  className="accent-[var(--sb-red)]"
+                />
+              </label>
+            </div>
+          </div>
+        </section>
+        <aside className="luxury-panel h-max p-5">
+          <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Your Reservation</p>
+          <div className="mt-4 space-y-4 text-sm">
+            <SummaryLine label="Date" value={compactDate(form.date)} />
+            <SummaryLine label="Time" value={slots.find((slot) => slot.time === form.time)?.label ?? form.time} />
+            <SummaryLine label="Party" value={`${form.guests} guests`} />
+            <SummaryLine label="Experience" value={form.seating} />
+            <SummaryLine label="Occasion" value={form.occasion} />
+          </div>
+          <div className="relative mt-5 h-44 overflow-hidden rounded-2xl border border-[var(--sb-border)]">
+            <Image src={assetUrl(specialtyAssets[0], heroAsset.publicUrl)} alt="" fill sizes="360px" className="object-cover" />
+          </div>
+          <Button className="red-glow-button mt-5 h-12 w-full rounded-2xl uppercase tracking-[0.18em]" onClick={onSave}>
+            Confirm Reservation
+          </Button>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+/** Renders active order tracking, receipts, and reorder actions. */
+function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { latestOrder: OrderHistoryEntry | null; orderHistory: OrderHistoryEntry[]; onNavigate: (view: AppView) => void; onReorder: (items: SushiMenuItem[]) => void }) {
+  return (
+    <div className="space-y-6">
+      <PageHero eyebrow="Orders" title="Delivered With Care" copy="Track active orders, view receipts, and reorder favorite sets." image={heroAsset.publicUrl} />
+      {!latestOrder ? (
+        <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("menu")} />
+      ) : (
+        <div className="grid gap-5 xl:grid-cols-[1fr_0.72fr]">
+          <section className="luxury-panel p-5 sm:p-6">
+            <SectionHeader eyebrow="Active Order" title={latestOrder.confirmationCode} copy={`${latestOrder.type} around ${formatClockTime(latestOrder.fulfillmentTime)}`} />
+            <div className="mt-6 grid gap-3 sm:grid-cols-4">
+              {["Received", "Chef Preparing", "Quality Check", latestOrder.type === "Delivery" ? "On The Way" : "Ready"].map((stage, index) => (
+                <div key={stage} className={`rounded-2xl border p-4 ${index < 2 ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/12" : "border-[var(--sb-border)] bg-white/[0.03]"}`}>
+                  <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]">{index + 1}</span>
+                  <p className="mt-3 text-sm font-semibold text-white">{stage}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {latestOrder.items.slice(0, 5).map((item) => (
+                <div key={`${latestOrder.id}-${item.id}`} className="relative h-16 w-20 overflow-hidden rounded-xl border border-[var(--sb-border)]">
+                  <Image src={item.image.publicUrl} alt="" fill sizes="80px" className="object-cover" />
+                </div>
+              ))}
+            </div>
+          </section>
+          <ReceiptPanel order={latestOrder} onReorder={onReorder} />
+        </div>
+      )}
+      <section className="luxury-panel p-5 sm:p-6">
+        <SectionHeader eyebrow="History" title="Past Orders" />
+        <div className="mt-5 space-y-3">
+          {orderHistory.length === 0 ? <p className="text-sm text-[var(--sb-muted)]">No past orders.</p> : null}
+          {orderHistory.map((order) => (
+            <div key={order.id} className="flex flex-col gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold text-white">{order.confirmationCode}</p>
+                <p className="text-sm text-[var(--sb-muted)]">{new Date(order.placedAt).toLocaleDateString()} / {order.items.length} items</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg font-semibold text-[var(--sb-gold)]">{formatCurrency(order.total)}</span>
+                <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onReorder(order.items)}>Reorder</Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/** Renders the member loyalty dashboard and reward redemption cards. */
+function LoyaltyView({ loyaltyPoints, rewards, onRedeem }: { loyaltyPoints: number; rewards: Reward[]; onRedeem: (reward: Reward) => void }) {
+  return (
+    <div className="space-y-6">
+      <PageHero eyebrow="Loyalty Rewards" title="Member Access" copy="Earn points, unlock omakase perks, and redeem premium rewards." image={heroAsset.publicUrl} />
+      <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="luxury-panel p-5 sm:p-6">
+          <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Bliss Member</p>
+          <h2 className="editorial-title mt-3 text-5xl text-white">Gold Tier</h2>
+          <p className="mt-4 text-4xl font-semibold text-white">{loyaltyPoints.toLocaleString()} pts</p>
+          <progress className="mt-5 h-2 w-full accent-[var(--sb-gold)]" value={loyaltyPoints % 4000} max={4000} />
+          <div className="mt-6 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4">
+            <div className="grid aspect-square place-items-center rounded-xl bg-white p-5 text-black">
+              <span className="font-mono text-4xl font-bold">SB</span>
+            </div>
+            <p className="mt-3 text-sm text-[var(--sb-muted)]">Member pass for in-restaurant points and redemptions.</p>
+          </div>
+        </div>
+        <div className="luxury-panel p-5 sm:p-6">
+          <SectionHeader eyebrow="Redeem" title="Your Points" />
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {rewards.map((reward) => (
+              <button key={reward.id} type="button" onClick={() => onRedeem(reward)} className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] text-left transition hover:border-[var(--sb-gold)]">
+                <div className="relative h-36">
+                  <Image src={reward.image.publicUrl} alt="" fill sizes="220px" className="object-cover transition group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-transparent" />
+                  <span className="absolute left-3 top-3 rounded-full bg-black/55 px-3 py-1 text-xs text-[var(--sb-gold)]">{reward.points.toLocaleString()} pts</span>
+                </div>
+                <div className="p-4">
+                  <p className="font-semibold text-white">{reward.title}</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{reward.value}</p>
+                  <p className="mt-2 text-xs leading-5 text-[var(--sb-muted)]">{reward.description}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Renders the editorial restaurant story, sourcing cards, and chef lineup. */
+function AboutView({ chefs, onSelectItem }: { chefs: Chef[]; onSelectItem: (item: SushiMenuItem) => void }) {
+  return (
+    <div className="space-y-6">
+      <PageHero eyebrow="About Sushi Bliss" title="A Legacy Of Craft" copy="Rooted in tradition, shaped for the future, and paced around omotenashi." image={assetUrl(ambienceAssets[1], heroAsset.publicUrl)} />
+      <section className="grid gap-5 lg:grid-cols-3">
+        {[
+          { title: "Sourcing", image: ingredientAssets[1], copy: "Bluefin, uni, scallop, wasabi, and seasonal vegetables selected for balance." },
+          { title: "Omotenashi", image: ambienceAssets[0], copy: "Hospitality through pacing, attention, warmth, and quiet precision." },
+          { title: "Atmosphere", image: ambienceAssets[4], copy: "Black stone, lantern glow, smoke, sake, and a counter designed for memory." },
+        ].map((card) => (
+          <div key={card.title} className="luxury-panel overflow-hidden">
+            <div className="relative h-52"><Image src={assetUrl(card.image, heroAsset.publicUrl)} alt="" fill sizes="33vw" className="object-cover" /></div>
+            <div className="p-5"><h2 className="editorial-title text-2xl text-white">{card.title}</h2><p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">{card.copy}</p></div>
+          </div>
+        ))}
+      </section>
+      <section className="luxury-panel p-5 sm:p-6">
+        <SectionHeader eyebrow="Master Chefs" title="The Team" copy="Chef data is wired from the final package, including distinct standing and plating images." />
+        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {chefs.map((chef) => {
+            const signature = menuItems.find((item) => item.name === chef.sushi || item.name === chef.specialty);
+            return (
+              <article key={chef.id} className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
+                <div className="relative h-72">
+                  <Image src={chef.standingImage.publicUrl} alt="" fill sizes="280px" className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/92 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-xl font-semibold text-white">{chef.name}</h3>
+                    <p className="text-sm text-[var(--sb-gold)]">{chef.position}</p>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <p className="text-sm leading-6 text-[var(--sb-muted)]">{chef.about}</p>
+                  {signature ? (
+                    <Button variant="outline" className="mt-4 h-10 w-full rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onSelectItem(signature)}>
+                      View Signature
+                    </Button>
+                  ) : null}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/** Renders contact details and validates private event inquiries. */
+function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) => void; showNotice: (message: string, tone?: Notice["tone"]) => void }) {
+  const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
+  return (
+    <div className="space-y-6">
+      <PageHero eyebrow="We'd Love To Hear From You" title="Contact Sushi Bliss" copy="Questions, private dining, ordering support, and reservation help." image={assetUrl(contactHero, heroAsset.publicUrl)} />
+      <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <ContactCard icon={MapPin} title="Location" lines={["Tokyo, Japan", "123 Kai Street", "Tokyo, 100-0001"]} action="View on map" />
+          <ContactCard icon={Phone} title="Contact Info" lines={["+81 3-1234-5678", "hello@sushibliss.jp", "Reply within 24 hours"]} />
+          <ContactCard icon={Clock3} title="Hours" lines={["Mon-Sun", "11:30 AM - 11:00 PM", "Open now"]} />
+          <ContactCard icon={Sparkles} title="Follow Us" lines={["Instagram", "Facebook", "X"]} />
+        </div>
+        <div className="luxury-panel p-5">
+          <SectionHeader eyebrow="Message" title="Send A Request" />
+          <div className="mt-5 grid gap-3">
+            <Input placeholder="Full name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+            <Input placeholder="Email address" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+            <Input placeholder="Subject" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+            <textarea placeholder="Your message" className="min-h-32 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)]" />
+            <Button className="red-glow-button h-12 rounded-2xl uppercase tracking-[0.18em]" onClick={() => showNotice("Message sent. We will reply shortly.", "success")}>
+              Send Message
+              <Send className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </section>
+      <section className="grid gap-4 sm:grid-cols-2">
+        <Button className="red-glow-button h-14 rounded-2xl uppercase tracking-[0.18em]" onClick={() => onNavigate("reservations")}>Reserve a Table</Button>
+        <Button variant="outline" className="h-14 rounded-2xl border-[var(--sb-border-strong)] bg-transparent uppercase tracking-[0.18em] text-[var(--sb-gold)]" onClick={() => onNavigate("menu")}>Order Now</Button>
+      </section>
+    </div>
+  );
+}
+
+/** Shared cinematic page hero used by non-home app views. */
+function PageHero({ eyebrow, title, copy, image }: { eyebrow: string; title: string; copy: string; image: string }) {
+  return (
+    <section className="luxury-panel relative min-h-[320px] overflow-hidden rounded-[34px] p-6 sm:min-h-[360px] sm:p-8">
+      <Image src={image} alt="" fill sizes="(min-width: 1024px) 1200px, 100vw" className="object-cover opacity-72" priority={false} />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/58 to-black/20" />
+      <div className="smoke-overlay absolute inset-0" />
+      <div className="relative z-10 max-w-3xl pt-16 lg:pt-4">
+        <p className="text-sm uppercase tracking-[0.26em] text-[var(--sb-gold)]">{eyebrow}</p>
+        <h1 className="editorial-title mt-3 text-5xl leading-[0.92] text-white sm:text-6xl lg:text-7xl">{title}</h1>
+        <p className="mt-5 max-w-xl text-base leading-7 text-[var(--sb-text)]/80">{copy}</p>
+      </div>
+    </section>
+  );
+}
+
+/** Renders a full menu item card with image, pairing chip, favorite, and cart action. */
+function MenuCard({ item, isFavorite, onAddToCart, onSelectItem, onToggleFavorite }: { item: SushiMenuItem; isFavorite: boolean; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; onToggleFavorite: (id: string) => void }) {
+  return (
+    <article className="luxury-panel group overflow-hidden transition hover:-translate-y-1 hover:border-[var(--sb-gold)]">
+      <button type="button" onClick={() => onSelectItem(item)} className="block w-full text-left">
+        <div className="relative h-52 overflow-hidden">
+          <Image src={item.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
+          {item.tag ? <span className="absolute left-4 top-4 rounded-full bg-[var(--sb-red)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">{item.tag}</span> : null}
+          {item.standaloneImageMissing ? <span className="absolute right-4 top-4 rounded-full border border-[var(--sb-border)] bg-black/55 px-3 py-1 text-[10px] uppercase text-[var(--sb-gold)]">Pairing visual</span> : null}
+        </div>
+      </button>
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">{item.categoryLabel}</p>
+            <h3 className="mt-1 text-xl font-semibold text-white">{item.name}</h3>
+          </div>
+          <span className="text-lg font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price)}</span>
+        </div>
+        <p className="mt-3 line-clamp-2 text-sm leading-6 text-[var(--sb-muted)]">{item.description}</p>
+        <div className="mt-4 rounded-2xl border border-[var(--sb-border)] bg-black/30 p-3 text-xs text-[var(--sb-muted)]">
+          <span className="text-[var(--sb-gold)]">Pairs with</span> {item.sakePairing.sakeName}
+        </div>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <button type="button" onClick={() => onToggleFavorite(item.id)} aria-label={isFavorite ? "Remove favorite" : "Save favorite"} className={`grid h-11 w-11 place-items-center rounded-full border transition ${isFavorite ? "border-[var(--sb-red-bright)] text-[var(--sb-red-bright)]" : "border-[var(--sb-border)] text-[var(--sb-gold)]"}`}>
+            <Heart className="h-5 w-5" />
+          </button>
+          <Button className="red-glow-button h-11 flex-1 rounded-2xl uppercase tracking-[0.16em]" onClick={() => onAddToCart(item)}>
+            Add
+            <Plus className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/** Renders a compact horizontal menu recommendation card. */
+function MenuMiniCard({ item, onAddToCart, onSelectItem }: { item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+  return (
+    <article className="w-64 shrink-0 overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
+      <button type="button" onClick={() => onSelectItem(item)} className="relative block h-36 w-full">
+        <Image src={item.image.publicUrl} alt="" fill sizes="256px" className="object-cover" />
+      </button>
+      <div className="p-4">
+        <p className="truncate font-semibold text-white">{item.name}</p>
+        <p className="mt-1 text-sm text-[var(--sb-muted)]">{item.sakePairing.sakeName}</p>
+        <div className="mt-3 flex items-center justify-between">
+          <span className="font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price)}</span>
+          <button type="button" onClick={() => onAddToCart(item)} aria-label={`Add ${item.name}`} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)] transition hover:border-[var(--sb-red-bright)] hover:text-white">
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/** Renders the item detail story modal with pairing, texture, and recommendations. */
+function ProductDetailModal({ item, isFavorite, onClose, onAddToCart, onToggleFavorite, onSelectItem }: { item: SushiMenuItem; isFavorite: boolean; onClose: () => void; onAddToCart: (item: SushiMenuItem, quantity: number) => void; onToggleFavorite: (id: string) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+  const [quantity, setQuantity] = useState(1);
+  const related = getRelatedItems(item.id, 4);
+  const textureEntries = Object.entries(item.textureProfile).filter(([, value]) => typeof value === "number");
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[80] flex items-end bg-black/75 backdrop-blur-sm lg:items-center lg:justify-center" role="dialog" aria-modal="true">
+      <motion.section initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] p-4 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-5xl lg:rounded-[34px] lg:p-5">
+        <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
+          <div className="relative min-h-[420px] overflow-hidden rounded-[28px] border border-[var(--sb-border)]">
+            <Image src={item.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 480px, 100vw" className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/12 to-transparent" />
+            <div className="absolute left-4 top-4 rounded-full border border-[var(--sb-border)] bg-black/50 px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{item.tag}</div>
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">{item.categoryLabel}</p>
+                <h2 className="editorial-title mt-2 text-5xl leading-[0.95] text-white">{item.name}</h2>
+                <p className="mt-3 text-sm leading-6 text-[var(--sb-muted)]">{item.chefNote}</p>
+              </div>
+              <button type="button" onClick={onClose} aria-label="Close details" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="mt-5 flex items-center justify-between rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3">
+              <span className="text-2xl font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price)}</span>
+              <div className="flex items-center gap-3">
+                <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)]"><Minus className="h-4 w-4" /></button>
+                <span className="min-w-8 text-center text-xl font-semibold">{quantity}</span>
+                <button type="button" onClick={() => setQuantity((value) => value + 1)} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)]"><Plus className="h-4 w-4" /></button>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <Button className="red-glow-button h-12 rounded-2xl uppercase tracking-[0.16em]" onClick={() => onAddToCart(item, quantity)}>Add to Cart</Button>
+              <Button variant="outline" className="h-12 rounded-2xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onToggleFavorite(item.id)}>
+                <Heart className="mr-2 h-4 w-4" />
+                {isFavorite ? "Saved" : "Favorite"}
+              </Button>
+            </div>
+            <div className="mt-5 grid gap-4">
+              <InfoPanel title="Ingredients">{item.ingredients.map((ingredient) => <span key={ingredient} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-[var(--sb-muted)]">{ingredient}</span>)}</InfoPanel>
+              <div className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
+                <div className="relative h-36">
+                  <Image src={item.sakePairing.image.publicUrl} alt="" fill sizes="480px" className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-transparent" />
+                  <div className="absolute bottom-3 left-3 right-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-gold)]">Pairing</p>
+                    <p className="font-semibold text-white">{item.sakePairing.sakeName}</p>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <p className="text-sm leading-6 text-[var(--sb-muted)]">{item.sakePairing.whyItWorks}</p>
+                  <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">Serve {item.sakePairing.serveTemperature}</p>
+                </div>
+              </div>
+              <InfoPanel title="Texture Profile">
+                {textureEntries.map(([label, value]) => (
+                  <div key={label} className="w-full">
+                    <div className="mb-1 flex justify-between text-xs uppercase tracking-[0.16em] text-[var(--sb-muted)]"><span>{label}</span><span>{value}</span></div>
+                    <progress className="h-2 w-full accent-[var(--sb-gold)]" value={value} max={100} />
+                  </div>
+                ))}
+              </InfoPanel>
+            </div>
+          </div>
+        </div>
+        <div className="mt-5">
+          <SectionHeader eyebrow="You May Also Like" title="Related Bites" />
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((relatedItem) => (
+              <button key={relatedItem.id} type="button" onClick={() => onSelectItem(relatedItem)} className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] text-left">
+                <div className="relative h-28"><Image src={relatedItem.image.publicUrl} alt="" fill sizes="220px" className="object-cover" /></div>
+                <div className="p-3"><p className="font-semibold text-white">{relatedItem.name}</p><p className="text-sm text-[var(--sb-gold)]">{formatCurrency(relatedItem.price)}</p></div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </motion.section>
+    </motion.div>
+  );
+}
+
+/** Renders the cart drawer with quantity controls, fees, promo, and checkout action. */
+function CartDrawer({ groupedCart, subtotal, promoDiscount, tax, tip, grandTotal, deliveryFee, serviceFee, total, promoCode, appliedPromo, tipPercent, fulfillment, onPromoChange, onApplyPromo, onTipChange, onFulfillmentChange, onIncrease, onDecrease, onRemove, onClose, onCheckout, onNavigateMenu }: { groupedCart: { item: SushiMenuItem; qty: number }[]; subtotal: number; promoDiscount: number; tax: number; tip: number; grandTotal: number; deliveryFee: number; serviceFee: number; total: number; promoCode: string; appliedPromo: string | null; tipPercent: number; fulfillment: FulfillmentType; onPromoChange: (value: string) => void; onApplyPromo: () => void; onTipChange: (value: number) => void; onFulfillmentChange: (value: FulfillmentType) => void; onIncrease: (item: SushiMenuItem) => void; onDecrease: (id: string) => void; onRemove: (id: string) => void; onClose: () => void; onCheckout: () => void; onNavigateMenu: () => void }) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] flex items-end bg-black/65 backdrop-blur-sm lg:justify-end">
+      <motion.aside initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 34, stiffness: 260 }} className="app-scrollbar max-h-[92vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] p-4 text-white shadow-[0_-24px_90px_rgba(0,0,0,0.75)] lg:h-full lg:max-h-none lg:max-w-xl lg:rounded-l-[34px] lg:rounded-tr-none lg:p-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Your Cart</p>
+            <h2 className="editorial-title mt-2 text-4xl text-white">{groupedCart.length} Items</h2>
+          </div>
+          <button type="button" onClick={onClose} aria-label="Close cart" className="grid h-11 w-11 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
+        </div>
+        {groupedCart.length === 0 ? (
+          <EmptyState title="Your cart is empty" copy="Start with a chef favorite or build a pairing-led order." actionLabel="Browse menu" onAction={onNavigateMenu} />
+        ) : (
+          <div className="mt-5 space-y-5">
+            <div className="space-y-3">
+              {groupedCart.map(({ item, qty }) => (
+                <div key={item.id} className="grid grid-cols-[86px_1fr] gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3">
+                  <div className="relative h-24 overflow-hidden rounded-xl"><Image src={item.image.publicUrl} alt="" fill sizes="86px" className="object-cover" /></div>
+                  <div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div><p className="font-semibold text-white">{item.name}</p><p className="text-xs text-[var(--sb-muted)]">{item.categoryLabel}</p></div>
+                      <p className="font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</p>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={() => onDecrease(item.id)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Minus className="h-4 w-4" /></button>
+                        <span className="min-w-6 text-center font-semibold">{qty}</span>
+                        <button type="button" onClick={() => onIncrease(item)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Plus className="h-4 w-4" /></button>
+                      </div>
+                      <button type="button" onClick={() => onRemove(item.id)} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">Remove</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <SegmentedControl
+              options={["Delivery", "Pickup"]}
+              value={fulfillment}
+              onChange={(value) => onFulfillmentChange(value as FulfillmentType)}
+            />
+            <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+              <Input value={promoCode} onChange={(event) => onPromoChange(event.target.value)} placeholder="Promo code" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+              <Button variant="outline" className="h-12 rounded-2xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={onApplyPromo}>Apply</Button>
+            </div>
+            {appliedPromo ? <p className="text-sm text-[var(--sb-gold)]">Applied {appliedPromo.toUpperCase()}</p> : null}
+            <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4">
+              <p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">Add a Tip</p>
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                {[0, 10, 15, 20].map((tipOption) => (
+                  <button key={tipOption} type="button" onClick={() => onTipChange(tipOption)} className={`rounded-xl border px-3 py-2 text-sm ${tipPercent === tipOption ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24 text-white" : "border-[var(--sb-border)] text-[var(--sb-muted)]"}`}>
+                    {tipOption === 0 ? "None" : `${tipOption}%`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <TotalsPanel subtotal={subtotal} promoDiscount={promoDiscount} tax={tax} tip={tip} grandTotal={grandTotal} deliveryFee={deliveryFee} serviceFee={serviceFee} total={total} />
+            <Button className="red-glow-button h-14 w-full rounded-2xl py-4 text-base uppercase tracking-[0.18em]" onClick={onCheckout}>Proceed to Checkout</Button>
+          </div>
+        )}
+      </motion.aside>
+    </motion.div>
+  );
+}
+
+/** Renders the multi-section checkout modal with fulfillment and payment fields. */
+function CheckoutModal({ groupedCart, profile, fulfillment, selectedPayment, tipPercent, subtotal, promoDiscount, tax, tip, deliveryFee, serviceFee, total, onClose, onFulfillmentChange, onProfileChange, onPaymentChange, onTipChange, onPlaceOrder }: { groupedCart: { item: SushiMenuItem; qty: number }[]; profile: GuestProfile; fulfillment: FulfillmentType; selectedPayment: string; tipPercent: number; subtotal: number; promoDiscount: number; tax: number; tip: number; deliveryFee: number; serviceFee: number; total: number; onClose: () => void; onFulfillmentChange: (value: FulfillmentType) => void; onProfileChange: (profile: GuestProfile) => void; onPaymentChange: (value: string) => void; onTipChange: (value: number) => void; onPlaceOrder: () => void }) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[90] flex items-end bg-black/75 backdrop-blur-sm lg:items-center lg:justify-center">
+      <motion.section initial={{ y: 36, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 36, opacity: 0 }} className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] p-4 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-6xl lg:rounded-[34px] lg:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div><p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Checkout</p><h2 className="editorial-title mt-2 text-5xl text-white">Place Order</h2></div>
+          <button type="button" onClick={onClose} aria-label="Close checkout" className="grid h-11 w-11 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
+        </div>
+        <div className="mt-6 grid gap-5 xl:grid-cols-[1fr_380px]">
+          <div className="space-y-5">
+            <CheckoutStep number="1" title="Delivery Or Pickup">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {(["Delivery", "Pickup"] as FulfillmentType[]).map((option) => (
+                  <button key={option} type="button" onClick={() => onFulfillmentChange(option)} className={`rounded-2xl border p-4 text-left ${fulfillment === option ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24" : "border-[var(--sb-border)] bg-white/[0.03]"}`}>
+                    <p className="font-semibold text-white">{option}</p>
+                    <p className="text-sm text-[var(--sb-muted)]">{option === "Delivery" ? "30-45 min" : "20-25 min"}</p>
+                  </button>
+                ))}
+              </div>
+            </CheckoutStep>
+            <CheckoutStep number="2" title="Contact And Address">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input value={profile.name} onChange={(event) => onProfileChange({ ...profile, name: event.target.value })} placeholder="Name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+                <Input value={profile.phone} onChange={(event) => onProfileChange({ ...profile, phone: event.target.value })} placeholder="Phone" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
+                <Input value={profile.deliveryAddress} onChange={(event) => onProfileChange({ ...profile, deliveryAddress: event.target.value, address: profile.address || event.target.value })} placeholder="Delivery address" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white sm:col-span-2" />
+              </div>
+            </CheckoutStep>
+            <CheckoutStep number="3" title="Date And Time">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4"><p className="text-sm text-[var(--sb-muted)]">Today</p><p className="font-semibold text-white">Next available window</p></div>
+                <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4"><p className="text-sm text-[var(--sb-muted)]">Estimated</p><p className="font-semibold text-white">{fulfillment === "Delivery" ? "30-45 min" : "20-25 min"}</p></div>
+              </div>
+            </CheckoutStep>
+            <CheckoutStep number="4" title="Payment Method">
+              <div className="grid gap-3 sm:grid-cols-3">
+                {["Visa **** 4242", "Mastercard **** 8888", "Apple Pay"].map((method) => (
+                  <button key={method} type="button" onClick={() => onPaymentChange(method)} className={`rounded-2xl border p-4 text-left ${selectedPayment === method ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24" : "border-[var(--sb-border)] bg-white/[0.03]"}`}>
+                    <CreditCard className="h-5 w-5 text-[var(--sb-gold)]" />
+                    <p className="mt-2 text-sm font-semibold text-white">{method}</p>
+                  </button>
+                ))}
+              </div>
+            </CheckoutStep>
+            <CheckoutStep number="5" title="Tip">
+              <div className="grid grid-cols-4 gap-2">
+                {[0, 10, 15, 20].map((tipOption) => (
+                  <button key={tipOption} type="button" onClick={() => onTipChange(tipOption)} className={`rounded-xl border px-3 py-2 text-sm ${tipPercent === tipOption ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24 text-white" : "border-[var(--sb-border)] text-[var(--sb-muted)]"}`}>
+                    {tipOption === 0 ? "None" : `${tipOption}%`}
+                  </button>
+                ))}
+              </div>
+            </CheckoutStep>
+          </div>
+          <aside className="luxury-panel h-max p-5">
+            <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Order Summary</p>
+            <div className="mt-4 space-y-3">
+              {groupedCart.map(({ item, qty }) => (
+                <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3">
+                  <div className="relative h-16 w-20 overflow-hidden rounded-xl"><Image src={item.image.publicUrl} alt="" fill sizes="80px" className="object-cover" /></div>
+                  <div className="flex-1"><p className="font-semibold text-white">{item.name}</p><p className="text-sm text-[var(--sb-muted)]">Qty {qty}</p></div>
+                  <span className="font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</span>
+                </div>
+              ))}
+            </div>
+            <TotalsPanel subtotal={subtotal} promoDiscount={promoDiscount} tax={tax} tip={tip} grandTotal={subtotal + tax + tip - promoDiscount} deliveryFee={deliveryFee} serviceFee={serviceFee} total={total} />
+            <Button className="red-glow-button mt-5 h-14 w-full rounded-2xl py-4 text-base uppercase tracking-[0.18em]" onClick={onPlaceOrder}>Place Order</Button>
+          </aside>
+        </div>
+      </motion.section>
+    </motion.div>
+  );
+}
+
+/** Displays reusable subtotal, fee, discount, and total lines. */
+function TotalsPanel({ subtotal, promoDiscount, tax, tip, grandTotal, deliveryFee, serviceFee, total }: { subtotal: number; promoDiscount: number; tax: number; tip: number; grandTotal: number; deliveryFee: number; serviceFee: number; total: number }) {
+  return (
+    <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4 text-sm text-[var(--sb-muted)]">
+      <SummaryLine label="Subtotal" value={formatCurrency(subtotal)} />
+      {promoDiscount > 0 ? <SummaryLine label="Promo" value={`- ${formatCurrency(promoDiscount)}`} /> : null}
+      <SummaryLine label="Estimated Tax" value={formatCurrency(tax)} />
+      <SummaryLine label="Service Fee" value={formatCurrency(serviceFee)} />
+      {deliveryFee > 0 ? <SummaryLine label="Delivery Fee" value={formatCurrency(deliveryFee)} /> : null}
+      {tip > 0 ? <SummaryLine label="Tip" value={formatCurrency(tip)} /> : null}
+      <div className="gold-divider my-3" />
+      <SummaryLine label="Cart Total" value={formatCurrency(grandTotal)} strong />
+      <SummaryLine label="Total" value={formatCurrency(total)} strong />
+    </div>
+  );
+}
+
+/** Displays a compact order receipt with reorder support. */
+function ReceiptPanel({ order, onReorder }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void }) {
+  const grouped = groupCartItems(order.items);
+  return (
+    <aside className="luxury-panel h-max p-5">
+      <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Receipt</p>
+      <div className="mt-4 space-y-3">
+        {grouped.map(({ item, qty }) => (
+          <SummaryLine key={item.id} label={`${item.name} x${qty}`} value={formatCurrency(item.price * qty)} />
+        ))}
+      </div>
+      <div className="gold-divider my-4" />
+      <SummaryLine label="Total" value={formatCurrency(order.total)} strong />
+      <Button className="red-glow-button mt-5 h-12 w-full rounded-2xl uppercase tracking-[0.18em]" onClick={() => onReorder(order.items)}>Reorder</Button>
+    </aside>
+  );
+}
+
+/** Shows transient toast notices for app actions and validation errors. */
+function NoticeStack({ notices }: { notices: Notice[] }) {
+  return (
+    <div className="pointer-events-none fixed right-4 top-20 z-[100] flex w-[min(92vw,380px)] flex-col gap-3 lg:top-28">
+      <AnimatePresence>
+        {notices.map((notice) => (
+          <motion.div
+            key={notice.id}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className={`luxury-panel pointer-events-auto rounded-2xl px-4 py-3 text-sm ${
+              notice.tone === "error" ? "border-[var(--sb-red-bright)] text-red-100" : notice.tone === "success" ? "border-[var(--sb-gold)] text-white" : "text-white"
+            }`}
+          >
+            {notice.message}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/** Renders a reusable empty-state panel with one recovery action. */
+function EmptyState({ title, copy, actionLabel, onAction }: { title: string; copy: string; actionLabel: string; onAction: () => void }) {
+  return (
+    <div className="luxury-panel grid min-h-64 place-items-center p-8 text-center">
+      <div>
+        <Sparkles className="mx-auto h-9 w-9 text-[var(--sb-gold)]" />
+        <h2 className="mt-4 text-2xl font-semibold text-white">{title}</h2>
+        <p className="mt-2 text-sm text-[var(--sb-muted)]">{copy}</p>
+        <Button className="red-glow-button mt-5 rounded-2xl px-5" onClick={onAction}>{actionLabel}</Button>
+      </div>
+    </div>
+  );
+}
+
+/** Displays a compact key-value stat block. */
+function StatCard({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3"><p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-muted)]">{label}</p><p className="mt-1 text-lg font-semibold text-white">{value}</p></div>;
+}
+
+/** Displays one aligned label/value row for totals and receipts. */
+function SummaryLine({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
+  return <div className={`flex items-center justify-between gap-4 py-1 ${strong ? "text-base font-semibold text-white" : ""}`}><span>{label}</span><span>{value}</span></div>;
+}
+
+/** Displays numbered section headings for checkout and reservation steps. */
+function NumberedTitle({ number, title, className = "" }: { number: string; title: string; className?: string }) {
+  return <div className={`flex items-center gap-3 ${className}`}><span className="grid h-7 w-7 place-items-center rounded-full border border-[var(--sb-gold)] text-sm text-[var(--sb-gold)]">{number}</span><h2 className="editorial-title text-xl text-white">{title}</h2></div>;
+}
+
+/** Wraps one checkout section in the shared step styling. */
+function CheckoutStep({ number, title, children }: { number: string; title: string; children: ReactNode }) {
+  return <section className="luxury-panel p-5"><NumberedTitle number={number} title={title} /><div className="mt-4">{children}</div></section>;
+}
+
+/** Renders a small info panel with a tokenized title and flexible content. */
+function InfoPanel({ title, children }: { title: string; children: ReactNode }) {
+  return <div className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4"><p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">{title}</p><div className="mt-3 flex flex-wrap gap-2">{children}</div></div>;
+}
+
+/** Renders a two-option segmented control for fulfillment choices. */
+function SegmentedControl({ options, value, onChange }: { options: string[]; value: string; onChange: (value: string) => void }) {
+  return (
+    <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[var(--sb-border)] bg-black/30 p-1">
+      {options.map((option) => (
+        <button key={option} type="button" onClick={() => onChange(option)} className={`rounded-xl px-4 py-3 text-sm font-semibold transition ${value === option ? "bg-[var(--sb-red)] text-white" : "text-[var(--sb-muted)]"}`}>{option}</button>
       ))}
     </div>
   );
 }
 
-/** Renders the first-viewport brand moment with food-first imagery and direct ordering actions. */
-function HeroCard({
-  images,
-  darkMode,
-  index,
-  onReserve,
-  compact,
-}: {
-  images: string[];
-  darkMode: boolean;
-  index: number;
-  onReserve: () => void;
-  compact?: boolean;
-}) {
-  const currentImage = images[index] ?? images[0];
-  const heightClass = "min-h-[640px]";
-  const heroHighlights = [
-    { title: "Signature flight", subtitle: "Chef-curated omakase tonight", icon: Sparkles },
-    { title: "Fresh drop", subtitle: "Hokkaido uni arrives daily", icon: Compass },
-    { title: "Plant set", subtitle: "Garden-focused maki and nigiri", icon: Leaf },
-    { title: "Torch finish", subtitle: "Scallop, eel glaze, and spice", icon: Flame },
-  ];
-  const visibleHighlights = compact ? heroHighlights.slice(0, 2) : heroHighlights;
+/** Displays one contact method card with an icon and optional action. */
+function ContactCard({ icon: Icon, title, lines, action }: { icon: LucideIcon; title: string; lines: string[]; action?: string }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className={`relative overflow-hidden rounded-[30px] border border-white/15 bg-black/30 ${heightClass} premium-edge sm:rounded-[36px]`}
-    >
-      <Image
-        src={currentImage}
-        alt=""
-        fill
-        priority
-        sizes="(min-width: 1024px) 1100px, 100vw"
-        className="object-cover"
-      />
-      <div className={`absolute inset-0 ${darkMode ? "hero-vignette-night" : "hero-vignette"}`} />
-      <div className="pointer-events-none absolute inset-0 ambient-grid opacity-20" />
-      <motion.div
-        className="pointer-events-none absolute -right-20 top-10 h-72 w-72 rounded-full bg-rose-400/25 blur-[110px]"
-        animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <div className="relative flex min-h-[inherit] flex-col justify-between px-5 py-8 sm:px-10 sm:py-12 lg:px-12">
-        <div className="max-w-2xl text-white">
-          <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.35em] text-white/70">
-            <span className="relative flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-300" />
-            </span>
-            Now open • 12–10 PM • 20 min avg prep
-          </div>
-          <h1 className="mt-6 font-display text-5xl font-extrabold leading-none text-white sm:text-6xl lg:text-7xl">
-            Sushi Bliss
-          </h1>
-          <p className="mt-4 max-w-xl text-base leading-7 text-white/85 sm:text-lg">
-            Futuristic omakase, market-fresh nigiri, and glass-lit ordering built for nights that feel like an event.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a href="#menu" className="inline-flex">
-              <Button className="group relative overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 px-6 py-3 text-base font-semibold shadow-glow hover:opacity-95">
-                <span className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition group-hover:opacity-100" />
-                <span className="relative flex items-center gap-2">
-                  Order Now
-                  <Sparkles className="w-4 h-4" />
-                </span>
-              </Button>
-            </a>
-            <Button
-              variant="outline"
-              onClick={onReserve}
-              className="rounded-2xl border-white/40 bg-white/5 px-6 py-3 text-base text-white hover:bg-white/10"
-            >
-              <Calendar className="mr-2 h-4 w-4" /> Reserve a Table
-            </Button>
-          </div>
-        </div>
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div className="grid gap-3 text-sm text-white/80 sm:grid-cols-2">
-            {visibleHighlights.map((card) => (
-              <div key={card.title} className="hero-lens flex items-center gap-3 rounded-2xl border border-white/10 px-4 py-3 text-left shadow-innerGlass backdrop-blur-2xl">
-                <card.icon className="h-5 w-5 text-white/70" />
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-white/50">{card.subtitle}</p>
-                  <p className="text-base font-semibold text-white">{card.title}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          {!compact && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="hero-lens rounded-2xl border border-white/20 p-4 text-sm shadow-innerGlass backdrop-blur-2xl"
-            >
-              <p className="text-xs uppercase tracking-[0.35em] text-white/60">Status: Live</p>
-              <p className="text-lg font-semibold text-white mt-1">Tonight's Chef Feed</p>
-              <div className="mt-3 space-y-1 text-white/80">
-                <div className="flex items-center justify-between">
-                  <span>Now open</span>
-                  <span className="text-emerald-300">•</span>
-                </div>
-                <div className="flex items-center justify-between text-white/60 text-xs">
-                  <span>Avg prep</span>
-                  <span>20 min</span>
-                </div>
-                <div className="flex items-center justify-between text-white/60 text-xs">
-                  <span>Seats</span>
-                  <span>12 left</span>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-        <a href="#menu" className="mt-8 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white">
-          <span className="animate-bounce text-lg">↓</span> Explore Menu
-        </a>
-      </div>
-    </motion.article>
+    <div className="luxury-panel p-5">
+      <div className="flex items-center gap-3 text-[var(--sb-gold)]"><Icon className="h-5 w-5" /><p className="text-xs uppercase tracking-[0.22em]">{title}</p></div>
+      <div className="mt-4 space-y-1 text-sm text-[var(--sb-muted)]">{lines.map((line) => <p key={line}>{line}</p>)}</div>
+      {action ? <button type="button" className="mt-5 rounded-full border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button> : null}
+    </div>
   );
 }
