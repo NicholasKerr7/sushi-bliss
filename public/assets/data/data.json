@@ -1,0 +1,2465 @@
+{
+  "meta": {
+    "project": "Sushi Bliss",
+    "packageName": "sushi-bliss-final-app-assets",
+    "version": "final-pass-cleaned",
+    "generatedAt": "2026-05-27",
+    "assetBasePath": "public/assets",
+    "publicBaseUrl": "/assets",
+    "notes": [
+      "Cleaned package removes __MACOSX and .DS_Store files.",
+      "Pairing filenames are normalized as sushi-or-sashimi-name + sake-name.",
+      "Text should be rendered dynamically in the app; pairing images are treated as standalone visual assets.",
+      "Screenshots are retained as design references before rebuilding screens."
+    ]
+  },
+  "brand": {
+    "name": "Sushi Bliss",
+    "tagline": "Timeless Japanese Artistry",
+    "assets": {
+      "logo": {
+        "filePath": "public/assets/brand/sushi-bliss-primary-logo.webp",
+        "publicUrl": "/assets/brand/sushi-bliss-primary-logo.webp"
+      },
+      "icon": {
+        "filePath": "public/assets/brand/sushi-bliss-app-icon.webp",
+        "publicUrl": "/assets/brand/sushi-bliss-app-icon.webp"
+      },
+      "floralEmblem": {
+        "filePath": "public/assets/brand/sushi-bliss-floral-emblem-on-black.webp",
+        "publicUrl": "/assets/brand/sushi-bliss-floral-emblem-on-black.webp"
+      },
+      "secondaryMark": {
+        "filePath": "public/assets/brand/sushi-bliss-secondary-brand-mark.webp",
+        "publicUrl": "/assets/brand/sushi-bliss-secondary-brand-mark.webp"
+      }
+    }
+  },
+  "designTokens": {
+    "colors": {
+      "bg": "#050505",
+      "panel": "rgba(12,12,10,.78)",
+      "panelSoft": "rgba(18,18,15,.64)",
+      "borderGold": "rgba(212,170,90,.22)",
+      "gold": "#caa45d",
+      "red": "#b81414",
+      "text": "#f5efe5",
+      "muted": "#9b9488"
+    },
+    "style": [
+      "mobile-first",
+      "dark glass panels",
+      "gold line icons",
+      "red glow CTAs",
+      "editorial serif headings",
+      "WebP photography"
+    ]
+  },
+  "navigation": {
+    "mobileBottomNav": [
+      "home",
+      "menu",
+      "reservations",
+      "orders",
+      "profile"
+    ],
+    "desktopTopNav": [
+      "home",
+      "menu",
+      "reservations",
+      "order-online",
+      "about-us",
+      "contact",
+      "loyalty"
+    ]
+  },
+  "chefs": [
+    {
+      "id": "hiroshi-tanaka",
+      "name": "Hiroshi Tanaka",
+      "position": "Head Chef & Owner",
+      "appetizer": "Harmony Toro Tartare",
+      "dessert": "Black Sesame Mochi",
+      "specialty": "Otoro Nigiri",
+      "sashimi": "Tuna Sashimi",
+      "sushi": "Deluxe Toro Caviar Nigiri",
+      "about": "Founder and head chef of Sushi Bliss. Hiroshi is the older leader figure and guides the counter with Edomae discipline, bluefin precision, calm authority, and luxury restraint.",
+      "standingImage": {
+        "filePath": "public/assets/chefs/hiroshi-tanaka-head-chef-standing.webp",
+        "publicUrl": "/assets/chefs/hiroshi-tanaka-head-chef-standing.webp"
+      },
+      "platingImage": {
+        "filePath": "public/assets/chefs/hiroshi-tanaka-head-chef-plating.webp",
+        "publicUrl": "/assets/chefs/hiroshi-tanaka-head-chef-plating.webp"
+      },
+      "profileImage": {
+        "filePath": "public/assets/chefs/hiroshi-tanaka-profile-photo.webp",
+        "publicUrl": "/assets/chefs/hiroshi-tanaka-profile-photo.webp"
+      }
+    },
+    {
+      "id": "kenji-sato",
+      "name": "Kenji Sato",
+      "position": "Sous Chef",
+      "appetizer": "Legacy Scallop Yuzu",
+      "dessert": "Yuzu Panna Cotta",
+      "specialty": "Seared Sushi Special",
+      "sashimi": "Hamachi Sashimi",
+      "sushi": "Seared Beef Nigiri",
+      "about": "Sous chef focused on heat, timing, and finishing work. Kenji should remain visually distinct from the lead chef through his younger profile, cap styling, and clean station discipline.",
+      "standingImage": {
+        "filePath": "public/assets/chefs/kenji-sato-sous-chef-standing.webp",
+        "publicUrl": "/assets/chefs/kenji-sato-sous-chef-standing.webp"
+      },
+      "platingImage": {
+        "filePath": "public/assets/chefs/kenji-sato-sous-chef-plating.webp",
+        "publicUrl": "/assets/chefs/kenji-sato-sous-chef-plating.webp"
+      },
+      "profileImage": null
+    },
+    {
+      "id": "ren-mori",
+      "name": "Ren Mori",
+      "position": "Lead Sushi Chef",
+      "appetizer": "Mastery Caviar Rice",
+      "dessert": "Dark Chocolate Matcha",
+      "specialty": "Omakase Nigiri Flight",
+      "sashimi": "Red Snapper Sashimi",
+      "sushi": "Dragon Roll",
+      "about": "Lead sushi chef responsible for knife work, pacing, and service rhythm. Ren is the distinct middle-aged chef without the same look as the sous chef, with a refined senior presence and exacting plating style.",
+      "standingImage": {
+        "filePath": "public/assets/chefs/ren-mori-lead-chef-standing.webp",
+        "publicUrl": "/assets/chefs/ren-mori-lead-chef-standing.webp"
+      },
+      "platingImage": {
+        "filePath": "public/assets/chefs/ren-mori-lead-chef-plating.webp",
+        "publicUrl": "/assets/chefs/ren-mori-lead-chef-plating.webp"
+      },
+      "profileImage": null
+    },
+    {
+      "id": "aiko-nakamura",
+      "name": "Aiko Nakamura",
+      "position": "Pastry Chef",
+      "appetizer": "Bliss Seasonal Amuse-Bouche",
+      "dessert": "Matcha Mousse",
+      "specialty": "Matcha Signature Dessert",
+      "sashimi": "Scallop Sashimi",
+      "sushi": "Salmon Temari Sushi",
+      "about": "Pastry chef and the lady chef in the team lineup. Aiko closes the omakase journey with matcha, citrus, black sesame, and delicate architectural dessert work.",
+      "standingImage": {
+        "filePath": "public/assets/chefs/aiko-nakamura-pastry-chef-standing.webp",
+        "publicUrl": "/assets/chefs/aiko-nakamura-pastry-chef-standing.webp"
+      },
+      "platingImage": {
+        "filePath": "public/assets/chefs/aiko-nakamura-pastry-chef-plating-dessert.webp",
+        "publicUrl": "/assets/chefs/aiko-nakamura-pastry-chef-plating-dessert.webp"
+      },
+      "profileImage": null
+    }
+  ],
+  "menu": [
+    {
+      "id": "ikura-gunkan",
+      "name": "Ikura Gunkan",
+      "category": "gunkan",
+      "tags": [
+        "premium"
+      ],
+      "price": 12,
+      "description": "Salmon roe",
+      "ingredients": "Salmon roe, nori, sushi rice",
+      "chefNote": "Bright pearls of ikura that burst with savory salinity.",
+      "texture": "Pop, briny, bright",
+      "image": {
+        "filePath": "public/assets/menu/sushi/ikura-gunkan.webp",
+        "publicUrl": "/assets/menu/sushi/ikura-gunkan.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/ikura-salmon-roe.webp",
+        "publicUrl": "/assets/ingredients/ikura-salmon-roe.webp"
+      },
+      "sakePairing": {
+        "id": "ikura-gunkan-yuki-no-bosha-junmai-ginjo",
+        "menuItemId": "ikura-gunkan",
+        "menuName": "Ikura Gunkan",
+        "sakeName": "Yuki No Bosha Junmai Ginjo",
+        "sakeSlug": "yuki-no-bosha-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/ikura-gunkan-yuki-no-bosha-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/ikura-gunkan-yuki-no-bosha-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "uni-gunkan",
+      "name": "Uni Gunkan",
+      "category": "gunkan",
+      "tags": [
+        "premium",
+        "chef-special"
+      ],
+      "price": 16,
+      "description": "Sea urchin",
+      "ingredients": "Sea urchin, nori, sushi rice",
+      "chefNote": "Briny, creamy uni wrapped cleanly with warm rice.",
+      "texture": "Creamy, briny, custard-like",
+      "image": {
+        "filePath": "public/assets/menu/sushi/uni-gunkan.webp",
+        "publicUrl": "/assets/menu/sushi/uni-gunkan.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/uni-sea-urchin.webp",
+        "publicUrl": "/assets/ingredients/uni-sea-urchin.webp"
+      },
+      "sakePairing": {
+        "id": "uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo",
+        "menuItemId": "uni-gunkan",
+        "menuName": "Uni Gunkan",
+        "sakeName": "Kuheiji Eau du Desir Junmai Daiginjo",
+        "sakeSlug": "kuheiji-eau-du-desir-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "chutoro-nigiri",
+      "name": "Chutoro Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "premium"
+      ],
+      "price": 9,
+      "description": "Medium fatty bluefin tuna",
+      "ingredients": "Medium fatty bluefin tuna, sushi rice, wasabi",
+      "chefNote": "A balanced toro cut with silky fat and clean ocean flavor.",
+      "texture": "Silky, tender, clean finish",
+      "image": {
+        "filePath": "public/assets/menu/sushi/chutoro-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/chutoro-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "chutoro-nigiri-juyondai-honmaru",
+        "menuItemId": "chutoro-nigiri",
+        "menuName": "Chutoro Nigiri",
+        "sakeName": "Juyondai Honmaru",
+        "sakeSlug": "juyondai-honmaru",
+        "image": {
+          "filePath": "public/assets/pairings/chutoro-nigiri-juyondai-honmaru.webp",
+          "publicUrl": "/assets/pairings/chutoro-nigiri-juyondai-honmaru.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "deluxe-toro-caviar-nigiri",
+      "name": "Deluxe Toro Caviar Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "chef-special",
+        "premium"
+      ],
+      "price": 22,
+      "description": "Toro",
+      "ingredients": "Toro, caviar, sushi rice, gold flake",
+      "chefNote": "A cinematic signature bite with fatty toro and caviar salinity.",
+      "texture": "Buttery, briny, luxurious",
+      "image": {
+        "filePath": "public/assets/menu/sushi/deluxe-toro-caviar-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/deluxe-toro-caviar-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/caviar.webp",
+        "publicUrl": "/assets/ingredients/caviar.webp"
+      },
+      "sakePairing": {
+        "id": "deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo",
+        "menuItemId": "deluxe-toro-caviar-nigiri",
+        "menuName": "Deluxe Toro Caviar Nigiri",
+        "sakeName": "Kubota Manju Junmai Daiginjo",
+        "sakeSlug": "kubota-manju-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "ebi-nigiri",
+      "name": "Ebi Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "classic"
+      ],
+      "price": 6,
+      "description": "Shrimp",
+      "ingredients": "Shrimp, sushi rice, wasabi",
+      "chefNote": "Sweet shrimp with a clean, delicate snap.",
+      "texture": "Sweet, firm, delicate",
+      "image": {
+        "filePath": "public/assets/menu/sushi/ebi-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/ebi-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/ebi-shrimp.webp",
+        "publicUrl": "/assets/ingredients/ebi-shrimp.webp"
+      },
+      "sakePairing": {
+        "id": "ebi-nigiri-dry-honjozo",
+        "menuItemId": "ebi-nigiri",
+        "menuName": "Ebi Nigiri",
+        "sakeName": "Dry Honjozo",
+        "sakeSlug": "dry-honjozo",
+        "image": {
+          "filePath": "public/assets/pairings/ebi-nigiri-dry-honjozo.webp",
+          "publicUrl": "/assets/pairings/ebi-nigiri-dry-honjozo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "hamachi-nigiri",
+      "name": "Hamachi Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "popular"
+      ],
+      "price": 7.5,
+      "description": "Yellowtail",
+      "ingredients": "Yellowtail, sushi rice, wasabi",
+      "chefNote": "A bright yellowtail nigiri with gentle sweetness and refined finish.",
+      "texture": "Tender, mild, clean",
+      "image": {
+        "filePath": "public/assets/menu/sushi/hamachi-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/hamachi-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/hamachi-yellowtail-whole.webp",
+        "publicUrl": "/assets/ingredients/hamachi-yellowtail-whole.webp"
+      },
+      "sakePairing": {
+        "id": "hamachi-nigiri-dassai-45-junmai-daiginjo",
+        "menuItemId": "hamachi-nigiri",
+        "menuName": "Hamachi Nigiri",
+        "sakeName": "Dassai 45 Junmai Daiginjo",
+        "sakeSlug": "dassai-45-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/hamachi-nigiri-dassai-45-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/hamachi-nigiri-dassai-45-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "otoro-nigiri",
+      "name": "Otoro Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "hot",
+        "chef-special"
+      ],
+      "price": 12,
+      "description": "Premium fatty bluefin tuna",
+      "ingredients": "Premium fatty bluefin tuna, sushi rice, wasabi",
+      "chefNote": "Sourced from the finest bluefin tuna; each piece is cut to highlight buttery marbling and depth.",
+      "texture": "Buttery, rich, melt-in-your-mouth",
+      "image": {
+        "filePath": "public/assets/menu/sushi/otoro-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/otoro-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "otoro-nigiri-dassai-23-junmai-daiginjo",
+        "menuItemId": "otoro-nigiri",
+        "menuName": "Otoro Nigiri",
+        "sakeName": "Dassai 23 Junmai Daiginjo",
+        "sakeSlug": "dassai-23-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/otoro-nigiri-dassai-23-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/otoro-nigiri-dassai-23-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "salmon-nigiri",
+      "name": "Salmon Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "popular"
+      ],
+      "price": 7.5,
+      "description": "Norwegian salmon",
+      "ingredients": "Norwegian salmon, sushi rice, scallion, wasabi",
+      "chefNote": "Rich salmon with gentle sweetness and a bright garnish.",
+      "texture": "Soft, buttery, fresh",
+      "image": {
+        "filePath": "public/assets/menu/sushi/salmon-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/salmon-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/salmon-fillet.webp",
+        "publicUrl": "/assets/ingredients/salmon-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "salmon-nigiri-kikusui-junmai-ginjo",
+        "menuItemId": "salmon-nigiri",
+        "menuName": "Salmon Nigiri",
+        "sakeName": "Kikusui Junmai Ginjo",
+        "sakeSlug": "kikusui-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/salmon-nigiri-kikusui-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/salmon-nigiri-kikusui-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "scallop-nigiri",
+      "name": "Scallop Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "premium"
+      ],
+      "price": 9,
+      "description": "Scallop",
+      "ingredients": "Scallop, sushi rice, wasabi",
+      "chefNote": "A gentle scallop nigiri with soft sweetness.",
+      "texture": "Silky, delicate, sweet",
+      "image": {
+        "filePath": "public/assets/menu/sushi/scallop-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/scallop-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/scallop.webp",
+        "publicUrl": "/assets/ingredients/scallop.webp"
+      },
+      "sakePairing": {
+        "id": "scallop-nigiri-hakkaisan-junmai-daiginjo",
+        "menuItemId": "scallop-nigiri",
+        "menuName": "Scallop Nigiri",
+        "sakeName": "Hakkaisan Junmai Daiginjo",
+        "sakeSlug": "hakkaisan-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/scallop-nigiri-hakkaisan-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/scallop-nigiri-hakkaisan-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "seared-beef-nigiri",
+      "name": "Seared Beef Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "hot"
+      ],
+      "price": 16,
+      "description": "Seared beef",
+      "ingredients": "Seared beef, sushi rice, truffle garnish",
+      "chefNote": "Bold seared beef with a deep savory profile.",
+      "texture": "Tender, smoky, umami",
+      "image": {
+        "filePath": "public/assets/menu/sushi/seared-beef-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/seared-beef-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/wagyu-beef.webp",
+        "publicUrl": "/assets/ingredients/wagyu-beef.webp"
+      },
+      "sakePairing": {
+        "id": "seared-beef-nigiri-tengumai-yamahai-junmai",
+        "menuItemId": "seared-beef-nigiri",
+        "menuName": "Seared Beef Nigiri",
+        "sakeName": "Tengumai Yamahai Junmai",
+        "sakeSlug": "tengumai-yamahai-junmai",
+        "image": {
+          "filePath": "public/assets/pairings/seared-beef-nigiri-tengumai-yamahai-junmai.webp",
+          "publicUrl": "/assets/pairings/seared-beef-nigiri-tengumai-yamahai-junmai.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tako-nigiri",
+      "name": "Tako Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "classic"
+      ],
+      "price": 7,
+      "description": "Octopus",
+      "ingredients": "Octopus, sushi rice, wasabi",
+      "chefNote": "Tako prepared for a clean chew and subtle sweetness.",
+      "texture": "Firm, clean, lightly chewy",
+      "image": {
+        "filePath": "public/assets/menu/sushi/tako-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/tako-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/tako-octopus.webp",
+        "publicUrl": "/assets/ingredients/tako-octopus.webp"
+      },
+      "sakePairing": {
+        "id": "tako-nigiri-suigei-tokubetsu-junmai",
+        "menuItemId": "tako-nigiri",
+        "menuName": "Tako Nigiri",
+        "sakeName": "Suigei Tokubetsu Junmai",
+        "sakeSlug": "suigei-tokubetsu-junmai",
+        "image": {
+          "filePath": "public/assets/pairings/tako-nigiri-suigei-tokubetsu-junmai.webp",
+          "publicUrl": "/assets/pairings/tako-nigiri-suigei-tokubetsu-junmai.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tamago-nigiri",
+      "name": "Tamago Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 5,
+      "description": "Japanese omelet",
+      "ingredients": "Japanese omelet, sushi rice, nori",
+      "chefNote": "A precise, softly sweet omelet layered for texture.",
+      "texture": "Soft, custardy, lightly sweet",
+      "image": {
+        "filePath": "public/assets/menu/sushi/tamago-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/tamago-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/tamago-omelet.webp",
+        "publicUrl": "/assets/ingredients/tamago-omelet.webp"
+      },
+      "sakePairing": {
+        "id": "tamago-nigiri-hakkaisan-tokubetsu-honjozo",
+        "menuItemId": "tamago-nigiri",
+        "menuName": "Tamago Nigiri",
+        "sakeName": "Hakkaisan Tokubetsu Honjozo",
+        "sakeSlug": "hakkaisan-tokubetsu-honjozo",
+        "image": {
+          "filePath": "public/assets/pairings/tamago-nigiri-hakkaisan-tokubetsu-honjozo.webp",
+          "publicUrl": "/assets/pairings/tamago-nigiri-hakkaisan-tokubetsu-honjozo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "truffle-wagyu-nigiri",
+      "name": "Truffle Wagyu Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "chef-special",
+        "premium"
+      ],
+      "price": 18,
+      "description": "Seared wagyu beef",
+      "ingredients": "Seared wagyu beef, sushi rice, truffle, gold accent",
+      "chefNote": "A rich chef special built around wagyu marbling and truffle aroma.",
+      "texture": "Marbled, warm, luxurious",
+      "image": {
+        "filePath": "public/assets/menu/sushi/truffle-wagyu-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/truffle-wagyu-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/wagyu-beef.webp",
+        "publicUrl": "/assets/ingredients/wagyu-beef.webp"
+      },
+      "sakePairing": {
+        "id": "truffle-wagyu-nigiri-tedorigawa-yamahai-junmai",
+        "menuItemId": "truffle-wagyu-nigiri",
+        "menuName": "Truffle Wagyu Nigiri",
+        "sakeName": "Tedorigawa Yamahai Junmai",
+        "sakeSlug": "tedorigawa-yamahai-junmai",
+        "image": {
+          "filePath": "public/assets/pairings/truffle-wagyu-nigiri-tedorigawa-yamahai-junmai.webp",
+          "publicUrl": "/assets/pairings/truffle-wagyu-nigiri-tedorigawa-yamahai-junmai.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tuna-nigiri",
+      "name": "Tuna Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "classic"
+      ],
+      "price": 8,
+      "description": "Lean bluefin tuna",
+      "ingredients": "Lean bluefin tuna, sushi rice, wasabi",
+      "chefNote": "Classic, precise, and pure; a clean expression of tuna.",
+      "texture": "Firm, clean, delicate",
+      "image": {
+        "filePath": "public/assets/menu/sushi/tuna-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/tuna-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "tuna-nigiri-kubota-senju-ginjo",
+        "menuItemId": "tuna-nigiri",
+        "menuName": "Tuna Nigiri",
+        "sakeName": "Kubota Senju Ginjo",
+        "sakeSlug": "kubota-senju-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/tuna-nigiri-kubota-senju-ginjo.webp",
+          "publicUrl": "/assets/pairings/tuna-nigiri-kubota-senju-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "unagi-nigiri",
+      "name": "Unagi Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "hot"
+      ],
+      "price": 8.5,
+      "description": "Grilled eel",
+      "ingredients": "Grilled eel, sushi rice, tare, scallion",
+      "chefNote": "Warm, lacquered eel with smoky sweetness.",
+      "texture": "Soft, smoky, glazed",
+      "image": {
+        "filePath": "public/assets/menu/sushi/unagi-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/unagi-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/unagi-eel.webp",
+        "publicUrl": "/assets/ingredients/unagi-eel.webp"
+      },
+      "sakePairing": {
+        "id": "unagi-nigiri-hakkaisan-junmai-daiginjo",
+        "menuItemId": "unagi-nigiri",
+        "menuName": "Unagi Nigiri",
+        "sakeName": "Hakkaisan Junmai Daiginjo",
+        "sakeSlug": "hakkaisan-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/unagi-nigiri-hakkaisan-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/unagi-nigiri-hakkaisan-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "uni-nigiri",
+      "name": "Uni Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "chef-special"
+      ],
+      "price": 16,
+      "description": "Sea urchin",
+      "ingredients": "Sea urchin, sushi rice, nori",
+      "chefNote": "A luxurious sea urchin bite with deep ocean sweetness.",
+      "texture": "Creamy, delicate, oceanic",
+      "image": {
+        "filePath": "public/assets/menu/sushi/uni-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/uni-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/uni-sea-urchin.webp",
+        "publicUrl": "/assets/ingredients/uni-sea-urchin.webp"
+      },
+      "sakePairing": {
+        "id": "uni-nigiri-born-gold-junmai-daiginjo",
+        "menuItemId": "uni-nigiri",
+        "menuName": "Uni Nigiri",
+        "sakeName": "Born Gold Junmai Daiginjo",
+        "sakeSlug": "born-gold-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/uni-nigiri-born-gold-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/uni-nigiri-born-gold-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "whitefish-nigiri",
+      "name": "Whitefish Nigiri",
+      "category": "nigiri",
+      "tags": [
+        "classic"
+      ],
+      "price": 8,
+      "description": "Whitefish",
+      "ingredients": "Whitefish, sushi rice, wasabi",
+      "chefNote": "Subtle whitefish prepared to highlight freshness and texture.",
+      "texture": "Lean, clean, delicate",
+      "image": {
+        "filePath": "public/assets/menu/sushi/whitefish-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/whitefish-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/whitefish-fillet.webp",
+        "publicUrl": "/assets/ingredients/whitefish-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "whitefish-nigiri-koshino-kanbai-sai-daiginjo",
+        "menuItemId": "whitefish-nigiri",
+        "menuName": "Whitefish Nigiri",
+        "sakeName": "Koshino Kanbai Sai Daiginjo",
+        "sakeSlug": "koshino-kanbai-sai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/whitefish-nigiri-koshino-kanbai-sai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/whitefish-nigiri-koshino-kanbai-sai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "saba-oshizushi",
+      "name": "Saba Oshizushi",
+      "category": "oshizushi",
+      "tags": [
+        "special"
+      ],
+      "price": 13,
+      "description": "Pressed mackerel",
+      "ingredients": "Pressed mackerel, sushi rice, kombu, shiso",
+      "chefNote": "A pressed mackerel sushi with refined vinegar balance.",
+      "texture": "Firm, bright, savory",
+      "image": {
+        "filePath": "public/assets/menu/sushi/saba-oshizushi.webp",
+        "publicUrl": "/assets/menu/sushi/saba-oshizushi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/saba-mackerel.webp",
+        "publicUrl": "/assets/ingredients/saba-mackerel.webp"
+      },
+      "sakePairing": {
+        "id": "saba-oshizushi-harushika-junmai-ginjo",
+        "menuItemId": "saba-oshizushi",
+        "menuName": "Saba Oshizushi",
+        "sakeName": "Harushika Junmai Ginjo",
+        "sakeSlug": "harushika-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/saba-oshizushi-harushika-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/saba-oshizushi-harushika-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "california-roll",
+      "name": "California Roll",
+      "category": "rolls",
+      "tags": [
+        "popular"
+      ],
+      "price": 10,
+      "description": "California Roll",
+      "ingredients": "Crab, avocado, cucumber, sushi rice, nori, sesame, tobiko",
+      "chefNote": "A polished classic with sweet crab, cool cucumber, and creamy avocado in perfect balance.",
+      "texture": "Creamy, crisp, sweet finish",
+      "image": {
+        "filePath": "public/assets/menu/sushi/california-roll.webp",
+        "publicUrl": "/assets/menu/sushi/california-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/crab-meat.webp",
+        "publicUrl": "/assets/ingredients/crab-meat.webp"
+      },
+      "sakePairing": {
+        "id": "california-roll-kubota-senju-ginjo",
+        "menuItemId": "california-roll",
+        "menuName": "California Roll",
+        "sakeName": "Kubota Senju Ginjo",
+        "sakeSlug": "kubota-senju-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/california-roll-kubota-senju-ginjo.webp",
+          "publicUrl": "/assets/pairings/california-roll-kubota-senju-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "dragon-roll",
+      "name": "Dragon Roll",
+      "category": "rolls",
+      "tags": [
+        "special",
+        "popular"
+      ],
+      "price": 16,
+      "description": "Eel",
+      "ingredients": "Eel, avocado, cucumber, unagi sauce, sushi rice, nori",
+      "chefNote": "Layered, glossy, and rich with eel sweetness and avocado softness.",
+      "texture": "Creamy, smoky, saucy",
+      "image": {
+        "filePath": "public/assets/menu/sushi/dragon-roll.webp",
+        "publicUrl": "/assets/menu/sushi/dragon-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/unagi-eel.webp",
+        "publicUrl": "/assets/ingredients/unagi-eel.webp"
+      },
+      "sakePairing": {
+        "id": "dragon-roll-shichida-junmai",
+        "menuItemId": "dragon-roll",
+        "menuName": "Dragon Roll",
+        "sakeName": "Shichida Junmai",
+        "sakeSlug": "shichida-junmai",
+        "image": {
+          "filePath": "public/assets/pairings/dragon-roll-shichida-junmai.webp",
+          "publicUrl": "/assets/pairings/dragon-roll-shichida-junmai.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "philadelphia-roll",
+      "name": "Philadelphia Roll",
+      "category": "rolls",
+      "tags": [
+        "popular"
+      ],
+      "price": 12,
+      "description": "Philadelphia Roll",
+      "ingredients": "Salmon, cream cheese, cucumber, sushi rice, nori, scallion",
+      "chefNote": "Rich, cool, and smooth with clean salmon and a soft creamy finish.",
+      "texture": "Creamy, soft, fresh",
+      "image": {
+        "filePath": "public/assets/menu/sushi/philadelphia-roll.webp",
+        "publicUrl": "/assets/menu/sushi/philadelphia-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/salmon-fillet.webp",
+        "publicUrl": "/assets/ingredients/salmon-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "philadelphia-roll-dassai-45-junmai-daiginjo",
+        "menuItemId": "philadelphia-roll",
+        "menuName": "Philadelphia Roll",
+        "sakeName": "Dassai 45 Junmai Daiginjo",
+        "sakeSlug": "dassai-45-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/philadelphia-roll-dassai-45-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/philadelphia-roll-dassai-45-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "rainbow-roll",
+      "name": "Rainbow Roll",
+      "category": "rolls",
+      "tags": [
+        "premium",
+        "colorful"
+      ],
+      "price": 16,
+      "description": "Rainbow Roll",
+      "ingredients": "Crab, avocado, cucumber, tuna, salmon, whitefish, sushi rice, nori, tobiko",
+      "chefNote": "A vibrant roll layered with premium fish for a clean, luxurious tasting progression.",
+      "texture": "Silky, fresh, layered",
+      "image": {
+        "filePath": "public/assets/menu/sushi/rainbow-roll.webp",
+        "publicUrl": "/assets/menu/sushi/rainbow-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "rainbow-roll-dewazakura-oka-ginjo",
+        "menuItemId": "rainbow-roll",
+        "menuName": "Rainbow Roll",
+        "sakeName": "Dewazakura Oka Ginjo",
+        "sakeSlug": "dewazakura-oka-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/rainbow-roll-dewazakura-oka-ginjo.webp",
+          "publicUrl": "/assets/pairings/rainbow-roll-dewazakura-oka-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "spicy-tuna-roll",
+      "name": "Spicy Tuna Roll",
+      "category": "rolls",
+      "tags": [
+        "hot",
+        "popular"
+      ],
+      "price": 14,
+      "description": "Tuna",
+      "ingredients": "Tuna, spicy mayo, cucumber, scallion, sushi rice, nori",
+      "chefNote": "A polished roll with heat, crunch, and clean tuna flavor.",
+      "texture": "Creamy, crisp, spicy",
+      "image": {
+        "filePath": "public/assets/menu/sushi/spicy-tuna-roll.webp",
+        "publicUrl": "/assets/menu/sushi/spicy-tuna-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "spicy-tuna-roll-masumi-okuden-kantsukuri",
+        "menuItemId": "spicy-tuna-roll",
+        "menuName": "Spicy Tuna Roll",
+        "sakeName": "Masumi Okuden Kantsukuri",
+        "sakeSlug": "masumi-okuden-kantsukuri",
+        "image": {
+          "filePath": "public/assets/pairings/spicy-tuna-roll-masumi-okuden-kantsukuri.webp",
+          "publicUrl": "/assets/pairings/spicy-tuna-roll-masumi-okuden-kantsukuri.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tempura-roll",
+      "name": "Tempura Roll",
+      "category": "rolls",
+      "tags": [
+        "hot",
+        "crispy"
+      ],
+      "price": 14,
+      "description": "Tempura Roll",
+      "ingredients": "Shrimp tempura, avocado, cucumber, sushi rice, nori, tempura crumble, eel sauce",
+      "chefNote": "Warm crunch and delicate sweetness finished with a restrained glaze.",
+      "texture": "Crispy, warm, creamy",
+      "image": {
+        "filePath": "public/assets/menu/sushi/tempura-roll.webp",
+        "publicUrl": "/assets/menu/sushi/tempura-roll.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/ebi-shrimp.webp",
+        "publicUrl": "/assets/ingredients/ebi-shrimp.webp"
+      },
+      "sakePairing": {
+        "id": "tempura-roll-kikusui-junmai-ginjo",
+        "menuItemId": "tempura-roll",
+        "menuName": "Tempura Roll",
+        "sakeName": "Kikusui Junmai Ginjo",
+        "sakeSlug": "kikusui-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/tempura-roll-kikusui-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/tempura-roll-kikusui-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "red-snapper-sashimi",
+      "name": "Red Snapper Sashimi",
+      "category": "sashimi",
+      "tags": [
+        "sashimi"
+      ],
+      "price": 15,
+      "description": "Red snapper",
+      "ingredients": "Red snapper, shiso, daikon, wasabi",
+      "chefNote": "Clean, elegant snapper with a mineral finish.",
+      "texture": "Lean, delicate, mineral",
+      "image": {
+        "filePath": "public/assets/menu/sashimi/red-snapper-sashimi.webp",
+        "publicUrl": "/assets/menu/sashimi/red-snapper-sashimi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/red-snapper-whole.webp",
+        "publicUrl": "/assets/ingredients/red-snapper-whole.webp"
+      },
+      "sakePairing": {
+        "id": "red-snapper-sashimi-kikumasamune-kimoto",
+        "menuItemId": "red-snapper-sashimi",
+        "menuName": "Red Snapper Sashimi",
+        "sakeName": "Kikumasamune Kimoto",
+        "sakeSlug": "kikumasamune-kimoto",
+        "image": {
+          "filePath": "public/assets/pairings/red-snapper-sashimi-kikumasamune-kimoto.webp",
+          "publicUrl": "/assets/pairings/red-snapper-sashimi-kikumasamune-kimoto.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "salmon-sashimi",
+      "name": "Salmon Sashimi",
+      "category": "sashimi",
+      "tags": [
+        "sashimi"
+      ],
+      "price": 15,
+      "description": "Fresh salmon",
+      "ingredients": "Fresh salmon, shiso, micro herbs",
+      "chefNote": "Clean slices of salmon served for clarity and balance.",
+      "texture": "Soft, clean, buttery",
+      "image": {
+        "filePath": "public/assets/menu/sashimi/salmon-sashimi.webp",
+        "publicUrl": "/assets/menu/sashimi/salmon-sashimi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/salmon-fillet.webp",
+        "publicUrl": "/assets/ingredients/salmon-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "salmon-sashimi-dewazakura-oka-ginjo",
+        "menuItemId": "salmon-sashimi",
+        "menuName": "Salmon Sashimi",
+        "sakeName": "Dewazakura Oka Ginjo",
+        "sakeSlug": "dewazakura-oka-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/salmon-sashimi-dewazakura-oka-ginjo.webp",
+          "publicUrl": "/assets/pairings/salmon-sashimi-dewazakura-oka-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "scallop-sashimi",
+      "name": "Scallop Sashimi",
+      "category": "sashimi",
+      "tags": [
+        "sashimi",
+        "premium"
+      ],
+      "price": 14,
+      "description": "Fresh scallop",
+      "ingredients": "Fresh scallop, shiso, micro herbs",
+      "chefNote": "Clean scallop sweetness with a refined finish.",
+      "texture": "Silky, sweet, delicate",
+      "image": {
+        "filePath": "public/assets/menu/sashimi/scallop-sashimi.webp",
+        "publicUrl": "/assets/menu/sashimi/scallop-sashimi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/scallop.webp",
+        "publicUrl": "/assets/ingredients/scallop.webp"
+      },
+      "sakePairing": {
+        "id": "scallop-sashimi-manotsuru-ginjo",
+        "menuItemId": "scallop-sashimi",
+        "menuName": "Scallop Sashimi",
+        "sakeName": "Manotsuru Ginjo",
+        "sakeSlug": "manotsuru-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/scallop-sashimi-manotsuru-ginjo.webp",
+          "publicUrl": "/assets/pairings/scallop-sashimi-manotsuru-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tako-sashimi",
+      "name": "Tako Sashimi",
+      "category": "sashimi",
+      "tags": [
+        "sashimi"
+      ],
+      "price": 13,
+      "description": "Octopus",
+      "ingredients": "Octopus, daikon, shiso, wasabi",
+      "chefNote": "Precision-cut octopus with clean chew and delicate sweetness.",
+      "texture": "Clean, firm, lightly chewy",
+      "image": {
+        "filePath": "public/assets/menu/sashimi/tako-sashimi.webp",
+        "publicUrl": "/assets/menu/sashimi/tako-sashimi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/tako-octopus.webp",
+        "publicUrl": "/assets/ingredients/tako-octopus.webp"
+      },
+      "sakePairing": {
+        "id": "tako-sashimi-dewazakura-oka-ginjo",
+        "menuItemId": "tako-sashimi",
+        "menuName": "Tako Sashimi",
+        "sakeName": "Dewazakura Oka Ginjo",
+        "sakeSlug": "dewazakura-oka-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/tako-sashimi-dewazakura-oka-ginjo.webp",
+          "publicUrl": "/assets/pairings/tako-sashimi-dewazakura-oka-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "tuna-sashimi",
+      "name": "Tuna Sashimi",
+      "category": "sashimi",
+      "tags": [
+        "sashimi",
+        "premium"
+      ],
+      "price": 16,
+      "description": "Bluefin tuna slices",
+      "ingredients": "Bluefin tuna slices, shiso, wasabi",
+      "chefNote": "Pure tuna sashimi focused on clean slicing and finish.",
+      "texture": "Clean, firm, silky",
+      "image": {
+        "filePath": "public/assets/menu/sashimi/tuna-sashimi.webp",
+        "publicUrl": "/assets/menu/sashimi/tuna-sashimi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/bluefin-tuna-whole.webp",
+        "publicUrl": "/assets/ingredients/bluefin-tuna-whole.webp"
+      },
+      "sakePairing": {
+        "id": "tuna-sashimi-dewazakura-yukimegami",
+        "menuItemId": "tuna-sashimi",
+        "menuName": "Tuna Sashimi",
+        "sakeName": "Dewazakura Yukimegami",
+        "sakeSlug": "dewazakura-yukimegami",
+        "image": {
+          "filePath": "public/assets/pairings/tuna-sashimi-dewazakura-yukimegami.webp",
+          "publicUrl": "/assets/pairings/tuna-sashimi-dewazakura-yukimegami.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "salmon-temari-sushi",
+      "name": "Salmon Temari Sushi",
+      "category": "sushi",
+      "tags": [
+        "special"
+      ],
+      "price": 10,
+      "description": "Salmon",
+      "ingredients": "Salmon, sushi rice, micro herbs",
+      "chefNote": "A compact jewel-like salmon sushi for a refined tasting course.",
+      "texture": "Soft, bright, balanced",
+      "image": {
+        "filePath": "public/assets/menu/sushi/salmon-temari-sushi.webp",
+        "publicUrl": "/assets/menu/sushi/salmon-temari-sushi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/salmon-fillet.webp",
+        "publicUrl": "/assets/ingredients/salmon-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "salmon-temari-sushi-amabuki-junmai-ginjo",
+        "menuItemId": "salmon-temari-sushi",
+        "menuName": "Salmon Temari Sushi",
+        "sakeName": "Amabuki Junmai Ginjo",
+        "sakeSlug": "amabuki-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/salmon-temari-sushi-amabuki-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/salmon-temari-sushi-amabuki-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "salmon-avocado-temaki",
+      "name": "Salmon Avocado Temaki",
+      "category": "temaki",
+      "tags": [
+        "popular"
+      ],
+      "price": 12,
+      "description": "Salmon",
+      "ingredients": "Salmon, avocado, cucumber, sushi rice, nori",
+      "chefNote": "A hand roll with buttery salmon and creamy avocado.",
+      "texture": "Creamy, fresh, crisp",
+      "image": {
+        "filePath": "public/assets/menu/sushi/salmon-avocado-temaki.webp",
+        "publicUrl": "/assets/menu/sushi/salmon-avocado-temaki.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/avocado.webp",
+        "publicUrl": "/assets/ingredients/avocado.webp"
+      },
+      "sakePairing": {
+        "id": "salmon-avocado-temaki-maboroshi-junmai-ginjo",
+        "menuItemId": "salmon-avocado-temaki",
+        "menuName": "Salmon Avocado Temaki",
+        "sakeName": "Maboroshi Junmai Ginjo",
+        "sakeSlug": "maboroshi-junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/salmon-avocado-temaki-maboroshi-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/salmon-avocado-temaki-maboroshi-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "sushi-cone",
+      "name": "Sushi Cone",
+      "category": "temaki",
+      "tags": [
+        "popular"
+      ],
+      "price": 10,
+      "description": "Nori cone",
+      "ingredients": "Nori cone, salmon, avocado, rice, greens",
+      "chefNote": "A cone-style sushi with layered freshness and texture.",
+      "texture": "Fresh, crisp, creamy",
+      "image": null,
+      "standaloneImageMissing": true,
+      "pairingImageFallback": {
+        "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
+        "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
+      },
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/salmon-fillet.webp",
+        "publicUrl": "/assets/ingredients/salmon-fillet.webp"
+      },
+      "sakePairing": {
+        "id": "sushi-cone-senkin-modern-muku",
+        "menuItemId": "sushi-cone",
+        "menuName": "Sushi Cone",
+        "sakeName": "Senkin Modern Muku",
+        "sakeSlug": "senkin-modern-muku",
+        "image": {
+          "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
+          "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "temaki-cone",
+      "name": "Temaki Cone",
+      "category": "temaki",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 9,
+      "description": "Nori cone",
+      "ingredients": "Nori cone, sushi rice, vegetables, sesame",
+      "chefNote": "A crisp hand roll built for freshness and contrast.",
+      "texture": "Crisp, fresh, light",
+      "image": {
+        "filePath": "public/assets/menu/sushi/temaki-cone.webp",
+        "publicUrl": "/assets/menu/sushi/temaki-cone.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/avocado.webp",
+        "publicUrl": "/assets/ingredients/avocado.webp"
+      },
+      "sakePairing": {
+        "id": "temaki-cone-shirakawago-sasanigori",
+        "menuItemId": "temaki-cone",
+        "menuName": "Temaki Cone",
+        "sakeName": "Shirakawago Sasanigori",
+        "sakeSlug": "shirakawago-sasanigori",
+        "image": {
+          "filePath": "public/assets/pairings/temaki-cone-shirakawago-sasanigori.webp",
+          "publicUrl": "/assets/pairings/temaki-cone-shirakawago-sasanigori.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "avocado-nigiri",
+      "name": "Avocado Nigiri",
+      "category": "vegetarian",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 6,
+      "description": "Avocado",
+      "ingredients": "Avocado, sushi rice, nori, scallion",
+      "chefNote": "Vegetarian nigiri with creamy avocado and crisp nori.",
+      "texture": "Creamy, fresh, clean",
+      "image": {
+        "filePath": "public/assets/menu/sushi/avocado-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/avocado-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/avocado.webp",
+        "publicUrl": "/assets/ingredients/avocado.webp"
+      },
+      "sakePairing": {
+        "id": "avocado-nigiri-dassai-45-junmai-daiginjo",
+        "menuItemId": "avocado-nigiri",
+        "menuName": "Avocado Nigiri",
+        "sakeName": "Dassai 45 Junmai Daiginjo",
+        "sakeSlug": "dassai-45-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/avocado-nigiri-dassai-45-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/avocado-nigiri-dassai-45-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "inari-sushi",
+      "name": "Inari Sushi",
+      "category": "vegetarian",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 6,
+      "description": "Seasoned tofu pouch",
+      "ingredients": "Seasoned tofu pouch, sushi rice, sesame",
+      "chefNote": "A vegetarian classic with sweet seasoned tofu and warm rice.",
+      "texture": "Soft, sweet, savory",
+      "image": {
+        "filePath": "public/assets/menu/sushi/inari-sushi.webp",
+        "publicUrl": "/assets/menu/sushi/inari-sushi.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/tamago-omelet.webp",
+        "publicUrl": "/assets/ingredients/tamago-omelet.webp"
+      },
+      "sakePairing": {
+        "id": "inari-sushi-hououbiden-junmai-daiginjo",
+        "menuItemId": "inari-sushi",
+        "menuName": "Inari Sushi",
+        "sakeName": "Hououbiden Junmai Daiginjo",
+        "sakeSlug": "hououbiden-junmai-daiginjo",
+        "image": {
+          "filePath": "public/assets/pairings/inari-sushi-hououbiden-junmai-daiginjo.webp",
+          "publicUrl": "/assets/pairings/inari-sushi-hououbiden-junmai-daiginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "kappa-maki",
+      "name": "Kappa Maki",
+      "category": "vegetarian",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 5,
+      "description": "Cucumber",
+      "ingredients": "Cucumber, sushi rice, nori, sesame",
+      "chefNote": "Crisp cucumber maki with a clean, refreshing finish.",
+      "texture": "Crisp, light, refreshing",
+      "image": {
+        "filePath": "public/assets/menu/sushi/kappa-maki.webp",
+        "publicUrl": "/assets/menu/sushi/kappa-maki.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/avocado.webp",
+        "publicUrl": "/assets/ingredients/avocado.webp"
+      },
+      "sakePairing": {
+        "id": "kappa-maki-kubota-senju-ginjo",
+        "menuItemId": "kappa-maki",
+        "menuName": "Kappa Maki",
+        "sakeName": "Kubota Senju Ginjo",
+        "sakeSlug": "kubota-senju-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/kappa-maki-kubota-senju-ginjo.webp",
+          "publicUrl": "/assets/pairings/kappa-maki-kubota-senju-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "shiitake-nigiri",
+      "name": "Shiitake Nigiri",
+      "category": "vegetarian",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 7,
+      "description": "Glazed shiitake mushroom",
+      "ingredients": "Simmered shiitake, sushi rice, wasabi, scallion",
+      "chefNote": "Earthy shiitake prepared with quiet umami and a clean rice finish.",
+      "texture": "Earthy, tender, umami",
+      "image": {
+        "filePath": "public/assets/menu/sushi/shiitake-nigiri.webp",
+        "publicUrl": "/assets/menu/sushi/shiitake-nigiri.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/vegetable-medley.webp",
+        "publicUrl": "/assets/ingredients/vegetable-medley.webp"
+      },
+      "sakePairing": {
+        "id": "shiitake-nigiri-junmai-ginjo",
+        "menuItemId": "shiitake-nigiri",
+        "menuName": "Shiitake Nigiri",
+        "sakeName": "Junmai Ginjo",
+        "sakeSlug": "junmai-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/shiitake-nigiri-junmai-ginjo.webp",
+          "publicUrl": "/assets/pairings/shiitake-nigiri-junmai-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    },
+    {
+      "id": "vegetarian-temaki",
+      "name": "Vegetarian Temaki",
+      "category": "vegetarian",
+      "tags": [
+        "vegetarian"
+      ],
+      "price": 9,
+      "description": "Avocado",
+      "ingredients": "Avocado, cucumber, carrot, greens, sushi rice, nori",
+      "chefNote": "A fresh vegetable hand roll with bright texture and color.",
+      "texture": "Crisp, creamy, fresh",
+      "image": {
+        "filePath": "public/assets/menu/sushi/vegetarian-temaki.webp",
+        "publicUrl": "/assets/menu/sushi/vegetarian-temaki.webp"
+      },
+      "standaloneImageMissing": false,
+      "pairingImageFallback": null,
+      "ingredientImage": {
+        "filePath": "public/assets/ingredients/avocado.webp",
+        "publicUrl": "/assets/ingredients/avocado.webp"
+      },
+      "sakePairing": {
+        "id": "vegetarian-temaki-dewazakura-oka-ginjo",
+        "menuItemId": "vegetarian-temaki",
+        "menuName": "Vegetarian Temaki",
+        "sakeName": "Dewazakura Oka Ginjo",
+        "sakeSlug": "dewazakura-oka-ginjo",
+        "image": {
+          "filePath": "public/assets/pairings/vegetarian-temaki-dewazakura-oka-ginjo.webp",
+          "publicUrl": "/assets/pairings/vegetarian-temaki-dewazakura-oka-ginjo.webp"
+        },
+        "textIsDynamic": true,
+        "bakedTextRemoved": true,
+        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      }
+    }
+  ],
+  "pairings": [
+    {
+      "id": "avocado-nigiri-dassai-45-junmai-daiginjo",
+      "menuItemId": "avocado-nigiri",
+      "menuName": "Avocado Nigiri",
+      "sakeName": "Dassai 45 Junmai Daiginjo",
+      "sakeSlug": "dassai-45-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/avocado-nigiri-dassai-45-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/avocado-nigiri-dassai-45-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "california-roll-kubota-senju-ginjo",
+      "menuItemId": "california-roll",
+      "menuName": "California Roll",
+      "sakeName": "Kubota Senju Ginjo",
+      "sakeSlug": "kubota-senju-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/california-roll-kubota-senju-ginjo.webp",
+        "publicUrl": "/assets/pairings/california-roll-kubota-senju-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "chutoro-nigiri-juyondai-honmaru",
+      "menuItemId": "chutoro-nigiri",
+      "menuName": "Chutoro Nigiri",
+      "sakeName": "Juyondai Honmaru",
+      "sakeSlug": "juyondai-honmaru",
+      "image": {
+        "filePath": "public/assets/pairings/chutoro-nigiri-juyondai-honmaru.webp",
+        "publicUrl": "/assets/pairings/chutoro-nigiri-juyondai-honmaru.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo",
+      "menuItemId": "deluxe-toro-caviar-nigiri",
+      "menuName": "Deluxe Toro Caviar Nigiri",
+      "sakeName": "Kubota Manju Junmai Daiginjo",
+      "sakeSlug": "kubota-manju-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/deluxe-toro-caviar-nigiri-kubota-manju-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "dragon-roll-shichida-junmai",
+      "menuItemId": "dragon-roll",
+      "menuName": "Dragon Roll",
+      "sakeName": "Shichida Junmai",
+      "sakeSlug": "shichida-junmai",
+      "image": {
+        "filePath": "public/assets/pairings/dragon-roll-shichida-junmai.webp",
+        "publicUrl": "/assets/pairings/dragon-roll-shichida-junmai.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "ebi-nigiri-dry-honjozo",
+      "menuItemId": "ebi-nigiri",
+      "menuName": "Ebi Nigiri",
+      "sakeName": "Dry Honjozo",
+      "sakeSlug": "dry-honjozo",
+      "image": {
+        "filePath": "public/assets/pairings/ebi-nigiri-dry-honjozo.webp",
+        "publicUrl": "/assets/pairings/ebi-nigiri-dry-honjozo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "hamachi-nigiri-dassai-45-junmai-daiginjo",
+      "menuItemId": "hamachi-nigiri",
+      "menuName": "Hamachi Nigiri",
+      "sakeName": "Dassai 45 Junmai Daiginjo",
+      "sakeSlug": "dassai-45-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/hamachi-nigiri-dassai-45-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/hamachi-nigiri-dassai-45-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "ikura-gunkan-yuki-no-bosha-junmai-ginjo",
+      "menuItemId": "ikura-gunkan",
+      "menuName": "Ikura Gunkan",
+      "sakeName": "Yuki No Bosha Junmai Ginjo",
+      "sakeSlug": "yuki-no-bosha-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/ikura-gunkan-yuki-no-bosha-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/ikura-gunkan-yuki-no-bosha-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "inari-sushi-hououbiden-junmai-daiginjo",
+      "menuItemId": "inari-sushi",
+      "menuName": "Inari Sushi",
+      "sakeName": "Hououbiden Junmai Daiginjo",
+      "sakeSlug": "hououbiden-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/inari-sushi-hououbiden-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/inari-sushi-hououbiden-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "kappa-maki-kubota-senju-ginjo",
+      "menuItemId": "kappa-maki",
+      "menuName": "Kappa Maki",
+      "sakeName": "Kubota Senju Ginjo",
+      "sakeSlug": "kubota-senju-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/kappa-maki-kubota-senju-ginjo.webp",
+        "publicUrl": "/assets/pairings/kappa-maki-kubota-senju-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "otoro-nigiri-dassai-23-junmai-daiginjo",
+      "menuItemId": "otoro-nigiri",
+      "menuName": "Otoro Nigiri",
+      "sakeName": "Dassai 23 Junmai Daiginjo",
+      "sakeSlug": "dassai-23-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/otoro-nigiri-dassai-23-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/otoro-nigiri-dassai-23-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "philadelphia-roll-dassai-45-junmai-daiginjo",
+      "menuItemId": "philadelphia-roll",
+      "menuName": "Philadelphia Roll",
+      "sakeName": "Dassai 45 Junmai Daiginjo",
+      "sakeSlug": "dassai-45-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/philadelphia-roll-dassai-45-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/philadelphia-roll-dassai-45-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "rainbow-roll-dewazakura-oka-ginjo",
+      "menuItemId": "rainbow-roll",
+      "menuName": "Rainbow Roll",
+      "sakeName": "Dewazakura Oka Ginjo",
+      "sakeSlug": "dewazakura-oka-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/rainbow-roll-dewazakura-oka-ginjo.webp",
+        "publicUrl": "/assets/pairings/rainbow-roll-dewazakura-oka-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "red-snapper-sashimi-kikumasamune-kimoto",
+      "menuItemId": "red-snapper-sashimi",
+      "menuName": "Red Snapper Sashimi",
+      "sakeName": "Kikumasamune Kimoto",
+      "sakeSlug": "kikumasamune-kimoto",
+      "image": {
+        "filePath": "public/assets/pairings/red-snapper-sashimi-kikumasamune-kimoto.webp",
+        "publicUrl": "/assets/pairings/red-snapper-sashimi-kikumasamune-kimoto.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "saba-oshizushi-harushika-junmai-ginjo",
+      "menuItemId": "saba-oshizushi",
+      "menuName": "Saba Oshizushi",
+      "sakeName": "Harushika Junmai Ginjo",
+      "sakeSlug": "harushika-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/saba-oshizushi-harushika-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/saba-oshizushi-harushika-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "salmon-avocado-temaki-maboroshi-junmai-ginjo",
+      "menuItemId": "salmon-avocado-temaki",
+      "menuName": "Salmon Avocado Temaki",
+      "sakeName": "Maboroshi Junmai Ginjo",
+      "sakeSlug": "maboroshi-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/salmon-avocado-temaki-maboroshi-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/salmon-avocado-temaki-maboroshi-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "salmon-nigiri-kikusui-junmai-ginjo",
+      "menuItemId": "salmon-nigiri",
+      "menuName": "Salmon Nigiri",
+      "sakeName": "Kikusui Junmai Ginjo",
+      "sakeSlug": "kikusui-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/salmon-nigiri-kikusui-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/salmon-nigiri-kikusui-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "salmon-sashimi-dewazakura-oka-ginjo",
+      "menuItemId": "salmon-sashimi",
+      "menuName": "Salmon Sashimi",
+      "sakeName": "Dewazakura Oka Ginjo",
+      "sakeSlug": "dewazakura-oka-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/salmon-sashimi-dewazakura-oka-ginjo.webp",
+        "publicUrl": "/assets/pairings/salmon-sashimi-dewazakura-oka-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "salmon-temari-sushi-amabuki-junmai-ginjo",
+      "menuItemId": "salmon-temari-sushi",
+      "menuName": "Salmon Temari Sushi",
+      "sakeName": "Amabuki Junmai Ginjo",
+      "sakeSlug": "amabuki-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/salmon-temari-sushi-amabuki-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/salmon-temari-sushi-amabuki-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "scallop-nigiri-hakkaisan-junmai-daiginjo",
+      "menuItemId": "scallop-nigiri",
+      "menuName": "Scallop Nigiri",
+      "sakeName": "Hakkaisan Junmai Daiginjo",
+      "sakeSlug": "hakkaisan-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/scallop-nigiri-hakkaisan-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/scallop-nigiri-hakkaisan-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "scallop-sashimi-manotsuru-ginjo",
+      "menuItemId": "scallop-sashimi",
+      "menuName": "Scallop Sashimi",
+      "sakeName": "Manotsuru Ginjo",
+      "sakeSlug": "manotsuru-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/scallop-sashimi-manotsuru-ginjo.webp",
+        "publicUrl": "/assets/pairings/scallop-sashimi-manotsuru-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "seared-beef-nigiri-tengumai-yamahai-junmai",
+      "menuItemId": "seared-beef-nigiri",
+      "menuName": "Seared Beef Nigiri",
+      "sakeName": "Tengumai Yamahai Junmai",
+      "sakeSlug": "tengumai-yamahai-junmai",
+      "image": {
+        "filePath": "public/assets/pairings/seared-beef-nigiri-tengumai-yamahai-junmai.webp",
+        "publicUrl": "/assets/pairings/seared-beef-nigiri-tengumai-yamahai-junmai.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "shiitake-nigiri-junmai-ginjo",
+      "menuItemId": "shiitake-nigiri",
+      "menuName": "Shiitake Nigiri",
+      "sakeName": "Junmai Ginjo",
+      "sakeSlug": "junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/shiitake-nigiri-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/shiitake-nigiri-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "spicy-tuna-roll-masumi-okuden-kantsukuri",
+      "menuItemId": "spicy-tuna-roll",
+      "menuName": "Spicy Tuna Roll",
+      "sakeName": "Masumi Okuden Kantsukuri",
+      "sakeSlug": "masumi-okuden-kantsukuri",
+      "image": {
+        "filePath": "public/assets/pairings/spicy-tuna-roll-masumi-okuden-kantsukuri.webp",
+        "publicUrl": "/assets/pairings/spicy-tuna-roll-masumi-okuden-kantsukuri.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "sushi-cone-senkin-modern-muku",
+      "menuItemId": "sushi-cone",
+      "menuName": "Sushi Cone",
+      "sakeName": "Senkin Modern Muku",
+      "sakeSlug": "senkin-modern-muku",
+      "image": {
+        "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
+        "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tako-nigiri-suigei-tokubetsu-junmai",
+      "menuItemId": "tako-nigiri",
+      "menuName": "Tako Nigiri",
+      "sakeName": "Suigei Tokubetsu Junmai",
+      "sakeSlug": "suigei-tokubetsu-junmai",
+      "image": {
+        "filePath": "public/assets/pairings/tako-nigiri-suigei-tokubetsu-junmai.webp",
+        "publicUrl": "/assets/pairings/tako-nigiri-suigei-tokubetsu-junmai.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tako-sashimi-dewazakura-oka-ginjo",
+      "menuItemId": "tako-sashimi",
+      "menuName": "Tako Sashimi",
+      "sakeName": "Dewazakura Oka Ginjo",
+      "sakeSlug": "dewazakura-oka-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/tako-sashimi-dewazakura-oka-ginjo.webp",
+        "publicUrl": "/assets/pairings/tako-sashimi-dewazakura-oka-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tamago-nigiri-hakkaisan-tokubetsu-honjozo",
+      "menuItemId": "tamago-nigiri",
+      "menuName": "Tamago Nigiri",
+      "sakeName": "Hakkaisan Tokubetsu Honjozo",
+      "sakeSlug": "hakkaisan-tokubetsu-honjozo",
+      "image": {
+        "filePath": "public/assets/pairings/tamago-nigiri-hakkaisan-tokubetsu-honjozo.webp",
+        "publicUrl": "/assets/pairings/tamago-nigiri-hakkaisan-tokubetsu-honjozo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "temaki-cone-shirakawago-sasanigori",
+      "menuItemId": "temaki-cone",
+      "menuName": "Temaki Cone",
+      "sakeName": "Shirakawago Sasanigori",
+      "sakeSlug": "shirakawago-sasanigori",
+      "image": {
+        "filePath": "public/assets/pairings/temaki-cone-shirakawago-sasanigori.webp",
+        "publicUrl": "/assets/pairings/temaki-cone-shirakawago-sasanigori.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tempura-roll-kikusui-junmai-ginjo",
+      "menuItemId": "tempura-roll",
+      "menuName": "Tempura Roll",
+      "sakeName": "Kikusui Junmai Ginjo",
+      "sakeSlug": "kikusui-junmai-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/tempura-roll-kikusui-junmai-ginjo.webp",
+        "publicUrl": "/assets/pairings/tempura-roll-kikusui-junmai-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "truffle-wagyu-nigiri-tedorigawa-yamahai-junmai",
+      "menuItemId": "truffle-wagyu-nigiri",
+      "menuName": "Truffle Wagyu Nigiri",
+      "sakeName": "Tedorigawa Yamahai Junmai",
+      "sakeSlug": "tedorigawa-yamahai-junmai",
+      "image": {
+        "filePath": "public/assets/pairings/truffle-wagyu-nigiri-tedorigawa-yamahai-junmai.webp",
+        "publicUrl": "/assets/pairings/truffle-wagyu-nigiri-tedorigawa-yamahai-junmai.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tuna-nigiri-kubota-senju-ginjo",
+      "menuItemId": "tuna-nigiri",
+      "menuName": "Tuna Nigiri",
+      "sakeName": "Kubota Senju Ginjo",
+      "sakeSlug": "kubota-senju-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/tuna-nigiri-kubota-senju-ginjo.webp",
+        "publicUrl": "/assets/pairings/tuna-nigiri-kubota-senju-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "tuna-sashimi-dewazakura-yukimegami",
+      "menuItemId": "tuna-sashimi",
+      "menuName": "Tuna Sashimi",
+      "sakeName": "Dewazakura Yukimegami",
+      "sakeSlug": "dewazakura-yukimegami",
+      "image": {
+        "filePath": "public/assets/pairings/tuna-sashimi-dewazakura-yukimegami.webp",
+        "publicUrl": "/assets/pairings/tuna-sashimi-dewazakura-yukimegami.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "unagi-nigiri-hakkaisan-junmai-daiginjo",
+      "menuItemId": "unagi-nigiri",
+      "menuName": "Unagi Nigiri",
+      "sakeName": "Hakkaisan Junmai Daiginjo",
+      "sakeSlug": "hakkaisan-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/unagi-nigiri-hakkaisan-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/unagi-nigiri-hakkaisan-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo",
+      "menuItemId": "uni-gunkan",
+      "menuName": "Uni Gunkan",
+      "sakeName": "Kuheiji Eau du Desir Junmai Daiginjo",
+      "sakeSlug": "kuheiji-eau-du-desir-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/uni-gunkan-kuheiji-eau-du-desir-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "uni-nigiri-born-gold-junmai-daiginjo",
+      "menuItemId": "uni-nigiri",
+      "menuName": "Uni Nigiri",
+      "sakeName": "Born Gold Junmai Daiginjo",
+      "sakeSlug": "born-gold-junmai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/uni-nigiri-born-gold-junmai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/uni-nigiri-born-gold-junmai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "vegetarian-temaki-dewazakura-oka-ginjo",
+      "menuItemId": "vegetarian-temaki",
+      "menuName": "Vegetarian Temaki",
+      "sakeName": "Dewazakura Oka Ginjo",
+      "sakeSlug": "dewazakura-oka-ginjo",
+      "image": {
+        "filePath": "public/assets/pairings/vegetarian-temaki-dewazakura-oka-ginjo.webp",
+        "publicUrl": "/assets/pairings/vegetarian-temaki-dewazakura-oka-ginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    },
+    {
+      "id": "whitefish-nigiri-koshino-kanbai-sai-daiginjo",
+      "menuItemId": "whitefish-nigiri",
+      "menuName": "Whitefish Nigiri",
+      "sakeName": "Koshino Kanbai Sai Daiginjo",
+      "sakeSlug": "koshino-kanbai-sai-daiginjo",
+      "image": {
+        "filePath": "public/assets/pairings/whitefish-nigiri-koshino-kanbai-sai-daiginjo.webp",
+        "publicUrl": "/assets/pairings/whitefish-nigiri-koshino-kanbai-sai-daiginjo.webp"
+      },
+      "textIsDynamic": true,
+      "bakedTextRemoved": true,
+      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+    }
+  ],
+  "screenshots": [
+    {
+      "id": "chatgpt-image-may-25-2026-08-35-21-pm-1",
+      "role": "reference",
+      "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
+      "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
+      "width": 1122,
+      "height": 1402,
+      "sizeBytes": 2733615
+    },
+    {
+      "id": "chatgpt-image-may-25-2026-08-35-21-pm-2",
+      "role": "reference",
+      "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+      "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 2776620
+    },
+    {
+      "id": "elegant-sushi-bliss-website-mockup",
+      "role": "landing",
+      "filePath": "public/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+      "publicUrl": "/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1960587
+    },
+    {
+      "id": "luxury-sushi-app-with-elegant-ui",
+      "role": "home",
+      "filePath": "public/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+      "publicUrl": "/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1853384
+    },
+    {
+      "id": "sushi-bliss-app-showcase",
+      "role": "showcase",
+      "filePath": "public/assets/screenshots/sushi-bliss-app-showcase.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-app-showcase.png",
+      "width": 1448,
+      "height": 1086,
+      "sizeBytes": 1779440
+    },
+    {
+      "id": "sushi-bliss-checkout-experience-2",
+      "role": "checkout",
+      "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1669612
+    },
+    {
+      "id": "sushi-bliss-checkout-experience",
+      "role": "checkout",
+      "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1746741
+    },
+    {
+      "id": "sushi-bliss-contact-page-design",
+      "role": "contact",
+      "filePath": "public/assets/screenshots/sushi-bliss-contact-page-design.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-contact-page-design.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1817884
+    },
+    {
+      "id": "sushi-bliss-loyalty-dashboard-concept",
+      "role": "loyalty",
+      "filePath": "public/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1822530
+    },
+    {
+      "id": "sushi-bliss-order-confirmation-design",
+      "role": "orderConfirmation",
+      "filePath": "public/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1846209
+    },
+    {
+      "id": "sushi-bliss-order-tracking-interface",
+      "role": "orderTracking",
+      "filePath": "public/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1711658
+    },
+    {
+      "id": "sushi-bliss-ordering-interface-mockup",
+      "role": "ordering",
+      "filePath": "public/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1894820
+    },
+    {
+      "id": "sushi-bliss-reservation-interface-mockups",
+      "role": "reservations",
+      "filePath": "public/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1887961
+    },
+    {
+      "id": "sushi-bliss-ui-mockup-design",
+      "role": "menuHome",
+      "filePath": "public/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1917470
+    },
+    {
+      "id": "sushi-bliss-ui-ux-design-mockup",
+      "role": "uiUx",
+      "filePath": "public/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1847496
+    },
+    {
+      "id": "sushi-bliss-user-interface-design",
+      "role": "profile",
+      "filePath": "public/assets/screenshots/sushi-bliss-user-interface-design.png",
+      "publicUrl": "/assets/screenshots/sushi-bliss-user-interface-design.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1741918
+    },
+    {
+      "id": "timeless-sushi-dining-experience-ui",
+      "role": "home",
+      "filePath": "public/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+      "publicUrl": "/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1838562
+    }
+  ],
+  "featuredAssets": {
+    "heroSushi": {
+      "filePath": "public/assets/editorial/hero-otoro-nigiri-no-red-moon.webp",
+      "publicUrl": "/assets/editorial/hero-otoro-nigiri-no-red-moon.webp"
+    },
+    "sakeSets": [
+      {
+        "filePath": "public/assets/editorial/sake-vase-set-black-gold-floral.webp",
+        "publicUrl": "/assets/editorial/sake-vase-set-black-gold-floral.webp"
+      },
+      {
+        "filePath": "public/assets/editorial/sake-vase-set-gold-brush.webp",
+        "publicUrl": "/assets/editorial/sake-vase-set-gold-brush.webp"
+      },
+      {
+        "filePath": "public/assets/editorial/sake-vase-set-rounded-ceramic.webp",
+        "publicUrl": "/assets/editorial/sake-vase-set-rounded-ceramic.webp"
+      }
+    ],
+    "ambience": [
+      {
+        "filePath": "public/assets/ambience/elegant-sushi-bar-ambience-at-night.webp",
+        "publicUrl": "/assets/ambience/elegant-sushi-bar-ambience-at-night.webp"
+      },
+      {
+        "filePath": "public/assets/ambience/intimate-sushi-bar-dining-experience.webp",
+        "publicUrl": "/assets/ambience/intimate-sushi-bar-dining-experience.webp"
+      },
+      {
+        "filePath": "public/assets/ambience/moody-japanese-inspired-dining-ambiance-at-night.webp",
+        "publicUrl": "/assets/ambience/moody-japanese-inspired-dining-ambiance-at-night.webp"
+      },
+      {
+        "filePath": "public/assets/ambience/rooftop-dining-in-a-japanese-haven.webp",
+        "publicUrl": "/assets/ambience/rooftop-dining-in-a-japanese-haven.webp"
+      },
+      {
+        "filePath": "public/assets/ambience/sushi-bliss-ambience-detail.webp",
+        "publicUrl": "/assets/ambience/sushi-bliss-ambience-detail.webp"
+      }
+    ],
+    "screensToRedesignFrom": [
+      {
+        "id": "chatgpt-image-may-25-2026-08-35-21-pm-1",
+        "role": "reference",
+        "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
+        "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
+        "width": 1122,
+        "height": 1402,
+        "sizeBytes": 2733615
+      },
+      {
+        "id": "chatgpt-image-may-25-2026-08-35-21-pm-2",
+        "role": "reference",
+        "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+        "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 2776620
+      },
+      {
+        "id": "elegant-sushi-bliss-website-mockup",
+        "role": "landing",
+        "filePath": "public/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+        "publicUrl": "/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1960587
+      },
+      {
+        "id": "luxury-sushi-app-with-elegant-ui",
+        "role": "home",
+        "filePath": "public/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+        "publicUrl": "/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1853384
+      },
+      {
+        "id": "sushi-bliss-app-showcase",
+        "role": "showcase",
+        "filePath": "public/assets/screenshots/sushi-bliss-app-showcase.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-app-showcase.png",
+        "width": 1448,
+        "height": 1086,
+        "sizeBytes": 1779440
+      },
+      {
+        "id": "sushi-bliss-checkout-experience-2",
+        "role": "checkout",
+        "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1669612
+      },
+      {
+        "id": "sushi-bliss-checkout-experience",
+        "role": "checkout",
+        "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1746741
+      },
+      {
+        "id": "sushi-bliss-contact-page-design",
+        "role": "contact",
+        "filePath": "public/assets/screenshots/sushi-bliss-contact-page-design.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-contact-page-design.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1817884
+      },
+      {
+        "id": "sushi-bliss-loyalty-dashboard-concept",
+        "role": "loyalty",
+        "filePath": "public/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1822530
+      },
+      {
+        "id": "sushi-bliss-order-confirmation-design",
+        "role": "orderConfirmation",
+        "filePath": "public/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1846209
+      },
+      {
+        "id": "sushi-bliss-order-tracking-interface",
+        "role": "orderTracking",
+        "filePath": "public/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1711658
+      },
+      {
+        "id": "sushi-bliss-ordering-interface-mockup",
+        "role": "ordering",
+        "filePath": "public/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1894820
+      },
+      {
+        "id": "sushi-bliss-reservation-interface-mockups",
+        "role": "reservations",
+        "filePath": "public/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1887961
+      },
+      {
+        "id": "sushi-bliss-ui-mockup-design",
+        "role": "menuHome",
+        "filePath": "public/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1917470
+      },
+      {
+        "id": "sushi-bliss-ui-ux-design-mockup",
+        "role": "uiUx",
+        "filePath": "public/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1847496
+      },
+      {
+        "id": "sushi-bliss-user-interface-design",
+        "role": "profile",
+        "filePath": "public/assets/screenshots/sushi-bliss-user-interface-design.png",
+        "publicUrl": "/assets/screenshots/sushi-bliss-user-interface-design.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1741918
+      },
+      {
+        "id": "timeless-sushi-dining-experience-ui",
+        "role": "home",
+        "filePath": "public/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+        "publicUrl": "/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1838562
+      }
+    ]
+  }
+}

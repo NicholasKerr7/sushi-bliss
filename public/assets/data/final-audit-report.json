@@ -1,0 +1,101 @@
+{
+  "summary": {
+    "totalAssets": 197,
+    "menuItems": 38,
+    "pairingImages": 38,
+    "screenshots": 17,
+    "chefs": 4,
+    "missingReferencesInDataJson": 0,
+    "duplicateFileNames": 0,
+    "exactDuplicateAssetGroups": 1
+  },
+  "checks": {
+    "allDataJsonFileReferencesExist": true,
+    "missingReferences": [],
+    "menuItemsWithoutStandaloneMenuImage": [
+      "sushi-cone"
+    ],
+    "menuItemsWithoutPairingImage": [],
+    "pairingFilenameRuleViolations": [],
+    "nonWebpVisualAssets": [
+      "public/assets/icons/chef-s-hat-with-gold-accents.png",
+      "public/assets/icons/elegant-gold-house-icon-with-red-glow.png",
+      "public/assets/icons/gilded-instagram-camera-emblem.png",
+      "public/assets/icons/glossy-black-and-gold-heart-icon.png",
+      "public/assets/icons/gold-accent-circular-ui-button.png",
+      "public/assets/icons/gold-emblem-with-red-accents.png",
+      "public/assets/icons/gold-neon-sushi-menu-icon.png",
+      "public/assets/icons/gold-takeaway-bag-with-receipt-icon.png",
+      "public/assets/icons/golden-calendar-icon-with-red-highlight.png",
+      "public/assets/icons/golden-check-mark-with-glow.png",
+      "public/assets/icons/golden-chef-s-crest-emblem.png",
+      "public/assets/icons/golden-crossed-knives-emblem-with-ornate-detail.png",
+      "public/assets/icons/golden-dining-setting-icon.png",
+      "public/assets/icons/golden-floral-emblem-on-transparent-background.png",
+      "public/assets/icons/golden-lotus-crown-emblem.png",
+      "public/assets/icons/golden-lotus-on-transparent-background.png",
+      "public/assets/icons/golden-magnifying-glass-icon-design.png",
+      "public/assets/icons/golden-notification-bell.png",
+      "public/assets/icons/golden-plus-sign-on-transparent-grid.png",
+      "public/assets/icons/golden-shopping-cart-icon.png",
+      "public/assets/icons/golden-star-with-diamond-sparkles.png",
+      "public/assets/icons/golden-sushi-emblem-on-checkered-background.png",
+      "public/assets/icons/luxurious-gold-and-sashimi-emblem.png",
+      "public/assets/icons/luxurious-gold-clock-icon.png",
+      "public/assets/icons/luxurious-gold-sushi-emblem.png",
+      "public/assets/icons/luxurious-golden-qr-token-emblem.png",
+      "public/assets/icons/luxurious-map-pin-with-red-glow.png",
+      "public/assets/icons/luxury-gift-badge-with-gold-accents.png",
+      "public/assets/icons/luxury-gold-envelope-icon-on-black.png",
+      "public/assets/icons/luxury-telephone-handset-icon-with-glow.png",
+      "public/assets/icons/metallic-f-logo-on-transparent-background.png",
+      "public/assets/icons/metallic-owl-emblem-with-red-accents.png",
+      "public/assets/icons/metallic-x-emblem-with-golden-accents.png",
+      "public/assets/icons/minimalist-person-icon-with-glowing-rim.png",
+      "public/assets/icons/miso-soup.png",
+      "public/assets/icons/polished-share-symbol-with-metallic-accents.png",
+      "public/assets/icons/premium-gold-headset-icon-with-mic.png",
+      "public/assets/icons/shiny-gold-credit-card-icon.png",
+      "public/assets/icons/stylised-black-and-gold-delivery-scooter.png",
+      "public/assets/icons/stylised-golden-group-emblem.png",
+      "public/assets/icons/user-settings-icon-with-gold-gear.png"
+    ],
+    "screenshotReferenceRoles": {
+      "reference": 2,
+      "landing": 1,
+      "home": 2,
+      "showcase": 1,
+      "checkout": 2,
+      "contact": 1,
+      "loyalty": 1,
+      "orderConfirmation": 1,
+      "orderTracking": 1,
+      "ordering": 1,
+      "reservations": 1,
+      "menuHome": 1,
+      "uiUx": 1,
+      "profile": 1
+    }
+  },
+  "folderStructure": [
+    "ambience",
+    "brand",
+    "chefs",
+    "editorial",
+    "icons",
+    "ingredients",
+    "menu/appetizers",
+    "menu/desserts",
+    "menu/sashimi",
+    "menu/sushi",
+    "pairings",
+    "screenshots",
+    "specialties"
+  ],
+  "exactDuplicateAssetGroups": {
+    "5c777e75ebd644afc25b63f6032ee0d602b3f03d27e37083c2e931b765d75d72": [
+      "public/assets/chefs/hiroshi-tanaka-head-chef-standing.webp",
+      "public/assets/chefs/hiroshi-tanaka-profile-photo.webp"
+    ]
+  }
+}
