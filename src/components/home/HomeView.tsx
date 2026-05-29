@@ -161,7 +161,7 @@ function MobileHomeView({
   onSelectItem,
 }: MobileHomeViewProps) {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-black px-5 pb-8 pt-3 lg:hidden">
+    <section className="mobile-home-surface relative min-h-screen overflow-hidden bg-black px-5 pb-8 pt-3 lg:hidden">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_5%,rgba(184,20,20,0.28),transparent_26%),radial-gradient(circle_at_92%_18%,rgba(202,164,93,0.1),transparent_26%),linear-gradient(180deg,#080504_0%,#050505_42%,#050505_100%)]" />
         <div className="sb-wave-pattern absolute left-0 top-[42%] h-36 w-full opacity-18" />
@@ -297,7 +297,7 @@ function MobileHeroCard({ heroItem, onAddToCart, onSelectItem }: MobileHeroCardP
             type="button"
             aria-label={`Add ${heroItem.name} to cart`}
             onClick={() => onAddToCart(heroItem)}
-            className="absolute bottom-5 right-5 grid h-16 w-16 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50 shadow-[0_0_28px_var(--sb-red-glow)] transition active:scale-95"
+            className="absolute bottom-5 right-5 z-20 grid h-16 w-16 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50 shadow-[0_0_28px_var(--sb-red-glow)] transition active:scale-95"
           >
             {icons.plus ? <AssetIcon src={icons.plus} size={36} /> : null}
           </button>
@@ -387,7 +387,7 @@ function HomeMenuCard({ badge, item, onAddToCart, onSelectItem }: HomeMenuCardPr
       <span className="absolute left-0 top-0 z-10 rounded-br-[12px] bg-[var(--sb-red)]/86 px-2 py-1 text-[10px] uppercase text-white">{badge}</span>
       <button type="button" onClick={() => onSelectItem(item)} className="block w-full text-left">
         <div className="relative h-[86px]">
-          <Image src={item.image.publicUrl} alt={item.name} fill sizes="130px" className="object-cover" />
+          <Image src={item.image.publicUrl} alt={item.name} fill sizes="130px" className="pointer-events-none object-cover" />
         </div>
         <div className="p-3">
           <h3 className="editorial-title truncate text-[14px] text-white">{item.name}</h3>
@@ -399,7 +399,7 @@ function HomeMenuCard({ badge, item, onAddToCart, onSelectItem }: HomeMenuCardPr
         type="button"
         aria-label={`Add ${item.name} to cart`}
         onClick={() => onAddToCart(item)}
-        className="absolute bottom-3 right-3 grid h-8 w-8 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50 transition active:scale-95"
+        className="absolute bottom-3 right-3 z-20 grid h-8 w-8 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50 transition active:scale-95"
       >
         {icons.plus ? <AssetIcon src={icons.plus} size={22} /> : null}
       </button>
@@ -452,7 +452,7 @@ interface MemberCardProps {
 function MemberCard({ item, loyaltyPoints, progressValue, onNavigate }: MemberCardProps) {
   return (
     <section className="relative mt-5 overflow-hidden rounded-[18px] border border-[var(--sb-border)] bg-black/62 p-4">
-      <Image src={item.image.publicUrl} alt="" width={120} height={92} className="absolute bottom-0 right-0 h-24 w-32 object-cover opacity-95" />
+      <Image src={item.image.publicUrl} alt="" width={120} height={92} className="pointer-events-none absolute bottom-0 right-0 h-24 w-32 object-cover opacity-95" />
       <div className="relative z-10 flex gap-4">
         <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/34">
           {icons.flower ? <AssetIcon src={icons.flower} size={42} /> : null}
@@ -492,7 +492,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
   const reservationExperience = reservationExperiences[0];
 
   return (
-    <section className="hidden space-y-3 lg:block">
+    <section className="desktop-home-surface hidden space-y-3 lg:block">
       <div className="overflow-hidden rounded-[20px] border border-[var(--sb-border)] bg-black/68 shadow-[0_30px_110px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
         <section className="relative min-h-[343px] overflow-hidden border-b border-[var(--sb-border)] px-20 py-8">
           <Image src={featuredAssets.heroSushi.publicUrl} alt={heroItem.name} fill priority sizes="1200px" className="object-cover" />
