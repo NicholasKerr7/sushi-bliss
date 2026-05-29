@@ -1,10 +1,14 @@
+@import "../styles/tokens.css";
+@import "../styles/effects.css";
+@import "../styles/animations.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   color-scheme: dark;
-  background-color: #0d0b10;
+  background-color: var(--sb-bg);
   scroll-behavior: smooth;
 }
 
@@ -20,61 +24,19 @@ body {
 body {
   margin: 0;
   font-family: var(--font-body), sans-serif;
-  background: radial-gradient(circle at top, rgba(244, 63, 94, 0.15), transparent 45%),
-    radial-gradient(circle at 20% 80%, rgba(52, 245, 197, 0.08), transparent 55%), #0d0b10;
-  color: #f5f5f7;
+  background: var(--sb-bg);
+  color: var(--sb-text);
 }
 
 ::selection {
-  background: rgba(244, 63, 94, 0.35);
+  background: rgba(184, 20, 20, 0.45);
   color: #fff;
 }
 
 @layer components {
-  .glass-panel {
-    @apply rounded-[1.5rem] border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.35)];
-  }
-
-  .neon-text {
-    text-shadow: 0 0 18px rgba(52, 245, 197, 0.55);
-  }
-
-  .app-background {
-    background:
-      radial-gradient(circle at 18% 18%, rgba(244, 63, 94, 0.24), transparent 44%),
-      radial-gradient(circle at 86% 8%, rgba(52, 245, 197, 0.16), transparent 38%),
-      linear-gradient(180deg, #0d0b10 0%, #150d19 48%, #08070a 100%);
-  }
-
-  .app-background-night {
-    background:
-      radial-gradient(circle at 18% 18%, rgba(239, 68, 68, 0.18), transparent 42%),
-      radial-gradient(circle at 82% 6%, rgba(59, 130, 246, 0.18), transparent 40%),
-      linear-gradient(180deg, #0b1220 0%, #0d1322 52%, #070a12 100%);
-  }
-
   .ambient-grid {
     background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.14) 1px, transparent 0);
     background-size: 120px 120px;
-  }
-
-  .hero-lens {
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
-      radial-gradient(circle at 20% 15%, rgba(52, 245, 197, 0.2), transparent 44%),
-      rgba(255, 255, 255, 0.06);
-  }
-
-  .hero-vignette {
-    background:
-      linear-gradient(90deg, rgba(8, 7, 10, 0.96) 0%, rgba(8, 7, 10, 0.8) 42%, rgba(8, 7, 10, 0.36) 100%),
-      linear-gradient(0deg, rgba(8, 7, 10, 0.86) 0%, transparent 48%);
-  }
-
-  .hero-vignette-night {
-    background:
-      linear-gradient(90deg, rgba(8, 13, 24, 0.96) 0%, rgba(8, 13, 24, 0.78) 45%, rgba(8, 13, 24, 0.36) 100%),
-      linear-gradient(0deg, rgba(8, 13, 24, 0.9) 0%, transparent 48%);
   }
 
   .premium-edge {

@@ -68,7 +68,7 @@ export function OmakasePanel({ activeMood, set, onMoodChange, onAddSet }: Omakas
               <article key={item.id} className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
                 <div className="relative h-36 bg-black/30">
                   <Image
-                    src={item.image}
+                    src={item.image.publicUrl}
                     alt={item.name}
                     fill
                     sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 100vw"

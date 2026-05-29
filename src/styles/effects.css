@@ -1,0 +1,113 @@
+.luxury-panel {
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-card);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+    var(--sb-panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(26px);
+}
+
+.gold-border {
+  border-color: var(--sb-border-strong);
+}
+
+.red-glow-button {
+  border: 1px solid rgba(255, 94, 74, 0.36);
+  background:
+    linear-gradient(180deg, rgba(255, 74, 64, 0.92), rgba(153, 14, 14, 0.96)),
+    #b81414;
+  box-shadow:
+    0 0 0 1px rgba(255, 210, 150, 0.1) inset,
+    0 14px 42px var(--sb-red-glow);
+}
+
+.red-glow-button:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.smoke-overlay {
+  background:
+    radial-gradient(circle at 52% 20%, rgba(255, 255, 255, 0.12), transparent 18%),
+    radial-gradient(circle at 42% 42%, rgba(255, 255, 255, 0.08), transparent 22%),
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.56));
+  mix-blend-mode: screen;
+  opacity: 0.24;
+}
+
+.stone-gradient {
+  background:
+    radial-gradient(circle at 8% 16%, rgba(184, 20, 20, 0.22), transparent 26%),
+    radial-gradient(circle at 92% 8%, rgba(202, 164, 93, 0.12), transparent 22%),
+    linear-gradient(180deg, #080807 0%, #050505 54%, #0b0806 100%);
+}
+
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(202, 164, 93, 0.6), transparent);
+}
+
+.lantern-glow {
+  box-shadow: 0 0 80px rgba(255, 138, 58, 0.22);
+}
+
+.editorial-title {
+  font-family: Georgia, "Times New Roman", var(--font-display), serif;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.home-experience {
+  min-height: 100vh;
+}
+
+.sb-wave-pattern {
+  background-image:
+    radial-gradient(60% 52% at 50% 100%, transparent 56%, rgba(202, 164, 93, 0.2) 57%, transparent 59%),
+    radial-gradient(60% 52% at 18% 100%, transparent 56%, rgba(202, 164, 93, 0.16) 57%, transparent 59%),
+    radial-gradient(60% 52% at 82% 100%, transparent 56%, rgba(202, 164, 93, 0.16) 57%, transparent 59%);
+  background-size: 72px 42px;
+}
+
+.mobile-safe-area {
+  padding-bottom: calc(var(--sb-safe-bottom) + 0.75rem);
+}
+
+.app-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(202, 164, 93, 0.5) transparent;
+}
+
+.app-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.app-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(202, 164, 93, 0.45);
+}
+
+progress {
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+progress::-webkit-progress-bar {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sb-red), var(--sb-gold));
+}
+
+progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sb-red), var(--sb-gold));
+}

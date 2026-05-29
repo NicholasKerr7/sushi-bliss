@@ -28,6 +28,7 @@ export const metadata = {
   description: "Mobile-web app for a sushi restaurant",
 };
 
+/** Provides the global document shell and bundled local fonts. */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="bg-brand-ink">

@@ -1,0 +1,58 @@
+@keyframes sb-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sb-slow-zoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.045);
+  }
+}
+
+@keyframes sb-red-pulse {
+  0%,
+  100% {
+    box-shadow: 0 14px 42px var(--sb-red-glow);
+  }
+  50% {
+    box-shadow: 0 18px 56px rgba(239, 47, 37, 0.58);
+  }
+}
+
+@keyframes sb-shimmer {
+  from {
+    background-position: -180% 0;
+  }
+  to {
+    background-position: 180% 0;
+  }
+}
+
+.animate-sb-fade-up {
+  animation: sb-fade-up 0.6s ease both;
+}
+
+.animate-sb-slow-zoom {
+  animation: sb-slow-zoom 18s ease-in-out infinite;
+}
+
+.animate-sb-red-pulse {
+  animation: sb-red-pulse 2.7s ease-in-out infinite;
+}
+
+.reservation-shimmer {
+  background-image: linear-gradient(110deg, transparent 0%, rgba(202, 164, 93, 0.24) 42%, transparent 78%);
+  background-size: 220% 100%;
+  animation: sb-shimmer 2.8s ease-in-out infinite;
+}
+

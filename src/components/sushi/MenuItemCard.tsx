@@ -11,8 +11,8 @@ interface MenuItemCardProps {
   quantity: number;
   justAdded: boolean;
   onAddToCart: (item: SushiMenuItem, origin: DOMRect | null) => void;
-  onDecreaseQuantity: (id: number) => void;
-  onIncreaseQuantity: (id: number) => void;
+  onDecreaseQuantity: (id: string) => void;
+  onIncreaseQuantity: (id: string) => void;
   onViewDetails: (item: SushiMenuItem) => void;
 }
 
@@ -48,7 +48,7 @@ export function MenuItemCard({
         )}
         <div className="relative z-0 mx-5 mt-5 h-52 overflow-hidden rounded-[22px] border border-white/15 bg-black/30">
           <Image
-            src={item.image}
+            src={item.image.publicUrl}
             alt={item.name}
             fill
             sizes="(min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
@@ -86,7 +86,7 @@ export function MenuItemCard({
             ))}
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs text-white/70">
-            <span className="font-semibold text-white/85">Pairs with:</span> {item.pairing}
+            <span className="font-semibold text-white/85">Pairs with:</span> {item.sakePairing.sakeName}
           </div>
           <div className="flex items-center justify-between text-sm text-white/80">
             <button

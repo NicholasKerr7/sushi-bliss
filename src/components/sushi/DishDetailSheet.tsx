@@ -31,7 +31,7 @@ export function DishDetailSheet({ item, onClose, onAddToCart }: DishDetailSheetP
         <div className="grid gap-5 md:grid-cols-[0.95fr_1.05fr]">
           <div className="relative min-h-72 overflow-hidden rounded-[28px] border border-white/15 bg-black/30">
             <Image
-              src={item.image}
+              src={item.image.publicUrl}
               alt={item.name}
               fill
               sizes="(min-width: 768px) 360px, 100vw"
@@ -92,7 +92,7 @@ export function DishDetailSheet({ item, onClose, onAddToCart }: DishDetailSheetP
               </div>
             </div>
             <div className="mt-4 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-50">
-              <span className="font-semibold">Pairing:</span> {item.pairing}
+              <span className="font-semibold">Pairing:</span> {item.sakePairing.sakeName}
             </div>
             <Button
               className="mt-5 rounded-2xl border-0 bg-gradient-to-r from-red-500 via-rose-500 to-orange-400 py-3 text-base font-semibold text-white shadow-glow"
