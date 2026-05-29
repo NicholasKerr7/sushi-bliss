@@ -3,6 +3,7 @@ import type { LucideIcon } from "lucide-react";
 export type AppView =
   | "home"
   | "menu"
+  | "orderOnline"
   | "reservations"
   | "orders"
   | "profile"

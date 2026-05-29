@@ -101,7 +101,7 @@ export function HomeView({
   const progressValue = Math.min(loyaltyPoints, 5000);
 
   return (
-    <div className="home-experience">
+    <>
       <MobileHomeView
         activeCategory={activeCategory}
         featuredCards={featuredCards}
@@ -126,7 +126,7 @@ export function HomeView({
         onNavigate={onNavigate}
         onSelectItem={onSelectItem}
       />
-    </div>
+    </>
   );
 }
 
@@ -176,7 +176,7 @@ function MobileHomeView({
           onQueryChange={onQueryChange}
           onSubmit={() => onNavigate("menu")}
         />
-        <MobileHeroCard heroItem={heroItem} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+        <MobileHeroCard heroItem={heroItem} onSelectItem={onSelectItem} />
         <CategoryRail activeCategory={activeCategory} onCategoryChange={onCategoryChange} onNavigate={onNavigate} />
         <FeaturedMenuRail items={featuredCards} onAddToCart={onAddToCart} onNavigate={onNavigate} onSelectItem={onSelectItem} />
         <QuickActionGrid onNavigate={onNavigate} />
@@ -264,46 +264,29 @@ function MobileSearchBar({ query, onFilterClick, onQueryChange, onSubmit }: Mobi
 
 interface MobileHeroCardProps {
   heroItem: SushiMenuItem;
-  onAddToCart: (item: SushiMenuItem) => void;
   onSelectItem: (item: SushiMenuItem) => void;
 }
 
-/** Renders the cinematic hero sushi card with editorial copy and add action. */
-function MobileHeroCard({ heroItem, onAddToCart, onSelectItem }: MobileHeroCardProps) {
+/** Renders the mobile-first editorial hero from the primary home reference. */
+function MobileHeroCard({ heroItem, onSelectItem }: MobileHeroCardProps) {
   return (
-    <article className="relative mt-7 min-h-[370px] overflow-hidden rounded-[28px] border border-[var(--sb-border)]">
-      <Image src={heroItem.image.publicUrl} alt={heroItem.name} fill priority sizes="430px" className="object-cover" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.32)_36%,rgba(0,0,0,0.82)_100%)]" />
-      <div className="sb-wave-pattern absolute bottom-0 left-0 h-40 w-full opacity-45" />
-      <div className="relative z-10 flex min-h-[370px] flex-col justify-between p-5">
-        <div>
-          <h1 className="editorial-title text-[31px] leading-[1.08] text-white">
+    <button
+      type="button"
+      onClick={() => onSelectItem(heroItem)}
+      className="relative mt-7 block min-h-[322px] w-full overflow-hidden rounded-[2px] text-left"
+    >
+      <Image src={heroItem.image.publicUrl} alt={heroItem.name} fill priority sizes="430px" className="object-cover object-[58%_70%]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.78)_0%,rgba(0,0,0,0.34)_42%,rgba(0,0,0,0.78)_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black via-black/55 to-transparent" />
+      <div className="sb-wave-pattern absolute bottom-10 left-0 h-36 w-48 opacity-32" />
+      <div className="relative z-10 flex min-h-[322px] flex-col justify-start px-1 py-8">
+        <h1 className="editorial-title max-w-[340px] text-[32px] leading-[1.08] text-white">
             Japanese Artistry.
             <span className="block text-[var(--sb-red-bright)]">Timeless Bliss.</span>
-          </h1>
-          <p className="mt-3 text-[15px] font-medium tracking-[0.04em] text-[var(--sb-gold)]">Authentic. Refined. Unforgettable.</p>
-        </div>
-        <div className="relative rounded-[22px] border border-[var(--sb-border-strong)] bg-black/48 p-4 shadow-[0_0_38px_rgba(202,164,93,0.18)] backdrop-blur-xl">
-          <button type="button" onClick={() => onSelectItem(heroItem)} className="text-left">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--sb-border)] bg-black/36 px-3 py-1 text-[11px] uppercase tracking-[0.1em] text-[var(--sb-gold)]">
-              {icons.flower ? <AssetIcon src={icons.flower} size={16} /> : null}
-              Chef&apos;s Special
-            </span>
-            <h2 className="editorial-title mt-3 text-[28px] text-white">{heroItem.name}</h2>
-            <p className="mt-1 max-w-[220px] text-[15px] leading-5 text-white/72">{heroItem.description}</p>
-            <p className="mt-3 text-[24px] text-[var(--sb-gold)]">{formatCurrency(heroItem.price)}</p>
-          </button>
-          <button
-            type="button"
-            aria-label={`Add ${heroItem.name} to cart`}
-            onClick={() => onAddToCart(heroItem)}
-            className="absolute bottom-5 right-5 z-20 grid h-16 w-16 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50 shadow-[0_0_28px_var(--sb-red-glow)] transition active:scale-95"
-          >
-            {icons.plus ? <AssetIcon src={icons.plus} size={36} /> : null}
-          </button>
-        </div>
+        </h1>
+        <p className="mt-3 text-[15px] font-medium tracking-[0.04em] text-[var(--sb-gold)]">Authentic. Refined. Unforgettable.</p>
       </div>
-    </article>
+    </button>
   );
 }
 
@@ -428,7 +411,7 @@ function QuickActionGrid({ onNavigate }: QuickActionGridProps) {
       </button>
       <button
         type="button"
-        onClick={() => onNavigate("menu")}
+        onClick={() => onNavigate("orderOnline")}
         className="flex min-h-[82px] items-center gap-3 rounded-[18px] border border-[var(--sb-border-strong)] bg-black/58 px-4 text-left uppercase tracking-[0.12em] text-[var(--sb-gold)] shadow-[0_0_24px_rgba(202,164,93,0.12)] transition active:scale-[0.99]"
       >
         {icons.bag ? <AssetIcon src={icons.bag} size={34} /> : null}
@@ -510,7 +493,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
                   Reserve a Table
                   <ChevronRight className="ml-3 h-4 w-4" />
                 </Button>
-                <Button variant="outline" className="h-12 w-[175px] rounded-[10px] border-[var(--sb-border)] bg-black/42 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]" onClick={() => onNavigate("menu")}>
+                <Button variant="outline" className="h-12 w-[175px] rounded-[10px] border-[var(--sb-border)] bg-black/42 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]" onClick={() => onNavigate("orderOnline")}>
                   Order Now
                   {icons.bag ? <AssetIcon src={icons.bag} size={20} className="ml-3" /> : null}
                 </Button>

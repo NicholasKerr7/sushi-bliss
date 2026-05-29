@@ -4,16 +4,17 @@ import { AssetIcon } from "../icons/AssetIcon";
 interface BottomNavProps {
   items: NavItem[];
   activeView: AppView;
+  floating?: boolean;
   onNavigate: (view: AppView) => void;
 }
 
 /** Provides the persistent mobile tab bar shown across the ordering app. */
-export function BottomNav({ items, activeView, onNavigate }: BottomNavProps) {
+export function BottomNav({ items, activeView, floating = true, onNavigate }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-3 lg:hidden">
+    <nav className={`${floating ? "fixed bottom-0 left-0 right-0" : "relative"} z-50 px-4 pb-3 lg:hidden`}>
       <div className="mobile-safe-area mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[28px] border border-[var(--sb-border)] bg-black/82 px-2 pt-2 shadow-[0_0_40px_rgba(0,0,0,0.72)] backdrop-blur-2xl">
         {items.map(({ key, label, icon: Icon, assetIcon }) => {
-          const active = activeView === key;
+          const active = activeView === key || (key === "orders" && activeView === "orderOnline");
           return (
             <button
               key={key}

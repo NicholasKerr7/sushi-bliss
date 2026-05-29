@@ -59,10 +59,6 @@
   text-transform: uppercase;
 }
 
-.home-experience {
-  min-height: 100vh;
-}
-
 @media (min-width: 1024px) {
   .mobile-home-surface {
     display: none !important;

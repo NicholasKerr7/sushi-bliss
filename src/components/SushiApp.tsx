@@ -123,7 +123,7 @@ const desktopNav: NavItem[] = [
   { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
   { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
   { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
-  { key: "menu", id: "order-online", label: "Order Online", icon: ShoppingBag, assetIcon: iconAssets.orders, target: "menu" },
+  { key: "orderOnline", id: "order-online", label: "Order Online", icon: ShoppingBag, assetIcon: iconAssets.orders },
   { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
   { key: "about", label: "About Us", icon: ChefHat, assetIcon: iconAssets.about },
   { key: "contact", label: "Contact", icon: Mail, assetIcon: iconAssets.contact },
@@ -132,7 +132,7 @@ const desktopNav: NavItem[] = [
 const mobileNav: NavItem[] = [
   { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
   { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
-  { key: "reservations", label: "Reserve", icon: Calendar, assetIcon: iconAssets.reservations },
+  { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
   { key: "orders", label: "Orders", icon: ShoppingBag, assetIcon: iconAssets.orders },
   { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
 ];
@@ -234,7 +234,7 @@ export default function SushiApp() {
   /** Changes the active in-app view and returns the viewport to the top. */
   const navigate = (view: AppView) => {
     setActiveView(view);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   /** Adds one or more menu items to the cart and awards lightweight mock points. */
@@ -463,6 +463,25 @@ export default function SushiApp() {
                 onToggleFavorite={toggleFavorite}
               />
             ) : null}
+            {activeView === "orderOnline" ? (
+              <OrderOnlineView
+                items={featuredItems}
+                groupedCart={groupedCart}
+                fulfillment={fulfillment}
+                subtotal={subtotal}
+                total={grandTotal}
+                onAddToCart={addToCart}
+                onCheckout={() => {
+                  setShowCheckout(true);
+                  setShowCart(false);
+                }}
+                onFulfillmentChange={setFulfillment}
+                onNavigate={navigate}
+                onRemove={removeCartItem}
+                onSelectItem={setSelectedItem}
+                onShowCart={() => setShowCart(true)}
+              />
+            ) : null}
             {activeView === "pairings" ? <PairingsView items={menuItems} onSelectItem={setSelectedItem} /> : null}
             {activeView === "reservations" ? (
               <ReservationsView
@@ -615,6 +634,35 @@ interface MenuViewProps {
 function MenuView({ query, activeCategory, items, favorites, onQueryChange, onCategoryChange, onAddToCart, onSelectItem, onToggleFavorite }: MenuViewProps) {
   return (
     <div className="space-y-6">
+      <section className="space-y-5 lg:hidden">
+        <div className="pt-3 text-center">
+          <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">Our Menu</p>
+          <h1 className="editorial-title mt-2 text-4xl text-white">Our Menu</h1>
+        </div>
+        <div className="app-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+          {(["Nigiri", "Rolls", "Sashimi", "Chef Specials"] as FilterCategory[]).map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => onCategoryChange(category)}
+              className={`h-10 shrink-0 rounded-full border px-5 text-xs uppercase tracking-[0.12em] transition ${
+                activeCategory === category || (activeCategory === "All" && category === "Nigiri")
+                  ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)] text-white shadow-[0_0_22px_var(--sb-red-glow)]"
+                  : "border-[var(--sb-border)] bg-black/42 text-white/74"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+        <div className="space-y-3">
+          {(items.length ? items : menuItems).slice(0, 10).map((item) => (
+            <MenuListRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+          ))}
+        </div>
+      </section>
+
+      <section className="hidden space-y-6 lg:block">
       <PageHero
         eyebrow="Our Menu"
         title="Handcrafted With Precision"
@@ -689,6 +737,243 @@ function MenuView({ query, activeCategory, items, favorites, onQueryChange, onCa
           </section>
         </div>
       )}
+      </section>
+    </div>
+  );
+}
+
+/** Renders the compact mobile menu row used by the phone screenshots. */
+function MenuListRow({ item, onAddToCart, onSelectItem }: { item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+  return (
+    <article className="relative grid min-h-[128px] grid-cols-[132px_1fr] overflow-hidden rounded-[18px] border border-[var(--sb-border)] bg-black/58 shadow-[0_16px_40px_rgba(0,0,0,0.42)]">
+      <button type="button" onClick={() => onSelectItem(item)} className="relative text-left">
+        <Image src={item.image.publicUrl} alt="" fill sizes="132px" className="object-cover" />
+        {item.tag ? <span className="absolute left-0 top-0 rounded-br-xl bg-[var(--sb-red)] px-2 py-1 text-[10px] uppercase text-white">{item.tag}</span> : null}
+      </button>
+      <div className="flex min-w-0 flex-col justify-center px-4 py-3">
+        <button type="button" onClick={() => onSelectItem(item)} className="text-left">
+          <h2 className="font-serif text-lg text-white">{item.name}</h2>
+          <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--sb-muted)]">{item.description}</p>
+          <p className="mt-3 text-lg text-[var(--sb-gold)]">{formatCurrency(item.price)}</p>
+        </button>
+        <button
+          type="button"
+          aria-label={`Add ${item.name} to cart`}
+          onClick={() => onAddToCart(item)}
+          className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/58 text-[var(--sb-gold)]"
+        >
+          <Plus className="h-5 w-5" />
+        </button>
+      </div>
+    </article>
+  );
+}
+
+interface OrderOnlineViewProps {
+  fulfillment: FulfillmentType;
+  groupedCart: { item: SushiMenuItem; qty: number }[];
+  items: SushiMenuItem[];
+  subtotal: number;
+  total: number;
+  onAddToCart: (item: SushiMenuItem) => void;
+  onCheckout: () => void;
+  onFulfillmentChange: (value: FulfillmentType) => void;
+  onNavigate: (view: AppView) => void;
+  onRemove: (id: string) => void;
+  onSelectItem: (item: SushiMenuItem) => void;
+  onShowCart: () => void;
+}
+
+/** Renders the dedicated Order Online screen from the ordering screenshots. */
+function OrderOnlineView({
+  fulfillment,
+  groupedCart,
+  items,
+  subtotal,
+  total,
+  onAddToCart,
+  onCheckout,
+  onFulfillmentChange,
+  onNavigate,
+  onRemove,
+  onSelectItem,
+  onShowCart,
+}: OrderOnlineViewProps) {
+  const heroItem = getItemById("otoro-nigiri") ?? items[0];
+  const recommendedItems = heroItem ? items.filter((item) => item.id !== heroItem.id).slice(0, 4) : items.slice(0, 4);
+  const cartCount = groupedCart.reduce((sum, row) => sum + row.qty, 0);
+  const deliveryMinutes = fulfillment === "Delivery" ? "30-45 MIN" : "20-25 MIN";
+
+  return (
+    <div className="space-y-5">
+      <section className="luxury-panel overflow-hidden p-0">
+        <div className="relative min-h-[258px] px-5 py-7 sm:px-8 lg:min-h-[315px] lg:px-14">
+          <Image src={heroAsset.publicUrl} alt="" fill priority sizes="100vw" className="object-cover object-[62%_50%]" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.76)_38%,rgba(0,0,0,0.28)_78%,rgba(0,0,0,0.82)_100%)]" />
+          <div className="relative z-10 max-w-lg">
+            <p className="text-sm uppercase tracking-[0.22em] text-[var(--sb-gold)]">Order Now</p>
+            <h1 className="editorial-title mt-3 text-[38px] leading-[0.96] text-white sm:text-6xl">
+              Exceptional Sushi,
+              <span className="block text-[var(--sb-red-bright)]">Delivered.</span>
+            </h1>
+            <p className="mt-4 text-sm text-[var(--sb-gold)] sm:text-base">Fresh. Authentic. Unforgettable.</p>
+            <div className="mt-6 grid max-w-sm grid-cols-2 rounded-[14px] border border-[var(--sb-border)] bg-black/42 p-1">
+              {(["Delivery", "Pickup"] as FulfillmentType[]).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => onFulfillmentChange(option)}
+                  className={`h-10 rounded-[11px] text-xs uppercase tracking-[0.14em] transition ${
+                    fulfillment === option ? "bg-[var(--sb-red)] text-white shadow-[0_0_24px_var(--sb-red-glow)]" : "text-white/70"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[1fr_360px]">
+        <div className="space-y-5">
+          <div className="luxury-panel space-y-4 p-4">
+            <div className="app-scrollbar flex gap-2 overflow-x-auto">
+              {["Recommended", "Nigiri", "Rolls", "Sashimi", "Chef Specials", "Vegetarian", "Drinks"].map((category, index) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => (category === "Recommended" ? undefined : onNavigate("menu"))}
+                  className={`h-11 shrink-0 rounded-xl border px-4 text-xs uppercase tracking-[0.12em] transition ${
+                    index === 0 ? "border-[var(--sb-gold)] bg-[var(--sb-gold)] text-black" : "border-[var(--sb-border)] bg-black/28 text-white/78"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            <div className="grid gap-3 md:grid-cols-[1fr_auto_auto_auto]">
+              <label className="flex h-12 items-center gap-3 rounded-xl border border-[var(--sb-border)] bg-black/35 px-4">
+                <Search className="h-4 w-4 text-[var(--sb-gold)]" />
+                <span className="sr-only">Search menu items</span>
+                <input className="w-full bg-transparent text-sm text-white outline-none placeholder:text-[var(--sb-muted)]" placeholder="Search menu items..." />
+              </label>
+              {["Dietary", "Spicy Level", "Sort By"].map((label) => (
+                <button key={label} type="button" className="h-12 rounded-xl border border-[var(--sb-border)] bg-black/35 px-4 text-xs uppercase tracking-[0.12em] text-white/72">
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[0.95fr_1fr]">
+            {heroItem ? (
+              <article className="luxury-panel group relative min-h-[280px] overflow-hidden p-5 text-left">
+                <Image src={heroItem.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover transition group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/50 to-transparent" />
+                <button type="button" onClick={() => onSelectItem(heroItem)} className="relative z-10 block max-w-xs text-left">
+                  <span className="rounded-full border border-[var(--sb-border)] bg-black/45 px-3 py-1 text-xs uppercase text-[var(--sb-gold)]">Chef&apos;s Special</span>
+                  <h2 className="editorial-title mt-5 text-4xl text-white">{heroItem.name}</h2>
+                  <p className="mt-3 text-sm leading-6 text-white/72">{heroItem.description}</p>
+                  <p className="mt-4 text-2xl text-[var(--sb-gold)]">{formatCurrency(heroItem.price)}</p>
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Add ${heroItem.name} to cart`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onAddToCart(heroItem);
+                  }}
+                  className="absolute bottom-5 right-5 z-20 grid h-12 w-12 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/62 text-[var(--sb-gold)]"
+                >
+                  <Plus className="h-5 w-5" />
+                </button>
+              </article>
+            ) : null}
+
+            <section className="luxury-panel p-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm uppercase tracking-[0.18em] text-[var(--sb-gold)]">Recommended For You</h2>
+                <button type="button" onClick={() => onNavigate("menu")} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View All</button>
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {recommendedItems.map((item) => (
+                  <MenuMiniCard key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <section className="luxury-panel grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: Clock3, title: "Est. Delivery Time", value: deliveryMinutes, copy: "Real-time tracking provided" },
+              { icon: Store, title: "Delivery Fee", value: fulfillment === "Delivery" ? "$3.99" : "$0.00", copy: "Free on orders over $75" },
+              { icon: CreditCard, title: "Minimum Order", value: "$25.00", copy: "Before taxes and fees" },
+              { icon: Gift, title: "Sushi Bliss Rewards", value: "Earn points", copy: "Join for free" },
+            ].map(({ icon: Icon, title, value, copy }) => (
+              <div key={title} className="flex gap-3">
+                <Icon className="mt-1 h-6 w-6 shrink-0 text-[var(--sb-gold)]" />
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{title}</p>
+                  <p className="mt-1 text-lg text-white">{value}</p>
+                  <p className="text-xs text-[var(--sb-muted)]">{copy}</p>
+                </div>
+              </div>
+            ))}
+          </section>
+        </div>
+
+        <aside className="luxury-panel hidden h-max p-4 xl:block">
+          <div className="flex items-start justify-between">
+            <div>
+              <h2 className="editorial-title text-2xl text-white">Your Order</h2>
+              <p className="mt-1 text-sm text-[var(--sb-muted)]">{cartCount} Items</p>
+            </div>
+            <button type="button" onClick={onShowCart} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View Cart</button>
+          </div>
+          <div className="mt-4 space-y-3">
+            {groupedCart.length === 0 ? (
+              <p className="rounded-xl border border-[var(--sb-border)] p-4 text-sm text-[var(--sb-muted)]">Your order is waiting for a chef selection.</p>
+            ) : (
+              groupedCart.map(({ item, qty }) => (
+                <div key={item.id} className="grid grid-cols-[72px_1fr_auto] gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-2">
+                  <div className="relative h-16 overflow-hidden rounded-lg"><Image src={item.image.publicUrl} alt="" fill sizes="72px" className="object-cover" /></div>
+                  <div>
+                    <p className="text-sm text-white">{item.name}</p>
+                    <p className="text-xs text-[var(--sb-muted)]">Qty {qty}</p>
+                    <p className="text-sm text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</p>
+                  </div>
+                  <button type="button" aria-label={`Remove ${item.name}`} onClick={() => onRemove(item.id)} className="grid h-7 w-7 place-items-center rounded-full border border-white/10 text-[var(--sb-muted)]">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+          <label className="mt-4 block">
+            <span className="sr-only">Order note</span>
+            <input className="h-11 w-full rounded-xl border border-[var(--sb-border)] bg-black/35 px-3 text-sm text-white outline-none placeholder:text-[var(--sb-muted)]" placeholder="Add a note (optional)" />
+          </label>
+          <div className="mt-5 space-y-2 text-sm text-[var(--sb-muted)]">
+            <SummaryLine label="Subtotal" value={formatCurrency(subtotal)} />
+            <SummaryLine label="Estimated Total" value={formatCurrency(total)} strong />
+          </div>
+          <Button className="red-glow-button mt-5 h-12 w-full rounded-xl uppercase tracking-[0.14em]" onClick={onCheckout}>
+            Proceed To Checkout
+          </Button>
+        </aside>
+      </section>
+
+      <div className="fixed inset-x-4 bottom-[96px] z-40 rounded-[18px] border border-[var(--sb-border)] bg-black/88 p-3 shadow-[0_0_32px_rgba(0,0,0,0.7)] backdrop-blur-xl xl:hidden">
+        <div className="mb-2 flex items-center justify-between text-sm text-white">
+          <span>{cartCount} Items</span>
+          <span>{formatCurrency(total)}</span>
+          <span>{deliveryMinutes}</span>
+        </div>
+        <Button className="red-glow-button h-12 w-full rounded-xl uppercase tracking-[0.14em]" onClick={onShowCart}>
+          View Cart & Checkout
+        </Button>
+      </div>
     </div>
   );
 }
@@ -877,7 +1162,7 @@ function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { late
     <div className="space-y-6">
       <PageHero eyebrow="Orders" title="Delivered With Care" copy="Track active orders, view receipts, and reorder favorite sets." image={heroAsset.publicUrl} />
       {!latestOrder ? (
-        <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("menu")} />
+        <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("orderOnline")} />
       ) : (
         <div className="grid gap-5 xl:grid-cols-[1fr_0.72fr]">
           <section className="luxury-panel p-5 sm:p-6">
@@ -1043,7 +1328,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
       </section>
       <section className="grid gap-4 sm:grid-cols-2">
         <Button className="red-glow-button h-14 rounded-2xl uppercase tracking-[0.18em]" onClick={() => onNavigate("reservations")}>Reserve a Table</Button>
-        <Button variant="outline" className="h-14 rounded-2xl border-[var(--sb-border-strong)] bg-transparent uppercase tracking-[0.18em] text-[var(--sb-gold)]" onClick={() => onNavigate("menu")}>Order Now</Button>
+        <Button variant="outline" className="h-14 rounded-2xl border-[var(--sb-border-strong)] bg-transparent uppercase tracking-[0.18em] text-[var(--sb-gold)]" onClick={() => onNavigate("orderOnline")}>Order Now</Button>
       </section>
     </div>
   );
