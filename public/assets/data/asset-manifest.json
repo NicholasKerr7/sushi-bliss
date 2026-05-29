@@ -2430,21 +2430,6 @@
     "mode": "RGB"
   },
   {
-    "id": "sushi-cone-senkin-modern-muku",
-    "fileName": "sushi-cone-senkin-modern-muku.webp",
-    "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
-    "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp",
-    "folder": "pairings",
-    "extension": ".webp",
-    "mimeType": "image/webp",
-    "sizeBytes": 259798,
-    "sha256": "e97991e83ebdf05c8fac359e2e47f6ef431152bc727a5cc0b2144ccff7ce1be9",
-    "width": 1024,
-    "height": 1536,
-    "format": "WEBP",
-    "mode": "RGB"
-  },
-  {
     "id": "tako-nigiri-suigei-tokubetsu-junmai",
     "fileName": "tako-nigiri-suigei-tokubetsu-junmai.webp",
     "filePath": "public/assets/pairings/tako-nigiri-suigei-tokubetsu-junmai.webp",
@@ -2696,21 +2681,6 @@
     "sha256": "bc4719f24735c5c9980ece4b58676117564787f0b41bcd4546aaa0ca1ad26280",
     "width": 1672,
     "height": 941,
-    "format": "PNG",
-    "mode": "RGB"
-  },
-  {
-    "id": "sushi-bliss-app-showcase",
-    "fileName": "sushi-bliss-app-showcase.png",
-    "filePath": "public/assets/screenshots/sushi-bliss-app-showcase.png",
-    "publicUrl": "/assets/screenshots/sushi-bliss-app-showcase.png",
-    "folder": "screenshots",
-    "extension": ".png",
-    "mimeType": "image/png",
-    "sizeBytes": 1779440,
-    "sha256": "f55f1a54b515ce27aa53422a7b0634d5b0ae18aeaca3b9c7db896cfb0e60b7bc",
-    "width": 1448,
-    "height": 1086,
     "format": "PNG",
     "mode": "RGB"
   },

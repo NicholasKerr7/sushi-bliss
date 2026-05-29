@@ -1330,27 +1330,21 @@
       "texture": "Fresh, crisp, creamy",
       "image": null,
       "standaloneImageMissing": true,
-      "pairingImageFallback": {
-        "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
-        "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
-      },
+      "pairingImageFallback": null,
       "ingredientImage": {
         "filePath": "public/assets/ingredients/salmon-fillet.webp",
         "publicUrl": "/assets/ingredients/salmon-fillet.webp"
       },
       "sakePairing": {
-        "id": "sushi-cone-senkin-modern-muku",
+        "id": "sushi-cone-seasonal-sake",
         "menuItemId": "sushi-cone",
         "menuName": "Sushi Cone",
-        "sakeName": "Senkin Modern Muku",
-        "sakeSlug": "senkin-modern-muku",
-        "image": {
-          "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
-          "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
-        },
+        "sakeName": "Chef's Seasonal Sake",
+        "sakeSlug": "chefs-seasonal-sake",
+        "image": null,
         "textIsDynamic": true,
         "bakedTextRemoved": true,
-        "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+        "filenameRule": "fallback-without-dedicated-pairing-asset"
       }
     },
     {
@@ -1914,18 +1908,15 @@
       "filenameRule": "sushi-or-sashimi-name-then-sake-name"
     },
     {
-      "id": "sushi-cone-senkin-modern-muku",
+      "id": "sushi-cone-seasonal-sake",
       "menuItemId": "sushi-cone",
       "menuName": "Sushi Cone",
-      "sakeName": "Senkin Modern Muku",
-      "sakeSlug": "senkin-modern-muku",
-      "image": {
-        "filePath": "public/assets/pairings/sushi-cone-senkin-modern-muku.webp",
-        "publicUrl": "/assets/pairings/sushi-cone-senkin-modern-muku.webp"
-      },
+      "sakeName": "Chef's Seasonal Sake",
+      "sakeSlug": "chefs-seasonal-sake",
+      "image": null,
       "textIsDynamic": true,
       "bakedTextRemoved": true,
-      "filenameRule": "sushi-or-sashimi-name-then-sake-name"
+      "filenameRule": "fallback-without-dedicated-pairing-asset"
     },
     {
       "id": "tako-nigiri-suigei-tokubetsu-junmai",
@@ -2148,15 +2139,6 @@
       "sizeBytes": 1853384
     },
     {
-      "id": "sushi-bliss-app-showcase",
-      "role": "showcase",
-      "filePath": "public/assets/screenshots/sushi-bliss-app-showcase.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-app-showcase.png",
-      "width": 1448,
-      "height": 1086,
-      "sizeBytes": 1779440
-    },
-    {
       "id": "sushi-bliss-checkout-experience-2",
       "role": "checkout",
       "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience-2.png",
@@ -2342,15 +2324,6 @@
         "width": 1672,
         "height": 941,
         "sizeBytes": 1853384
-      },
-      {
-        "id": "sushi-bliss-app-showcase",
-        "role": "showcase",
-        "filePath": "public/assets/screenshots/sushi-bliss-app-showcase.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-app-showcase.png",
-        "width": 1448,
-        "height": 1086,
-        "sizeBytes": 1779440
       },
       {
         "id": "sushi-bliss-checkout-experience-2",
