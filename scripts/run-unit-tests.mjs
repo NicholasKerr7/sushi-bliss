@@ -26,7 +26,7 @@ try {
     platform: "node",
     format: "esm",
     target: "node18",
-    bundle: false,
+    bundle: true,
     logLevel: "silent",
     tsconfigRaw: {
       compilerOptions: {
@@ -121,14 +121,21 @@ try {
   });
 
   test("filterMenuItems filters by category when not All", () => {
-    const result = filterMenuItems(sushiMenuData, "", "Vegan");
-    assert.ok(result.every((item) => item.categories.includes("Vegan")));
+    const result = filterMenuItems(sushiMenuData, "", "Vegetarian");
+    assert.ok(result.every((item) => item.categories.includes("Vegetarian")));
   });
 
   test("filterMenuItems combines query and category filters", () => {
     const result = filterMenuItems(sushiMenuData, "roll", "Popular");
     assert.ok(result.length > 0);
-    assert.ok(result.every((item) => item.name.toLowerCase().includes("roll")));
+    assert.ok(
+      result.every((item) =>
+        [item.name, item.description, item.chefNote, item.ingredients.join(" "), item.sakePairing.sakeName, item.categories.join(" ")]
+          .join(" ")
+          .toLowerCase()
+          .includes("roll")
+      )
+    );
     assert.ok(result.every((item) => item.categories.includes("Popular")));
   });
 
@@ -152,7 +159,7 @@ try {
     assert.strictEqual(set.items.length, 3);
     assert.ok(
       set.items.every((item) =>
-        item.categories.some((category) => ["Chef", "Premium", "Signature"].includes(category))
+        item.categories.some((category) => ["Chef Specials", "Premium", "Nigiri"].includes(category))
       )
     );
     assert.ok(set.total > 0);

@@ -22,6 +22,7 @@ export interface GroupedCartItem {
   qty: number;
 }
 
+/** Applies supported promo codes to a cart subtotal. */
 function getPromoDiscount(subtotal: number, promo: string | null): number {
   if (!promo) return 0;
   const code = promo.toLowerCase();
@@ -34,6 +35,7 @@ function getPromoDiscount(subtotal: number, promo: string | null): number {
   return 0;
 }
 
+/** Calculates subtotal, discounts, tax, tip, and grand total for checkout. */
 export function calculateCartTotals({
   cart,
   appliedPromo,
@@ -55,8 +57,9 @@ export function calculateCartTotals({
   };
 }
 
+/** Groups repeated cart entries into quantity rows for cart and receipts. */
 export function groupCartItems(cart: SushiMenuItem[]): GroupedCartItem[] {
-  const map = new Map<number, GroupedCartItem>();
+  const map = new Map<string, GroupedCartItem>();
   for (const item of cart) {
     const current = map.get(item.id);
     map.set(item.id, {

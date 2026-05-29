@@ -81,26 +81,32 @@ interface RawReservation {
 const defaultSeating: SeatingPreference = "Counter";
 const defaultOccasion: ReservationOccasion = "Dinner";
 
+/** Checks whether persisted data can be treated as a reservation-like object. */
 function isRawReservation(value: unknown): value is RawReservation {
   return typeof value === "object" && value !== null;
 }
 
+/** Validates persisted seating values against supported seating options. */
 function isSeatingPreference(value: unknown): value is SeatingPreference {
   return seatingOptions.some((option) => option.value === value);
 }
 
+/** Validates persisted occasion values against supported occasion options. */
 function isReservationOccasion(value: unknown): value is ReservationOccasion {
   return occasionOptions.some((option) => option === value);
 }
 
+/** Reads a string value from unknown persisted data with a fallback. */
 function getStringValue(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
 }
 
+/** Reads a finite number from unknown persisted data with a fallback. */
 function getNumberValue(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+/** Formats a local Date into the YYYY-MM-DD value used by date inputs. */
 export function formatDateValue(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -108,6 +114,7 @@ export function formatDateValue(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+/** Builds the rolling reservation day selector from a base date. */
 export function buildReservationDays(baseDate = new Date(), dayCount = 7): ReservationDay[] {
   return Array.from({ length: dayCount }, (_, index) => {
     const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate() + index);
@@ -124,6 +131,7 @@ export function buildReservationDays(baseDate = new Date(), dayCount = 7): Reser
   });
 }
 
+/** Creates a fresh reservation form with sensible defaults and optional guest data. */
 export function createDefaultReservationForm(
   baseDate = new Date(),
   guest?: { name?: string; phone?: string }
@@ -140,20 +148,24 @@ export function createDefaultReservationForm(
   };
 }
 
+/** Combines separate date and time controls into the local datetime storage value. */
 export function createLocalDateTimeValue(dateValue: string, timeValue: string): string {
   return `${dateValue}T${timeValue}`;
 }
 
+/** Creates a short customer-facing reservation confirmation code. */
 export function createReservationCode(id: number): string {
   return `SB-RSV-${String(id).slice(-6).padStart(6, "0")}`;
 }
 
+/** Splits a stored local datetime value into date and HH:mm time parts. */
 export function parseReservationDateTime(datetime: string): { date: string; time: string } {
   const [date = "", timeWithSeconds = ""] = datetime.split("T");
   const time = timeWithSeconds.slice(0, 5);
   return { date, time };
 }
 
+/** Formats a stored reservation datetime for customer-facing display. */
 export function formatReservationDateTime(datetime: string): string {
   const { date, time } = parseReservationDateTime(datetime);
   const [year, month, day] = date.split("-").map(Number);
@@ -173,6 +185,7 @@ export function formatReservationDateTime(datetime: string): string {
   return `${formattedDate} • ${formattedTime}`;
 }
 
+/** Calculates available seats for each slot after existing reservations are applied. */
 export function getReservationSlots(
   dateValue: string,
   guests: number,
@@ -197,6 +210,7 @@ export function getReservationSlots(
   });
 }
 
+/** Validates reservation form input before saving or confirming. */
 export function validateReservationForm(
   form: ReservationFormState,
   reservations: Reservation[],

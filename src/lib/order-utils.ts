@@ -55,41 +55,50 @@ interface RawOrder {
   customerName?: unknown;
 }
 
+/** Checks whether a localStorage value can be treated as an order-like object. */
 function isRawOrder(value: unknown): value is RawOrder {
   return typeof value === "object" && value !== null;
 }
 
+/** Reads a string value from unknown persisted data with a fallback. */
 function getStringValue(value: unknown, fallback = ""): string {
   return typeof value === "string" ? value : fallback;
 }
 
+/** Reads a finite number from unknown persisted data with a fallback. */
 function getNumberValue(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+/** Normalizes unknown persisted fulfillment values into supported options. */
 function getFulfillmentType(value: unknown): FulfillmentType {
   return value === "Delivery" ? "Delivery" : "Pickup";
 }
 
+/** Validates enough menu item shape to safely display a hydrated order. */
 function isSushiMenuItem(value: unknown): value is SushiMenuItem {
   if (typeof value !== "object" || value === null) return false;
   const item = value as Partial<SushiMenuItem>;
-  return typeof item.id === "number" && typeof item.name === "string" && typeof item.price === "number";
+  return typeof item.id === "string" && typeof item.name === "string" && typeof item.price === "number";
 }
 
+/** Recalculates an order subtotal from item rows when old entries lack one. */
 function getOrderSubtotal(items: SushiMenuItem[]): number {
   return items.reduce((sum, item) => sum + (item.price ?? 0), 0);
 }
 
+/** Creates a short customer-facing order confirmation code. */
 export function createOrderCode(id: number): string {
   return `SB-${String(id).slice(-6).padStart(6, "0")}`;
 }
 
+/** Estimates fulfillment time from order type and item count. */
 export function getOrderEtaMinutes(type: FulfillmentType, itemCount: number): number {
   const baseMinutes = type === "Delivery" ? 32 : 18;
   return baseMinutes + Math.min(itemCount, 8) * 2;
 }
 
+/** Builds the persisted order summary after checkout succeeds. */
 export function buildOrderSummary(input: BuildOrderSummaryInput): OrderHistoryEntry {
   const etaMinutes = getOrderEtaMinutes(input.type, input.items.length);
   return {

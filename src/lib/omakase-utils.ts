@@ -5,10 +5,10 @@ export const omakaseMoods = ["Chef's Luxe", "Bright & Clean", "Fire & Crunch", "
 export type OmakaseMood = (typeof omakaseMoods)[number];
 
 const moodCategoryMap: Record<OmakaseMood, MenuCategory[]> = {
-  "Chef's Luxe": ["Chef", "Premium", "Signature"],
-  "Bright & Clean": ["Classic", "Signature", "Popular"],
-  "Fire & Crunch": ["Hot", "Popular", "Chef"],
-  "Plant Forward": ["Vegan", "Classic", "Signature"],
+  "Chef's Luxe": ["Chef Specials", "Premium", "Nigiri"],
+  "Bright & Clean": ["Sashimi", "Classic", "Popular"],
+  "Fire & Crunch": ["Hot", "Rolls", "Chef Specials"],
+  "Plant Forward": ["Vegetarian", "Temaki", "Classic"],
 };
 
 export interface OmakaseSet {
@@ -38,7 +38,7 @@ export function buildOmakaseSet(
       score:
         item.categories.filter((category) => preferredCategories.includes(category)).length * 10 +
         item.rating +
-        (item.categories.includes("Chef") ? 1 : 0),
+        (item.categories.includes("Chef Specials") ? 1 : 0),
     }))
     .filter(({ score }) => score >= 10)
     .sort((a, b) => b.score - a.score || a.item.price - b.item.price);

@@ -8,7 +8,7 @@ describe("buildOmakaseSet", () => {
 
     expect(set.mood).toBe("Chef's Luxe");
     expect(set.items).toHaveLength(3);
-    expect(set.items.every((item) => item.categories.some((category) => ["Chef", "Premium", "Signature"].includes(category)))).toBe(true);
+    expect(set.items.every((item) => item.categories.some((category) => ["Chef Specials", "Premium", "Nigiri"].includes(category)))).toBe(true);
     expect(set.total).toBeGreaterThan(0);
   });
 
