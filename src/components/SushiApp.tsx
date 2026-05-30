@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
   Calendar,
-  CheckCircle2,
   ChefHat,
   ChevronRight,
   Clock3,
@@ -17,12 +16,8 @@ import {
   Home,
   Leaf,
   Mail,
-  MapPin,
   Minus,
-  PackageCheck,
-  Phone,
   Plus,
-  ReceiptText,
   Search,
   Send,
   ShoppingBag,
@@ -34,8 +29,8 @@ import {
   Utensils,
   X,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 import { HomeView } from "./home/HomeView";
+import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
@@ -108,15 +103,27 @@ const iconAssets = {
   about: getAssetById("golden-chef-s-crest-emblem")?.publicUrl,
   bell: getAssetById("golden-notification-bell")?.publicUrl,
   cart: getAssetById("golden-shopping-cart-icon")?.publicUrl,
+  check: getAssetById("golden-check-mark-with-glow")?.publicUrl,
   contact: getAssetById("luxury-gold-envelope-icon-on-black")?.publicUrl,
+  clock: getAssetById("luxurious-gold-clock-icon")?.publicUrl,
+  delivery: getAssetById("stylised-black-and-gold-delivery-scooter")?.publicUrl,
+  dining: getAssetById("golden-dining-setting-icon")?.publicUrl,
+  facebook: getAssetById("metallic-f-logo-on-transparent-background")?.publicUrl,
+  flower: getAssetById("golden-floral-emblem-on-transparent-background")?.publicUrl,
+  gift: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
+  group: getAssetById("stylised-golden-group-emblem")?.publicUrl,
   home: getAssetById("elegant-gold-house-icon-with-red-glow")?.publicUrl,
+  instagram: getAssetById("gilded-instagram-camera-emblem")?.publicUrl,
   loyalty: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
+  mapPin: getAssetById("luxurious-map-pin-with-red-glow")?.publicUrl,
   menu: getAssetById("gold-neon-sushi-menu-icon")?.publicUrl,
   orders: getAssetById("gold-takeaway-bag-with-receipt-icon")?.publicUrl,
-  pairings: getAssetById("luxurious-gold-sushi-emblem")?.publicUrl,
+  phone: getAssetById("luxury-telephone-handset-icon-with-glow")?.publicUrl,
   profile: getAssetById("minimalist-person-icon-with-glowing-rim")?.publicUrl,
+  qr: getAssetById("luxurious-golden-qr-token-emblem")?.publicUrl,
   reservations: getAssetById("golden-calendar-icon-with-red-highlight")?.publicUrl,
   settings: getAssetById("user-settings-icon-with-gold-gear")?.publicUrl,
+  star: getAssetById("golden-star-with-diamond-sparkles")?.publicUrl,
 };
 
 const desktopNav: NavItem[] = [
@@ -134,6 +141,14 @@ const mobileNav: NavItem[] = [
   { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
   { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
   { key: "orders", label: "Orders", icon: ShoppingBag, assetIcon: iconAssets.orders },
+  { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
+];
+
+const mobileLoyaltyNav: NavItem[] = [
+  { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
+  { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
+  { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
+  { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
   { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
 ];
 
@@ -421,7 +436,7 @@ export default function SushiApp() {
       cartCount={cart.length}
       iconUrls={{ bell: iconAssets.bell, cart: iconAssets.cart, menu: iconAssets.settings }}
       navItems={desktopNav}
-      mobileNavItems={mobileNav}
+      mobileNavItems={activeView === "loyalty" ? mobileLoyaltyNav : mobileNav}
       profileName={profile.name}
       profileImage={profileImage}
       onNavigate={navigate}
@@ -1033,10 +1048,18 @@ interface ReservationsViewProps {
 function ReservationsView({ form, reservations, profile, onFormChange, onSave, onProfileChange }: ReservationsViewProps) {
   const slots = getReservationSlots(form.date, form.guests, reservations);
   const experiences = getReservationExperiences();
+  const selectedSlot = slots.find((slot) => slot.time === form.time);
+  const selectedExperience = getReservationExperienceTitle(form.seating);
+  const summaryImage = assetUrl(specialtyAssets[1] ?? specialtyAssets[0], heroAsset.publicUrl);
 
   return (
-    <div className="space-y-6">
-      <PageHero eyebrow="Reservations" title="Reserve Your Experience" copy="Choose your seat, time, occasion, and guest details." image={heroAsset.publicUrl} />
+    <div className="space-y-5">
+      <PageHero
+        eyebrow="Reserve your experience."
+        title="Reservations"
+        copy="An unforgettable dining experience awaits. Choose your date, time, and dining room."
+        image={heroAsset.publicUrl}
+      />
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
         <section className="grid gap-5 lg:grid-cols-[320px_1fr]">
           <div className="luxury-panel p-5">
@@ -1080,10 +1103,11 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
                     type="button"
                     disabled={slot.disabled}
                     onClick={() => onFormChange({ time: slot.time })}
-                    className={`rounded-2xl border p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                      form.time === slot.time ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24" : "border-[var(--sb-border)] bg-white/[0.03] hover:border-[var(--sb-gold)]"
+                    className={`relative rounded-2xl border p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                      form.time === slot.time ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24 shadow-[0_0_24px_rgba(184,20,20,0.26)]" : "border-[var(--sb-border)] bg-white/[0.03] hover:border-[var(--sb-gold)]"
                     }`}
                   >
+                    {slot.service.toLowerCase().includes("counter") ? <span className="absolute right-2 top-2 rounded-full border border-[var(--sb-border)] px-2 py-0.5 text-[9px] uppercase text-[var(--sb-gold)]">Chef&apos;s Counter</span> : null}
                     <span className="block font-semibold text-white">{slot.label}</span>
                     <span className="mt-1 block text-xs text-[var(--sb-muted)]">{slot.seatsRemaining} open</span>
                   </button>
@@ -1093,35 +1117,41 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
             <div className="luxury-panel p-5">
               <NumberedTitle number="4" title="Choose Your Experience" />
               <div className="mt-4 grid gap-3 md:grid-cols-2">
-                {experiences.map((experience) => (
-                  <button
-                    key={experience.id}
-                    type="button"
-                    onClick={() => onFormChange({ seating: experience.id === "sushi-bar" ? "Counter" : experience.id === "main-dining-room" ? "Dining Room" : "Window" })}
-                    className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] text-left transition hover:border-[var(--sb-gold)]"
-                  >
-                    <div className="relative h-28">
-                      <Image src={experience.image.publicUrl} alt="" fill sizes="320px" className="object-cover transition group-hover:scale-105" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/82 to-transparent" />
-                      {experience.premium ? <span className="absolute right-3 top-3 rounded-full bg-[var(--sb-red)] px-2 py-1 text-[10px] uppercase text-white">Premium</span> : null}
-                    </div>
-                    <div className="p-4">
-                      <p className="font-semibold text-white">{experience.title}</p>
-                      <p className="mt-1 text-xs leading-5 text-[var(--sb-muted)]">{experience.description}</p>
-                    </div>
-                  </button>
-                ))}
+                {experiences.map((experience) => {
+                  const seating = getSeatingForExperience(experience.id);
+                  const active = form.seating === seating;
+                  return (
+                    <button
+                      key={experience.id}
+                      type="button"
+                      onClick={() => onFormChange({ seating })}
+                      className={`group grid grid-cols-[1fr_112px] overflow-hidden rounded-2xl border bg-white/[0.03] text-left transition ${
+                        active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/12" : "border-[var(--sb-border)] hover:border-[var(--sb-gold)]"
+                      }`}
+                    >
+                      <span className="p-4">
+                        <span className="block font-semibold uppercase tracking-[0.08em] text-white">{experience.title}</span>
+                        <span className="mt-1 block text-xs leading-5 text-[var(--sb-muted)]">{experience.description}</span>
+                        {experience.premium ? <span className="mt-2 inline-block rounded-full bg-[var(--sb-red)] px-2 py-1 text-[10px] uppercase text-white">Premium</span> : null}
+                      </span>
+                      <span className="relative min-h-28 overflow-hidden">
+                        <Image src={experience.image.publicUrl} alt="" fill sizes="140px" className="object-cover transition group-hover:scale-105" />
+                        <span className="absolute inset-0 bg-gradient-to-l from-transparent to-black/28" />
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="luxury-panel p-5">
-              <NumberedTitle number="5" title="Guest Details" />
+              <NumberedTitle number="5" title="Special Occasion" />
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Input value={form.name || profile.name} onChange={(event) => onFormChange({ name: event.target.value })} placeholder="Full name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
                 <Input value={form.phone || profile.phone} onChange={(event) => onFormChange({ phone: event.target.value })} placeholder="Phone" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
                 <select value={form.occasion} onChange={(event) => onFormChange({ occasion: event.target.value as ReservationFormState["occasion"] })} className="h-12 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 text-sm text-white sm:col-span-2">
                   {occasionOptions.map((occasion) => <option key={occasion}>{occasion}</option>)}
                 </select>
-                <textarea value={form.notes} onChange={(event) => onFormChange({ notes: event.target.value })} placeholder="Allergies, celebrations, accessibility requests..." className="min-h-28 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)] sm:col-span-2" />
+                <textarea value={form.notes} onChange={(event) => onFormChange({ notes: event.target.value })} placeholder="We're celebrating a special birthday. Looking forward to an amazing experience!" className="min-h-28 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)] sm:col-span-2" />
               </div>
               <label className="mt-4 flex items-center justify-between rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3 text-sm text-[var(--sb-muted)]">
                 Save reservation contact to profile
@@ -1135,71 +1165,330 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
             </div>
           </div>
         </section>
-        <aside className="luxury-panel h-max p-5">
-          <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Your Reservation</p>
-          <div className="mt-4 space-y-4 text-sm">
-            <SummaryLine label="Date" value={compactDate(form.date)} />
-            <SummaryLine label="Time" value={slots.find((slot) => slot.time === form.time)?.label ?? form.time} />
-            <SummaryLine label="Party" value={`${form.guests} guests`} />
-            <SummaryLine label="Experience" value={form.seating} />
-            <SummaryLine label="Occasion" value={form.occasion} />
-          </div>
-          <div className="relative mt-5 h-44 overflow-hidden rounded-2xl border border-[var(--sb-border)]">
-            <Image src={assetUrl(specialtyAssets[0], heroAsset.publicUrl)} alt="" fill sizes="360px" className="object-cover" />
-          </div>
-          <Button className="red-glow-button mt-5 h-12 w-full rounded-2xl uppercase tracking-[0.18em]" onClick={onSave}>
-            Confirm Reservation
-          </Button>
-        </aside>
+        <ReservationSummaryCard
+          date={formatReservationDateForSummary(form.date)}
+          experience={selectedExperience}
+          image={summaryImage}
+          occasion={form.occasion}
+          party={`${form.guests} Guests`}
+          time={selectedSlot?.label ?? form.time}
+          onSave={onSave}
+        />
       </div>
+    </div>
+  );
+}
+
+/** Converts internal seating values into the more editorial labels used in screenshots. */
+function getReservationExperienceTitle(seating: ReservationFormState["seating"]): string {
+  if (seating === "Counter") return "Chef's Counter";
+  if (seating === "Dining Room") return "Main Dining Room";
+  return "Outdoor Lantern Terrace";
+}
+
+/** Maps reservation experience cards back to the stored seating preference. */
+function getSeatingForExperience(experienceId: string): ReservationFormState["seating"] {
+  if (experienceId === "sushi-bar" || experienceId === "chef-counter") return "Counter";
+  if (experienceId === "main-dining-room") return "Dining Room";
+  return "Window";
+}
+
+/** Formats a YYYY-MM-DD value to the long reservation summary text. */
+function formatReservationDateForSummary(dateValue: string): string {
+  return new Date(`${dateValue}T12:00`).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+/** Renders the mobile-first reservation summary card shown before editing controls. */
+function ReservationSummaryCard({
+  date,
+  experience,
+  image,
+  occasion,
+  party,
+  time,
+  onSave,
+}: {
+  date: string;
+  experience: string;
+  image: string;
+  occasion: string;
+  party: string;
+  time: string;
+  onSave: () => void;
+}) {
+  const rows = [
+    { icon: iconAssets.reservations, label: "Date", value: date },
+    { icon: iconAssets.clock, label: "Time", value: time },
+    { icon: iconAssets.group, label: "Party Size", value: party },
+    { icon: iconAssets.dining, label: "Experience", value: experience },
+    { icon: iconAssets.reservations, label: "Occasion", value: occasion },
+  ];
+
+  return (
+    <aside className="luxury-panel order-first h-max overflow-hidden p-3.5 sm:p-5 xl:order-none">
+      <p className="editorial-title text-lg text-white sm:text-xl xl:text-2xl">Your Reservation</p>
+      <div className="mt-2 divide-y divide-[var(--sb-border)] sm:mt-4">
+        {rows.map((row) => (
+          <ReservationSummaryRow key={row.label} icon={row.icon} label={row.label} value={row.value} />
+        ))}
+      </div>
+      <div className="relative mt-3 h-20 overflow-hidden rounded-2xl border border-[var(--sb-border)] sm:mt-5 sm:h-44">
+        <Image src={image} alt="" fill sizes="360px" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/58 to-transparent" />
+      </div>
+      <Button className="red-glow-button mt-3 h-10 w-full rounded-2xl uppercase tracking-[0.18em] sm:mt-4 sm:h-12" onClick={onSave}>
+        Confirm Reservation
+      </Button>
+    </aside>
+  );
+}
+
+/** Displays one icon-led reservation summary line. */
+function ReservationSummaryRow({ icon, label, value }: { icon?: string; label: string; value: string }) {
+  return (
+    <div className="grid grid-cols-[28px_1fr] gap-2.5 py-1.5 sm:grid-cols-[34px_1fr] sm:gap-3 sm:py-3">
+      <span className="grid h-6 w-6 place-items-center rounded-full border border-[var(--sb-border)] bg-black/35 sm:h-8 sm:w-8">
+        {icon ? <AssetIcon src={icon} size={17} /> : null}
+      </span>
+      <span>
+        <span className="block text-[10px] uppercase tracking-[0.18em] text-[var(--sb-muted)] sm:text-xs">{label}</span>
+        <span className="block text-[13px] text-white sm:mt-1 sm:text-sm">{value}</span>
+      </span>
     </div>
   );
 }
 
 /** Renders active order tracking, receipts, and reorder actions. */
 function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { latestOrder: OrderHistoryEntry | null; orderHistory: OrderHistoryEntry[]; onNavigate: (view: AppView) => void; onReorder: (items: SushiMenuItem[]) => void }) {
+  const pastOrders = latestOrder ? orderHistory.filter((order) => order.id !== latestOrder.id) : orderHistory;
+
   return (
-    <div className="space-y-6">
-      <PageHero eyebrow="Orders" title="Delivered With Care" copy="Track active orders, view receipts, and reorder favorite sets." image={heroAsset.publicUrl} />
+    <div className="space-y-5">
+      <PageHero
+        eyebrow="Your orders, delivered with care."
+        title="Orders"
+        copy="Track your current orders and view your delicious history."
+        image={heroAsset.publicUrl}
+      />
       {!latestOrder ? (
         <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("orderOnline")} />
       ) : (
-        <div className="grid gap-5 xl:grid-cols-[1fr_0.72fr]">
-          <section className="luxury-panel p-5 sm:p-6">
-            <SectionHeader eyebrow="Active Order" title={latestOrder.confirmationCode} copy={`${latestOrder.type} around ${formatClockTime(latestOrder.fulfillmentTime)}`} />
-            <div className="mt-6 grid gap-3 sm:grid-cols-4">
-              {["Received", "Chef Preparing", "Quality Check", latestOrder.type === "Delivery" ? "On The Way" : "Ready"].map((stage, index) => (
-                <div key={stage} className={`rounded-2xl border p-4 ${index < 2 ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/12" : "border-[var(--sb-border)] bg-white/[0.03]"}`}>
-                  <span className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]">{index + 1}</span>
-                  <p className="mt-3 text-sm font-semibold text-white">{stage}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {latestOrder.items.slice(0, 5).map((item) => (
-                <div key={`${latestOrder.id}-${item.id}`} className="relative h-16 w-20 overflow-hidden rounded-xl border border-[var(--sb-border)]">
-                  <Image src={item.image.publicUrl} alt="" fill sizes="80px" className="object-cover" />
-                </div>
-              ))}
-            </div>
-          </section>
-          <ReceiptPanel order={latestOrder} onReorder={onReorder} />
-        </div>
+        <ActiveOrderPanel order={latestOrder} onReorder={onReorder} />
       )}
       <section className="luxury-panel p-5 sm:p-6">
-        <SectionHeader eyebrow="History" title="Past Orders" />
+        <div className="flex items-center gap-3">
+          {iconAssets.flower ? <AssetIcon src={iconAssets.flower} size={25} /> : null}
+          <h2 className="editorial-title text-xl text-white">Past Orders</h2>
+        </div>
         <div className="mt-5 space-y-3">
-          {orderHistory.length === 0 ? <p className="text-sm text-[var(--sb-muted)]">No past orders.</p> : null}
-          {orderHistory.map((order) => (
-            <div key={order.id} className="flex flex-col gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-semibold text-white">{order.confirmationCode}</p>
-                <p className="text-sm text-[var(--sb-muted)]">{new Date(order.placedAt).toLocaleDateString()} / {order.items.length} items</p>
+          {pastOrders.length === 0 ? <p className="text-sm text-[var(--sb-muted)]">No past orders yet.</p> : null}
+          {pastOrders.slice(0, 5).map((order) => (
+            <PastOrderRow key={order.id} order={order} onReorder={onReorder} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/** Displays the screenshot-style active order card with timeline and actions. */
+function ActiveOrderPanel({ order, onReorder }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void }) {
+  return (
+    <section className="luxury-panel overflow-hidden p-0">
+      <div className="border-b border-[var(--sb-border)] px-5 py-4">
+        <div className="flex items-center gap-3">
+          {iconAssets.orders ? <AssetIcon src={iconAssets.orders} size={24} /> : null}
+          <p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">Active Order</p>
+        </div>
+      </div>
+      <div className="grid gap-5 p-5 lg:grid-cols-[1fr_1.1fr_0.85fr]">
+        <div>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h2 className="editorial-title text-2xl text-white">Order #{order.confirmationCode}</h2>
+              <p className="mt-2 text-sm text-[var(--sb-muted)]">{new Date(order.placedAt).toLocaleString()}</p>
+            </div>
+            <span className="rounded-full bg-[var(--sb-red)]/84 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-white">{order.type}</span>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <StatCard label={order.type === "Delivery" ? "Est. Delivery" : "Est. Ready"} value={formatClockTime(order.fulfillmentTime)} />
+            <StatCard label="Minutes" value={`${order.etaMinutes} min`} />
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">Order Status</p>
+          <OrderTimeline orderType={order.type} />
+          <div className="mt-5 flex items-center gap-2">
+            <span className="text-sm text-[var(--sb-muted)]">{order.items.length} Items</span>
+            <div className="flex flex-1 gap-2 overflow-hidden">
+              {order.items.slice(0, 4).map((item, index) => (
+                <span key={`${order.id}-${item.id}-${index}`} className="relative h-14 w-16 overflow-hidden rounded-xl border border-[var(--sb-border)] bg-black/35">
+                  <Image src={item.image.publicUrl} alt="" fill sizes="64px" className="object-cover" />
+                </span>
+              ))}
+              {order.items.length > 4 ? <span className="grid h-14 w-14 place-items-center rounded-xl border border-[var(--sb-border)] text-sm text-white">+{order.items.length - 4}</span> : null}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-[var(--sb-border)] bg-black/32 p-4">
+          <SummaryLine label="Total" value={formatCurrency(order.total)} strong />
+          <Button variant="outline" className="mt-4 h-11 w-full rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]">
+            View Details
+          </Button>
+          <Button className="red-glow-button mt-3 h-11 w-full rounded-xl uppercase tracking-[0.14em]" onClick={() => onReorder(order.items)}>
+            Order Again
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Renders the three-step status line used by active orders. */
+function OrderTimeline({ orderType }: { orderType: FulfillmentType }) {
+  const stages = [
+    { label: "Preparing", icon: iconAssets.about, active: true },
+    { label: orderType === "Delivery" ? "On The Way" : "Ready Soon", icon: iconAssets.delivery, active: false },
+    { label: "Delivered", icon: iconAssets.check, active: false },
+  ];
+
+  return (
+    <div className="mt-5 grid grid-cols-3 items-start gap-2">
+      {stages.map((stage, index) => (
+        <div key={stage.label} className="relative text-center">
+          {index > 0 ? <span className="absolute right-1/2 top-5 h-px w-full bg-[var(--sb-border)]" /> : null}
+          <span className={`relative z-10 mx-auto grid h-11 w-11 place-items-center rounded-full border bg-black/55 ${stage.active ? "border-[var(--sb-red-bright)] shadow-[0_0_18px_var(--sb-red-glow)]" : "border-[var(--sb-border)]"}`}>
+            {stage.icon ? <AssetIcon src={stage.icon} size={24} /> : null}
+          </span>
+          <span className={`mt-2 block text-xs ${stage.active ? "text-[var(--sb-red-bright)]" : "text-[var(--sb-muted)]"}`}>{stage.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Shows one past order row with image thumbnails and a reorder action. */
+function PastOrderRow({ order, onReorder }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void }) {
+  return (
+    <div className="grid gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3 md:grid-cols-[1fr_auto_auto] md:items-center">
+      <div className="flex items-center gap-3">
+        <div className="flex -space-x-2">
+          {order.items.slice(0, 3).map((item, index) => (
+            <span key={`${order.id}-${item.id}-${index}`} className="relative h-12 w-14 overflow-hidden rounded-xl border border-black bg-black">
+              <Image src={item.image.publicUrl} alt="" fill sizes="56px" className="object-cover" />
+            </span>
+          ))}
+        </div>
+        <div>
+          <p className="font-semibold text-white">Order #{order.confirmationCode}</p>
+          <p className="text-sm text-[var(--sb-muted)]">{new Date(order.placedAt).toLocaleDateString()} / {order.items.length} items</p>
+        </div>
+      </div>
+      <span className="text-lg font-semibold text-[var(--sb-gold)]">{formatCurrency(order.total)}</span>
+      <Button variant="outline" className="h-10 rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onReorder(order.items)}>
+        Order Again
+      </Button>
+    </div>
+  );
+}
+
+/** Renders the member loyalty dashboard and reward redemption cards. */
+function LoyaltyView({ loyaltyPoints, rewards, onRedeem }: { loyaltyPoints: number; rewards: Reward[]; onRedeem: (reward: Reward) => void }) {
+  const progressValue = Math.min(loyaltyPoints, 4000);
+  const featuredRewards = rewards.slice(0, 4);
+
+  return (
+    <div className="space-y-5">
+      <section className="luxury-panel relative overflow-hidden p-5 sm:p-7">
+        <Image src={heroAsset.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-70" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.72)_42%,rgba(0,0,0,0.34)_78%,rgba(0,0,0,0.84)_100%)]" />
+        <div className="sb-wave-pattern absolute bottom-4 left-4 h-32 w-72 opacity-20" />
+        <div className="relative z-10 grid gap-5 lg:grid-cols-[1fr_320px]">
+          <div className="max-w-xl">
+            <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">Welcome back, Hiroshi.</p>
+            <h1 className="editorial-title mt-3 text-5xl leading-[0.94] text-white md:text-7xl">
+              Loyalty
+              <span className="block text-[var(--sb-red-bright)]">Rewards</span>
+            </h1>
+            <p className="mt-4 max-w-sm text-sm leading-6 text-white/78">Savor more than exceptional sushi. Earn points, unlock exclusive rewards, and enjoy elevated dining experiences.</p>
+          </div>
+          <MemberStatusCard loyaltyPoints={loyaltyPoints} progressValue={progressValue} />
+        </div>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[320px_1fr]">
+        <MemberPassCard />
+        <div className="luxury-panel p-5">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="editorial-title text-xl text-white">Redeem Your Points</h2>
+            <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all rewards</button>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+            {featuredRewards.map((reward) => (
+              <RewardCard key={reward.id} reward={reward} onRedeem={onRedeem} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr_0.9fr]">
+        <LoyaltyInfoCard
+          action="Invite Friends"
+          copy="Share Sushi Bliss with friends. You both earn 500 points."
+          image={assetUrl(featuredAssets.sakeSets[0], heroAsset.publicUrl)}
+          title="Refer & Earn"
+        />
+        <div className="luxury-panel p-5">
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="editorial-title text-xl text-white">Member Perks</h2>
+            <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all</button>
+          </div>
+          <div className="mt-5 grid grid-cols-4 gap-3 text-center">
+            {[
+              { icon: iconAssets.star, title: "10 pts", copy: "per $1 spent" },
+              { icon: iconAssets.gift, title: "Birthday", copy: "reward" },
+              { icon: iconAssets.group, title: "Exclusive", copy: "access" },
+              { icon: iconAssets.reservations, title: "Priority", copy: "reservations" },
+            ].map((perk) => (
+              <div key={perk.title} className="rounded-2xl border border-[var(--sb-border)] bg-black/30 p-3">
+                {perk.icon ? <AssetIcon src={perk.icon} size={30} className="mx-auto" /> : null}
+                <p className="mt-2 text-xs font-semibold text-[var(--sb-gold)]">{perk.title}</p>
+                <p className="text-[11px] text-[var(--sb-muted)]">{perk.copy}</p>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-lg font-semibold text-[var(--sb-gold)]">{formatCurrency(order.total)}</span>
-                <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onReorder(order.items)}>Reorder</Button>
-              </div>
+            ))}
+          </div>
+        </div>
+        <LoyaltyInfoCard
+          action="Explore Rewards"
+          copy="Exclusive rewards for our most devoted members."
+          image={assetUrl(getItemById("uni-gunkan")?.image, heroAsset.publicUrl)}
+          title="Chef's Tasting Rewards"
+        />
+      </section>
+
+      <section className="luxury-panel p-5">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="editorial-title text-xl text-white">Recent Rewards Activity</h2>
+          <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all activity</button>
+        </div>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          {[
+            ["Earned Points", "Dinner at Sushi Bliss", "+350 pts"],
+            ["Reward Redeemed", "Spicy Tuna Roll", "-1,000 pts"],
+            ["Earned Points", "Lunch at Sushi Bliss", "+250 pts"],
+            ["Bonus Points", "Birthday Reward", "+500 pts"],
+          ].map(([title, copy, points]) => (
+            <div key={`${title}-${copy}`} className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4">
+              <p className="text-xs text-[var(--sb-muted)]">{title}</p>
+              <p className="mt-1 text-sm text-white">{copy}</p>
+              <p className="mt-2 text-sm text-[var(--sb-gold)]">{points}</p>
             </div>
           ))}
         </div>
@@ -1208,45 +1497,82 @@ function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { late
   );
 }
 
-/** Renders the member loyalty dashboard and reward redemption cards. */
-function LoyaltyView({ loyaltyPoints, rewards, onRedeem }: { loyaltyPoints: number; rewards: Reward[]; onRedeem: (reward: Reward) => void }) {
+/** Displays the glass member status card from the loyalty screenshots. */
+function MemberStatusCard({ loyaltyPoints, progressValue }: { loyaltyPoints: number; progressValue: number }) {
   return (
-    <div className="space-y-6">
-      <PageHero eyebrow="Loyalty Rewards" title="Member Access" copy="Earn points, unlock omakase perks, and redeem premium rewards." image={heroAsset.publicUrl} />
-      <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="luxury-panel p-5 sm:p-6">
-          <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Bliss Member</p>
-          <h2 className="editorial-title mt-3 text-5xl text-white">Gold Tier</h2>
-          <p className="mt-4 text-4xl font-semibold text-white">{loyaltyPoints.toLocaleString()} pts</p>
-          <progress className="mt-5 h-2 w-full accent-[var(--sb-gold)]" value={loyaltyPoints % 4000} max={4000} />
-          <div className="mt-6 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4">
-            <div className="grid aspect-square place-items-center rounded-xl bg-white p-5 text-black">
-              <span className="font-mono text-4xl font-bold">SB</span>
-            </div>
-            <p className="mt-3 text-sm text-[var(--sb-muted)]">Member pass for in-restaurant points and redemptions.</p>
-          </div>
-        </div>
-        <div className="luxury-panel p-5 sm:p-6">
-          <SectionHeader eyebrow="Redeem" title="Your Points" />
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {rewards.map((reward) => (
-              <button key={reward.id} type="button" onClick={() => onRedeem(reward)} className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] text-left transition hover:border-[var(--sb-gold)]">
-                <div className="relative h-36">
-                  <Image src={reward.image.publicUrl} alt="" fill sizes="220px" className="object-cover transition group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-transparent" />
-                  <span className="absolute left-3 top-3 rounded-full bg-black/55 px-3 py-1 text-xs text-[var(--sb-gold)]">{reward.points.toLocaleString()} pts</span>
-                </div>
-                <div className="p-4">
-                  <p className="font-semibold text-white">{reward.title}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{reward.value}</p>
-                  <p className="mt-2 text-xs leading-5 text-[var(--sb-muted)]">{reward.description}</p>
-                </div>
-              </button>
-            ))}
-          </div>
+    <aside className="rounded-2xl border border-[var(--sb-border)] bg-black/52 p-5 backdrop-blur-xl">
+      <div className="flex items-center gap-3">
+        {iconAssets.flower ? <AssetIcon src={iconAssets.flower} size={46} /> : null}
+        <div>
+          <p className="editorial-title text-lg text-white">Bliss Member</p>
+          <p className="text-sm uppercase tracking-[0.16em] text-[var(--sb-gold)]">Gold Tier</p>
         </div>
       </div>
-    </div>
+      <p className="mt-6 text-xs uppercase tracking-[0.18em] text-[var(--sb-muted)]">Points Balance</p>
+      <p className="mt-2 text-4xl text-white">{loyaltyPoints.toLocaleString()} <span className="text-lg uppercase text-[var(--sb-muted)]">pts</span></p>
+      <div className="mt-4 flex items-center justify-between text-xs text-[var(--sb-muted)]">
+        <span>750 pts to reach Platinum</span>
+        <span>{progressValue.toLocaleString()} / 4,000</span>
+      </div>
+      <progress className="mt-2 h-2 w-full" value={progressValue} max={4000} />
+      <Button variant="outline" className="mt-5 h-11 w-full rounded-xl border-[var(--sb-border)] bg-black/30 uppercase tracking-[0.14em] text-[var(--sb-gold)]">
+        View Benefits
+      </Button>
+    </aside>
+  );
+}
+
+/** Renders the scannable member pass panel using the packaged QR icon asset. */
+function MemberPassCard() {
+  return (
+    <section className="luxury-panel p-5">
+      <h2 className="editorial-title text-xl text-white">Your Member Pass</h2>
+      <p className="mt-1 text-sm text-[var(--sb-muted)]">Scan to earn and redeem.</p>
+      <div className="mt-5 grid gap-4 sm:grid-cols-[132px_1fr] xl:block">
+        <div className="grid aspect-square place-items-center rounded-xl border border-[var(--sb-border)] bg-white p-3">
+          {iconAssets.qr ? <AssetIcon src={iconAssets.qr} size={104} /> : <span className="font-mono text-3xl font-bold text-black">SB</span>}
+        </div>
+        <div className="text-sm text-[var(--sb-muted)] xl:mt-4">
+          <p className="font-semibold text-white">Hiroshi Tanaka</p>
+          <p className="mt-3 uppercase tracking-[0.16em] text-[var(--sb-gold)]">Member ID</p>
+          <p>SB12567890</p>
+          <p className="mt-3 uppercase tracking-[0.16em] text-[var(--sb-gold)]">Joined</p>
+          <p>Jan 15, 2024</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Renders one reward redemption card with image, points, and value. */
+function RewardCard({ reward, onRedeem }: { reward: Reward; onRedeem: (reward: Reward) => void }) {
+  return (
+    <button type="button" onClick={() => onRedeem(reward)} className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-black/34 text-left transition hover:border-[var(--sb-gold)]">
+      <div className="relative h-32">
+        <Image src={reward.image.publicUrl} alt="" fill sizes="220px" className="object-cover transition group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/16 to-transparent" />
+      </div>
+      <div className="p-3">
+        <p className="text-xs font-semibold text-[var(--sb-gold)]">{reward.points.toLocaleString()} pts</p>
+        <p className="mt-1 line-clamp-1 font-semibold text-white">{reward.title}</p>
+        <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[var(--sb-gold)]">{reward.value}</p>
+      </div>
+    </button>
+  );
+}
+
+/** Shows a compact image-backed loyalty information module. */
+function LoyaltyInfoCard({ action, copy, image, title }: { action: string; copy: string; image: string; title: string }) {
+  return (
+    <section className="luxury-panel relative min-h-[168px] overflow-hidden p-5">
+      <Image src={image} alt="" fill sizes="360px" className="object-cover opacity-38" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/52 to-transparent" />
+      <div className="relative z-10 max-w-[230px]">
+        <h2 className="editorial-title text-xl text-white">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">{copy}</p>
+        <button type="button" className="mt-4 rounded-xl border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button>
+      </div>
+    </section>
   );
 }
 
@@ -1302,49 +1628,151 @@ function AboutView({ chefs, onSelectItem }: { chefs: Chef[]; onSelectItem: (item
 /** Renders contact details and validates private event inquiries. */
 function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) => void; showNotice: (message: string, tone?: Notice["tone"]) => void }) {
   const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
+  const socialLinks = [
+    { label: "Instagram", icon: iconAssets.instagram },
+    { label: "Facebook", icon: iconAssets.facebook },
+    { label: "X", icon: getAssetById("metallic-x-emblem-with-golden-accents")?.publicUrl },
+  ];
+
   return (
-    <div className="space-y-6">
-      <PageHero eyebrow="We'd Love To Hear From You" title="Contact Sushi Bliss" copy="Questions, private dining, ordering support, and reservation help." image={assetUrl(contactHero, heroAsset.publicUrl)} />
-      <section className="grid gap-5 lg:grid-cols-[1fr_1fr]">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <ContactCard icon={MapPin} title="Location" lines={["Tokyo, Japan", "123 Kai Street", "Tokyo, 100-0001"]} action="View on map" />
-          <ContactCard icon={Phone} title="Contact Info" lines={["+81 3-1234-5678", "hello@sushibliss.jp", "Reply within 24 hours"]} />
-          <ContactCard icon={Clock3} title="Hours" lines={["Mon-Sun", "11:30 AM - 11:00 PM", "Open now"]} />
-          <ContactCard icon={Sparkles} title="Follow Us" lines={["Instagram", "Facebook", "X"]} />
-        </div>
-        <div className="luxury-panel p-5">
-          <SectionHeader eyebrow="Message" title="Send A Request" />
-          <div className="mt-5 grid gap-3">
-            <Input placeholder="Full name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
-            <Input placeholder="Email address" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
-            <Input placeholder="Subject" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/30 text-white" />
-            <textarea placeholder="Your message" className="min-h-32 rounded-2xl border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)]" />
-            <Button className="red-glow-button h-12 rounded-2xl uppercase tracking-[0.18em]" onClick={() => showNotice("Message sent. We will reply shortly.", "success")}>
-              Send Message
-              <Send className="ml-2 h-4 w-4" />
+    <div className="space-y-5">
+      <PageHero
+        eyebrow="We'd love to hear from you"
+        title="Contact Sushi Bliss"
+        copy="Have a question, special request, or want to book a private dining experience?"
+        image={assetUrl(contactHero, heroAsset.publicUrl)}
+      />
+      <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <ContactInfoCard icon={iconAssets.mapPin} title="Location" lines={["Tokyo, Japan", "123 Kai Street", "Tokyo, 100-0001"]} action="View on map" />
+            <ContactInfoCard icon={iconAssets.phone} title="Contact Info" lines={["+81 3-1234-5678", "Call us anytime", "hello@sushibliss.jp"]} />
+            <ContactInfoCard icon={iconAssets.clock} title="Hours" lines={["Mon - Sun", "11:30 AM - 11:00 PM", "Last Order: 10:30 PM"]} action="Open now" />
+            <ContactInfoCard icon={iconAssets.flower} title="Follow Us" lines={socialLinks.map((link) => link.label)} socialLinks={socialLinks} />
+          </div>
+          <section className="grid gap-4 sm:grid-cols-2">
+            <Button className="red-glow-button h-14 rounded-2xl uppercase tracking-[0.18em]" onClick={() => onNavigate("reservations")}>
+              {iconAssets.reservations ? <AssetIcon src={iconAssets.reservations} size={24} className="mr-3" /> : null}
+              Reserve a Table
+              <ChevronRight className="ml-auto h-4 w-4" />
             </Button>
+            <Button variant="outline" className="h-14 rounded-2xl border-[var(--sb-border-strong)] bg-black/30 uppercase tracking-[0.18em] text-[var(--sb-gold)]" onClick={() => onNavigate("orderOnline")}>
+              {iconAssets.orders ? <AssetIcon src={iconAssets.orders} size={24} className="mr-3" /> : null}
+              Order Now
+              <ChevronRight className="ml-auto h-4 w-4" />
+            </Button>
+          </section>
+        </div>
+        <ContactMapCard />
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
+        <FAQPanel />
+        <div className="luxury-panel relative overflow-hidden p-5">
+          <Image src={heroAsset.publicUrl} alt="" fill sizes="760px" className="object-cover opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/74 to-black/30" />
+          <div className="relative z-10">
+            <SectionHeader eyebrow="Message" title="Send Us A Message" />
+            <div className="mt-5 grid gap-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input placeholder="Full name" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/40 text-white" />
+                <Input placeholder="Email address" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/40 text-white" />
+              </div>
+              <Input placeholder="Subject" className="h-12 rounded-2xl border-[var(--sb-border)] bg-black/40 text-white" />
+              <textarea placeholder="Your message" className="min-h-32 rounded-2xl border border-[var(--sb-border)] bg-black/40 px-3 py-3 text-sm text-white placeholder:text-[var(--sb-muted)]" />
+              <Button className="red-glow-button h-12 rounded-2xl uppercase tracking-[0.18em]" onClick={() => showNotice("Message sent. We will reply shortly.", "success")}>
+                Send Message
+                <Send className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </section>
-      <section className="grid gap-4 sm:grid-cols-2">
-        <Button className="red-glow-button h-14 rounded-2xl uppercase tracking-[0.18em]" onClick={() => onNavigate("reservations")}>Reserve a Table</Button>
-        <Button variant="outline" className="h-14 rounded-2xl border-[var(--sb-border-strong)] bg-transparent uppercase tracking-[0.18em] text-[var(--sb-gold)]" onClick={() => onNavigate("orderOnline")}>Order Now</Button>
-      </section>
+      <DesktopBenefitsBar />
     </div>
+  );
+}
+
+/** Displays one contact information card with packaged raster icons. */
+function ContactInfoCard({ action, icon, lines, socialLinks, title }: { action?: string; icon?: string; lines: string[]; socialLinks?: Array<{ icon?: string; label: string }>; title: string }) {
+  return (
+    <section className="luxury-panel p-5">
+      <div className="flex items-center gap-3">
+        {icon ? <AssetIcon src={icon} size={26} /> : null}
+        <h2 className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">{title}</h2>
+      </div>
+      {socialLinks ? (
+        <div className="mt-5 flex gap-3">
+          {socialLinks.map((link) => (
+            <button key={link.label} type="button" aria-label={link.label} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--sb-border)] bg-black/34">
+              {link.icon ? <AssetIcon src={link.icon} size={24} /> : null}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-4 space-y-1 text-sm text-[var(--sb-muted)]">
+          {lines.map((line) => <p key={line}>{line}</p>)}
+        </div>
+      )}
+      {action ? <button type="button" className="mt-5 rounded-full border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button> : null}
+    </section>
+  );
+}
+
+/** Renders the dark map module from the contact references without external map dependencies. */
+function ContactMapCard() {
+  return (
+    <section className="luxury-panel relative min-h-[280px] overflow-hidden p-5">
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[length:42px_42px] opacity-45" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_58%_42%,rgba(184,20,20,0.32),transparent_18%),linear-gradient(135deg,rgba(0,0,0,0.2),rgba(0,0,0,0.72))]" />
+      <div className="relative z-10 flex h-full min-h-[240px] flex-col justify-center text-center">
+        <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--sb-red-bright)] bg-[var(--sb-red)]/22 shadow-[0_0_36px_var(--sb-red-glow)]">
+          {iconAssets.mapPin ? <AssetIcon src={iconAssets.mapPin} size={48} /> : null}
+        </div>
+        <p className="mt-5 text-xs uppercase tracking-[0.28em] text-[var(--sb-gold)]">Tokyo Tower</p>
+        <p className="mt-2 text-2xl text-white">Sushi Bliss Downtown</p>
+        <p className="mt-2 text-sm text-[var(--sb-muted)]">123 Kai Street, Tokyo, 100-0001</p>
+      </div>
+    </section>
+  );
+}
+
+/** Shows the compact FAQ list used on the contact screen. */
+function FAQPanel() {
+  const questions = [
+    "Do you take reservations?",
+    "Do you offer delivery?",
+    "Are there vegetarian or vegan options?",
+    "Do you accommodate allergies?",
+    "Is private dining available?",
+  ];
+
+  return (
+    <section className="luxury-panel p-5">
+      <h2 className="editorial-title text-xl text-[var(--sb-gold)]">Frequently Asked Questions</h2>
+      <div className="mt-5 space-y-2">
+        {questions.map((question) => (
+          <button key={question} type="button" className="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--sb-border)] bg-black/30 px-3 text-left text-sm text-[var(--sb-muted)]">
+            {question}
+            <Plus className="h-4 w-4 text-[var(--sb-gold)]" />
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 
 /** Shared cinematic page hero used by non-home app views. */
 function PageHero({ eyebrow, title, copy, image }: { eyebrow: string; title: string; copy: string; image: string }) {
   return (
-    <section className="luxury-panel relative min-h-[320px] overflow-hidden rounded-[34px] p-6 sm:min-h-[360px] sm:p-8">
+    <section className="luxury-panel relative min-h-[190px] overflow-hidden rounded-[28px] p-5 sm:min-h-[320px] sm:p-8 lg:min-h-[360px]">
       <Image src={image} alt="" fill sizes="(min-width: 1024px) 1200px, 100vw" className="object-cover opacity-72" priority={false} />
       <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/58 to-black/20" />
       <div className="smoke-overlay absolute inset-0" />
-      <div className="relative z-10 max-w-3xl pt-16 lg:pt-4">
-        <p className="text-sm uppercase tracking-[0.26em] text-[var(--sb-gold)]">{eyebrow}</p>
-        <h1 className="editorial-title mt-3 text-5xl leading-[0.92] text-white sm:text-6xl lg:text-7xl">{title}</h1>
-        <p className="mt-5 max-w-xl text-base leading-7 text-[var(--sb-text)]/80">{copy}</p>
+      <div className="relative z-10 max-w-3xl pt-8 sm:pt-16 lg:pt-4">
+        <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)] sm:text-sm">{eyebrow}</p>
+        <h1 className="editorial-title mt-3 text-[36px] leading-[0.94] text-white sm:text-6xl lg:text-7xl">{title}</h1>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--sb-text)]/80 sm:mt-5 sm:text-base sm:leading-7">{copy}</p>
       </div>
     </section>
   );
@@ -1739,13 +2167,26 @@ function SegmentedControl({ options, value, onChange }: { options: string[]; val
   );
 }
 
-/** Displays one contact method card with an icon and optional action. */
-function ContactCard({ icon: Icon, title, lines, action }: { icon: LucideIcon; title: string; lines: string[]; action?: string }) {
+/** Displays the shared trust badges that sit at the bottom of desktop references. */
+function DesktopBenefitsBar() {
+  const benefits = [
+    { icon: iconAssets.flower, title: "Premium Ingredients", copy: "Sourced Daily" },
+    { icon: iconAssets.about, title: "Expert Craftsmanship", copy: "By Master Chefs" },
+    { icon: iconAssets.profile, title: "Authentic Experience", copy: "Traditional. Refined." },
+    { icon: iconAssets.orders, title: "Exclusive Reservations", copy: "Priority for Members" },
+  ];
+
   return (
-    <div className="luxury-panel p-5">
-      <div className="flex items-center gap-3 text-[var(--sb-gold)]"><Icon className="h-5 w-5" /><p className="text-xs uppercase tracking-[0.22em]">{title}</p></div>
-      <div className="mt-4 space-y-1 text-sm text-[var(--sb-muted)]">{lines.map((line) => <p key={line}>{line}</p>)}</div>
-      {action ? <button type="button" className="mt-5 rounded-full border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button> : null}
+    <div className="luxury-panel hidden grid-cols-4 gap-0 p-0 lg:grid">
+      {benefits.map((benefit) => (
+        <div key={benefit.title} className="flex items-center justify-center gap-4 border-r border-[var(--sb-border)] px-6 py-4 last:border-r-0">
+          {benefit.icon ? <AssetIcon src={benefit.icon} size={30} /> : null}
+          <span>
+            <span className="block text-sm uppercase tracking-[0.16em] text-white/82">{benefit.title}</span>
+            <span className="block text-sm text-white/58">{benefit.copy}</span>
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
