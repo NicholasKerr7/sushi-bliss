@@ -1,10 +1,11 @@
 # Sushi Bliss Asset Audit
 
-Date: 2026-05-28
+Date: 2026-05-30
 
 ## Package
 
-Source: `/Users/nick007/Downloads/sushi-bliss-final-app-assets.zip`
+Primary source: `/Users/nick007/Downloads/sushi-bliss-final-app-assets.zip`
+Icon refresh source: `/Users/nick007/Downloads/nextjs-icon-assets/public/assets.zip`
 
 Copied into:
 
@@ -17,6 +18,7 @@ public/assets/
   editorial/
   icons/
   ingredients/
+  maps/
   menu/
   pairings/
   screenshots/
@@ -26,8 +28,10 @@ public/assets/
 ## Verified Counts
 
 - `public/assets/data/data.json`: 38 menu items, 38 pairings, 4 chefs, 16 screenshot references.
-- `public/assets/data/asset-manifest.json`: 195 audited package assets.
-- Total copied files in `public/assets`: 198 including data files.
+- `public/assets/data/asset-manifest.json`: 202 audited package assets.
+- Total copied files in `public/assets`: 205 including data files.
+- Transparent icon assets now live directly in `public/assets/icons`; the old generated `icons-clean` folder was removed.
+- Map and live-tracking imagery from the refresh package live in `public/assets/maps`.
 - Duplicate menu IDs: none.
 - Missing pairing references: none.
 - Missing chef notes: none.

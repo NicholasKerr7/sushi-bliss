@@ -59,6 +59,7 @@ import {
   getReservationExperiences,
   getRewards,
 } from "../data/selectors";
+import { getSushiIconAssets } from "../data/icon-assets";
 import { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } from "../lib/cart-utils";
 import { formatClockTime, formatCurrency } from "../lib/format-utils";
 import { filterMenuItems } from "../lib/menu-utils";
@@ -99,32 +100,7 @@ const chefProfile = chefs.find((chef) => chef.id === "hiroshi-tanaka") ?? chefs[
 const profileImage = chefProfile.profileImage?.publicUrl ?? chefProfile.standingImage.publicUrl;
 const heroAsset = featuredAssets.heroSushi;
 
-const iconAssets = {
-  about: getAssetById("golden-chef-s-crest-emblem")?.publicUrl,
-  bell: getAssetById("golden-notification-bell")?.publicUrl,
-  cart: getAssetById("golden-shopping-cart-icon")?.publicUrl,
-  check: getAssetById("golden-check-mark-with-glow")?.publicUrl,
-  contact: getAssetById("luxury-gold-envelope-icon-on-black")?.publicUrl,
-  clock: getAssetById("luxurious-gold-clock-icon")?.publicUrl,
-  delivery: getAssetById("stylised-black-and-gold-delivery-scooter")?.publicUrl,
-  dining: getAssetById("golden-dining-setting-icon")?.publicUrl,
-  facebook: getAssetById("metallic-f-logo-on-transparent-background")?.publicUrl,
-  flower: getAssetById("golden-floral-emblem-on-transparent-background")?.publicUrl,
-  gift: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
-  group: getAssetById("stylised-golden-group-emblem")?.publicUrl,
-  home: getAssetById("elegant-gold-house-icon-with-red-glow")?.publicUrl,
-  instagram: getAssetById("gilded-instagram-camera-emblem")?.publicUrl,
-  loyalty: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
-  mapPin: getAssetById("luxurious-map-pin-with-red-glow")?.publicUrl,
-  menu: getAssetById("gold-neon-sushi-menu-icon")?.publicUrl,
-  orders: getAssetById("gold-takeaway-bag-with-receipt-icon")?.publicUrl,
-  phone: getAssetById("luxury-telephone-handset-icon-with-glow")?.publicUrl,
-  profile: getAssetById("minimalist-person-icon-with-glowing-rim")?.publicUrl,
-  qr: getAssetById("luxurious-golden-qr-token-emblem")?.publicUrl,
-  reservations: getAssetById("golden-calendar-icon-with-red-highlight")?.publicUrl,
-  settings: getAssetById("user-settings-icon-with-gold-gear")?.publicUrl,
-  star: getAssetById("golden-star-with-diamond-sparkles")?.publicUrl,
-};
+const iconAssets = getSushiIconAssets();
 
 const desktopNav: NavItem[] = [
   { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
@@ -1631,7 +1607,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
   const socialLinks = [
     { label: "Instagram", icon: iconAssets.instagram },
     { label: "Facebook", icon: iconAssets.facebook },
-    { label: "X", icon: getAssetById("metallic-x-emblem-with-golden-accents")?.publicUrl },
+    { label: "X", icon: iconAssets.x },
   ];
 
   return (
@@ -1721,18 +1697,16 @@ function ContactInfoCard({ action, icon, lines, socialLinks, title }: { action?:
 
 /** Renders the dark map module from the contact references without external map dependencies. */
 function ContactMapCard() {
+  const mapAsset = getAssetById("sushi-bliss-tokyo-map-transparent");
+
   return (
-    <section className="luxury-panel relative min-h-[280px] overflow-hidden p-5">
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[length:42px_42px] opacity-45" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_58%_42%,rgba(184,20,20,0.32),transparent_18%),linear-gradient(135deg,rgba(0,0,0,0.2),rgba(0,0,0,0.72))]" />
-      <div className="relative z-10 flex h-full min-h-[240px] flex-col justify-center text-center">
-        <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--sb-red-bright)] bg-[var(--sb-red)]/22 shadow-[0_0_36px_var(--sb-red-glow)]">
-          {iconAssets.mapPin ? <AssetIcon src={iconAssets.mapPin} size={48} /> : null}
-        </div>
-        <p className="mt-5 text-xs uppercase tracking-[0.28em] text-[var(--sb-gold)]">Tokyo Tower</p>
-        <p className="mt-2 text-2xl text-white">Sushi Bliss Downtown</p>
-        <p className="mt-2 text-sm text-[var(--sb-muted)]">123 Kai Street, Tokyo, 100-0001</p>
-      </div>
+    <section className="luxury-panel relative min-h-[280px] overflow-hidden p-5" aria-label="Sushi Bliss Tokyo map">
+      {mapAsset ? (
+        <Image src={mapAsset.publicUrl} alt="" fill sizes="540px" className="object-cover opacity-95" />
+      ) : (
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[length:42px_42px] opacity-45" />
+      )}
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.04),rgba(0,0,0,0.28))]" />
     </section>
   );
 }

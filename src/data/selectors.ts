@@ -143,13 +143,14 @@ export function getReservationExperiences(): ReservationExperience[] {
 /** Builds loyalty reward cards from menu and sake assets. */
 export function getRewards(): Reward[] {
   const byId = (id: string) => getItemById(id)?.image ?? data.featuredAssets.heroSushi;
+  const misoSoupIcon = getAssetById("miso-soup-icon")?.publicUrl ?? "/assets/icons/miso-soup-icon.png";
   return [
     {
       id: "miso-soup",
       title: "Miso Soup",
       points: 500,
       description: "A warm opening bowl for your next visit.",
-      image: { publicUrl: "/assets/icons/miso-soup.png" },
+      image: { publicUrl: misoSoupIcon },
       value: "Complimentary",
     },
     {

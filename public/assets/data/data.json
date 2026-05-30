@@ -18,20 +18,20 @@
     "tagline": "Timeless Japanese Artistry",
     "assets": {
       "logo": {
-        "filePath": "public/assets/brand/sushi-bliss-primary-logo.webp",
-        "publicUrl": "/assets/brand/sushi-bliss-primary-logo.webp"
+        "filePath": "public/assets/brand/sushi-bliss-primary-logo.png",
+        "publicUrl": "/assets/brand/sushi-bliss-primary-logo.png"
       },
       "icon": {
-        "filePath": "public/assets/brand/sushi-bliss-app-icon.webp",
-        "publicUrl": "/assets/brand/sushi-bliss-app-icon.webp"
+        "filePath": "public/assets/brand/sushi-bliss-app-icon.png",
+        "publicUrl": "/assets/brand/sushi-bliss-app-icon.png"
       },
       "floralEmblem": {
-        "filePath": "public/assets/brand/sushi-bliss-floral-emblem-on-black.webp",
-        "publicUrl": "/assets/brand/sushi-bliss-floral-emblem-on-black.webp"
+        "filePath": "public/assets/brand/sushi-bliss-floral-emblem-icon.png",
+        "publicUrl": "/assets/brand/sushi-bliss-floral-emblem-icon.png"
       },
       "secondaryMark": {
-        "filePath": "public/assets/brand/sushi-bliss-secondary-brand-mark.webp",
-        "publicUrl": "/assets/brand/sushi-bliss-secondary-brand-mark.webp"
+        "filePath": "public/assets/brand/sushi-bliss-secondary-brand-mark.png",
+        "publicUrl": "/assets/brand/sushi-bliss-secondary-brand-mark.png"
       }
     }
   },

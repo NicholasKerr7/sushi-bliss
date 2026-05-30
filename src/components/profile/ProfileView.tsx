@@ -5,7 +5,8 @@ import type { AppView } from "../layout/types";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import type { SushiMenuItem } from "../../data/menu";
-import { getAssetById, getAssetsByFolder, getFeaturedAssets, getItemById, getMenuItems } from "../../data/selectors";
+import { getSushiIconAssets } from "../../data/icon-assets";
+import { getAssetsByFolder, getFeaturedAssets, getItemById, getMenuItems } from "../../data/selectors";
 import type { AssetRef } from "../../data/types";
 import { formatCurrency } from "../../lib/format-utils";
 import type { OrderHistoryEntry } from "../../lib/order-utils";
@@ -28,14 +29,7 @@ const ambienceAssets = getAssetsByFolder("ambience");
 const featuredAssets = getFeaturedAssets();
 const menuItems = getMenuItems();
 
-const iconAssets = {
-  about: getAssetById("golden-chef-s-crest-emblem")?.publicUrl,
-  cart: getAssetById("golden-shopping-cart-icon")?.publicUrl,
-  loyalty: getAssetById("luxury-gift-badge-with-gold-accents")?.publicUrl,
-  orders: getAssetById("gold-takeaway-bag-with-receipt-icon")?.publicUrl,
-  profile: getAssetById("minimalist-person-icon-with-glowing-rim")?.publicUrl,
-  reservations: getAssetById("golden-calendar-icon-with-red-highlight")?.publicUrl,
-};
+const iconAssets = getSushiIconAssets();
 
 /** Resolves optional profile assets to a safe public URL. */
 function assetUrl(asset: AssetRef | undefined, fallback = featuredAssets.heroSushi.publicUrl): string {
@@ -109,7 +103,7 @@ export function ProfileView({
                 { label: "Reservations", icon: iconAssets.reservations },
                 { label: "Upgrades", icon: iconAssets.orders },
                 { label: "Rewards", icon: iconAssets.loyalty },
-                { label: "Support", icon: getAssetById("premium-gold-headset-icon-with-mic")?.publicUrl },
+                { label: "Support", icon: iconAssets.headset },
               ].map((perk) => (
                 <button
                   key={perk.label}
@@ -133,7 +127,7 @@ export function ProfileView({
         </ProfileDashboardCard>
         <ProfileDashboardCard title="Payment Methods" action="Manage">
           <ProfileListRow icon={iconAssets.cart} title="Visa **** 4242" copy="Expires 08/26" />
-          <ProfileListRow icon={getAssetById("shiny-gold-credit-card-icon")?.publicUrl} title="Mastercard **** 8888" copy="Expires 11/25" />
+          <ProfileListRow icon={iconAssets.creditCard} title="Mastercard **** 8888" copy="Expires 11/25" />
         </ProfileDashboardCard>
         <ProfileDashboardCard title="Dining Preferences" action="Manage">
           <ProfileListRow icon={iconAssets.reservations} title="Preferred Seating" copy="Counter Seat" />
@@ -142,7 +136,7 @@ export function ProfileView({
         </ProfileDashboardCard>
         <ProfileDashboardCard title="Dietary Preferences" action="Manage">
           <ProfileField label="Dietary Notes" value={profile.dietary} onChange={(value) => onProfileChange({ ...profile, dietary: value })} />
-          <ProfileListRow icon={getAssetById("golden-check-mark-with-glow")?.publicUrl} title="No Artificial Additives" copy="Saved preference" />
+          <ProfileListRow icon={iconAssets.check} title="No Artificial Additives" copy="Saved preference" />
         </ProfileDashboardCard>
       </section>
 

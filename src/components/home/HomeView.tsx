@@ -4,7 +4,8 @@ import { AssetIcon } from "../icons/AssetIcon";
 import type { AppView } from "../layout/types";
 import { Button } from "../ui/button";
 import type { FilterCategory, SushiMenuItem } from "../../data/menu";
-import { getAssetById, getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
+import { getSushiIconAssets } from "../../data/icon-assets";
+import { getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
 import { formatCurrency } from "../../lib/format-utils";
 import type { Reservation } from "../../lib/reservation-utils";
 
@@ -21,47 +22,10 @@ interface HomeViewProps {
   onSelectItem: (item: SushiMenuItem) => void;
 }
 
-interface IconAssetSet {
-  bag?: string;
-  bell?: string;
-  calendar?: string;
-  chef?: string;
-  clock?: string;
-  crown?: string;
-  dining?: string;
-  flower?: string;
-  location?: string;
-  menu?: string;
-  nigiri?: string;
-  plus?: string;
-  profile?: string;
-  sashimi?: string;
-  search?: string;
-  settings?: string;
-}
-
 const brand = getBrand();
 const featuredAssets = getFeaturedAssets();
 const reservationExperiences = getReservationExperiences();
-
-const icons: IconAssetSet = {
-  bag: getAssetById("gold-takeaway-bag-with-receipt-icon")?.publicUrl,
-  bell: getAssetById("golden-notification-bell")?.publicUrl,
-  calendar: getAssetById("golden-calendar-icon-with-red-highlight")?.publicUrl,
-  chef: getAssetById("golden-chef-s-crest-emblem")?.publicUrl,
-  clock: getAssetById("luxurious-gold-clock-icon")?.publicUrl,
-  crown: getAssetById("golden-lotus-crown-emblem")?.publicUrl,
-  dining: getAssetById("golden-dining-setting-icon")?.publicUrl,
-  flower: getAssetById("golden-floral-emblem-on-transparent-background")?.publicUrl,
-  location: getAssetById("luxurious-map-pin-with-red-glow")?.publicUrl,
-  menu: getAssetById("gold-neon-sushi-menu-icon")?.publicUrl,
-  nigiri: getAssetById("luxurious-gold-sushi-emblem")?.publicUrl,
-  plus: getAssetById("golden-plus-sign-on-transparent-grid")?.publicUrl,
-  profile: getAssetById("minimalist-person-icon-with-glowing-rim")?.publicUrl,
-  sashimi: getAssetById("luxurious-gold-and-sashimi-emblem")?.publicUrl,
-  search: getAssetById("golden-magnifying-glass-icon-design")?.publicUrl,
-  settings: getAssetById("user-settings-icon-with-gold-gear")?.publicUrl,
-};
+const icons = getSushiIconAssets();
 
 const categoryTabs: Array<{ category: FilterCategory; icon?: string; label: string }> = [
   { category: "Nigiri", icon: icons.nigiri, label: "Nigiri" },
