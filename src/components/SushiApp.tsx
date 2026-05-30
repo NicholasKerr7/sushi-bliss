@@ -1921,39 +1921,79 @@ function ProductDetailModal({ item, isFavorite, onClose, onAddToCart, onToggleFa
 
 /** Renders the cart drawer with quantity controls, fees, promo, and checkout action. */
 function CartDrawer({ groupedCart, subtotal, promoDiscount, tax, tip, grandTotal, deliveryFee, serviceFee, total, promoCode, appliedPromo, tipPercent, fulfillment, onPromoChange, onApplyPromo, onTipChange, onFulfillmentChange, onIncrease, onDecrease, onRemove, onClose, onCheckout, onNavigateMenu }: { groupedCart: { item: SushiMenuItem; qty: number }[]; subtotal: number; promoDiscount: number; tax: number; tip: number; grandTotal: number; deliveryFee: number; serviceFee: number; total: number; promoCode: string; appliedPromo: string | null; tipPercent: number; fulfillment: FulfillmentType; onPromoChange: (value: string) => void; onApplyPromo: () => void; onTipChange: (value: number) => void; onFulfillmentChange: (value: FulfillmentType) => void; onIncrease: (item: SushiMenuItem) => void; onDecrease: (id: string) => void; onRemove: (id: string) => void; onClose: () => void; onCheckout: () => void; onNavigateMenu: () => void }) {
+  const freeDeliveryTarget = 75;
+  const itemCount = groupedCart.reduce((sum, row) => sum + row.qty, 0);
+  const deliveryRemaining = Math.max(0, freeDeliveryTarget - subtotal);
+  const deliveryProgress = Math.min(subtotal, freeDeliveryTarget);
+  const cartSections = groupedCart.reduce<Array<{ category: string; rows: { item: SushiMenuItem; qty: number }[] }>>((sections, row) => {
+    const category = row.item.categories.includes("Sashimi") ? "Sashimi" : "Sushi & Rolls";
+    const existingSection = sections.find((section) => section.category === category);
+    if (existingSection) {
+      existingSection.rows.push(row);
+      return sections;
+    }
+    return [...sections, { category, rows: [row] }];
+  }, []);
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[70] flex items-end bg-black/65 backdrop-blur-sm lg:justify-end">
       <motion.aside initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 34, stiffness: 260 }} className="app-scrollbar max-h-[92vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] p-4 text-white shadow-[0_-24px_90px_rgba(0,0,0,0.75)] lg:h-full lg:max-h-none lg:max-w-xl lg:rounded-l-[34px] lg:rounded-tr-none lg:p-6">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-[var(--sb-gold)]">Your Cart</p>
-            <h2 className="editorial-title mt-2 text-4xl text-white">{groupedCart.length} Items</h2>
+            <h2 className="editorial-title mt-2 text-4xl text-white">{itemCount} Items</h2>
           </div>
           <button type="button" onClick={onClose} aria-label="Close cart" className="grid h-11 w-11 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
+        </div>
+        <div className="mt-4 rounded-2xl border border-[var(--sb-border)] bg-black/30 p-4">
+          <div className="flex items-center justify-between gap-3 text-xs text-[var(--sb-muted)]">
+            <span>
+              {deliveryRemaining > 0 ? (
+                <>Add <span className="text-[var(--sb-gold)]">{formatCurrency(deliveryRemaining)}</span> more for free delivery.</>
+              ) : (
+                <span className="text-[var(--sb-gold)]">Free delivery unlocked.</span>
+              )}
+            </span>
+            <span className="flex items-center gap-1">{formatCurrency(freeDeliveryTarget)} {iconAssets.delivery ? <AssetIcon src={iconAssets.delivery} size={18} /> : null}</span>
+          </div>
+          <progress className="mt-3 h-2 w-full" value={deliveryProgress} max={freeDeliveryTarget} />
         </div>
         {groupedCart.length === 0 ? (
           <EmptyState title="Your cart is empty" copy="Start with a chef favorite or build a pairing-led order." actionLabel="Browse menu" onAction={onNavigateMenu} />
         ) : (
           <div className="mt-5 space-y-5">
             <div className="space-y-3">
-              {groupedCart.map(({ item, qty }) => (
-                <div key={item.id} className="grid grid-cols-[86px_1fr] gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3">
-                  <div className="relative h-24 overflow-hidden rounded-xl"><Image src={item.image.publicUrl} alt="" fill sizes="86px" className="object-cover" /></div>
-                  <div>
-                    <div className="flex items-start justify-between gap-3">
-                      <div><p className="font-semibold text-white">{item.name}</p><p className="text-xs text-[var(--sb-muted)]">{item.categoryLabel}</p></div>
-                      <p className="font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</p>
-                    </div>
-                    <div className="mt-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <button type="button" onClick={() => onDecrease(item.id)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Minus className="h-4 w-4" /></button>
-                        <span className="min-w-6 text-center font-semibold">{qty}</span>
-                        <button type="button" onClick={() => onIncrease(item)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Plus className="h-4 w-4" /></button>
-                      </div>
-                      <button type="button" onClick={() => onRemove(item.id)} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">Remove</button>
-                    </div>
+              {cartSections.map((section) => (
+                <section key={section.category} className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
+                  <div className="flex items-center justify-between border-b border-[var(--sb-border)] px-4 py-3">
+                    <span className="flex items-center gap-2 text-sm uppercase tracking-[0.16em] text-white">
+                      {iconAssets.flower ? <AssetIcon src={iconAssets.flower} size={20} /> : null}
+                      {section.category}
+                    </span>
+                    <span className="text-xs text-[var(--sb-muted)]">{section.rows.reduce((sum, row) => sum + row.qty, 0)} items</span>
                   </div>
-                </div>
+                  <div className="divide-y divide-[var(--sb-border)]">
+                    {section.rows.map(({ item, qty }) => (
+                      <div key={item.id} className="grid grid-cols-[86px_1fr] gap-3 p-3">
+                        <div className="relative h-24 overflow-hidden rounded-xl"><Image src={item.image.publicUrl} alt="" fill sizes="86px" className="object-cover" /></div>
+                        <div>
+                          <div className="flex items-start justify-between gap-3">
+                            <div><p className="font-semibold text-white">{item.name}</p><p className="text-xs text-[var(--sb-muted)]">{item.categoryLabel}</p></div>
+                            <p className="font-semibold text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</p>
+                          </div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <button type="button" onClick={() => onDecrease(item.id)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Minus className="h-4 w-4" /></button>
+                              <span className="min-w-6 text-center font-semibold">{qty}</span>
+                              <button type="button" onClick={() => onIncrease(item)} className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)]"><Plus className="h-4 w-4" /></button>
+                            </div>
+                            <button type="button" onClick={() => onRemove(item.id)} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
             <SegmentedControl
