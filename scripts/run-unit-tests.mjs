@@ -15,6 +15,7 @@ try {
     absWorkingDir: projectRoot,
     entryPoints: [
       path.join(projectRoot, "src/data/menu.ts"),
+      path.join(projectRoot, "src/data/selectors.ts"),
       path.join(projectRoot, "src/lib/cart-utils.ts"),
       path.join(projectRoot, "src/lib/menu-utils.ts"),
       path.join(projectRoot, "src/lib/omakase-utils.ts"),
@@ -44,6 +45,7 @@ try {
     import(pathToFileURL(path.join(outdir, relativePath)).href);
 
   const { sushiMenuData } = await importFromOutdir("data/menu.js");
+  const { getMasterChefsOmakaseExperience, getReservationExperiences } = await importFromOutdir("data/selectors.js");
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
   const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
@@ -150,6 +152,28 @@ try {
   test("getHighlightDrops respects the limit argument", () => {
     const drops = getHighlightDrops(sushiMenuData, defaultHighlightCategories, 2);
     assert.strictEqual(drops.length, 2);
+  });
+
+  // data selector tests
+  test("getReservationExperiences maps corrected ambience roles", () => {
+    const experiences = getReservationExperiences();
+    const diningRoom = experiences.find((experience) => experience.id === "main-dining-room");
+    const sushiBar = experiences.find((experience) => experience.id === "sushi-bar");
+
+    assert.strictEqual(diningRoom?.image.experienceId, "main-dining-room");
+    assert.strictEqual(sushiBar?.image.experienceId, "sushi-bar");
+  });
+
+  test("getMasterChefsOmakaseExperience scopes course assets to omakase", () => {
+    const experience = getMasterChefsOmakaseExperience();
+    const coursePaths = experience.courses.flatMap((course) => [
+      course.appetizer.image.publicUrl,
+      course.specialty.image.publicUrl,
+      course.dessert.image.publicUrl,
+    ]);
+
+    assert.strictEqual(experience.courses.length, 4);
+    assert.ok(coursePaths.every((publicUrl) => publicUrl.startsWith("/assets/omakase/")));
   });
 
   // omakase-utils tests

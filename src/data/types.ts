@@ -1,6 +1,10 @@
 export interface AssetRef {
   filePath?: string;
+  id?: string;
   publicUrl: string;
+  role?: string;
+  title?: string;
+  experienceId?: string;
 }
 
 export const menuCategories = [
@@ -104,6 +108,31 @@ export interface FeaturedAssets {
   screensToRedesignFrom: unknown[];
 }
 
+export interface OmakaseCourseItem {
+  title: string;
+  image: AssetRef;
+}
+
+export interface MasterChefOmakaseCourse {
+  chefId: string;
+  sequence: number;
+  appetizer: OmakaseCourseItem;
+  specialty: OmakaseCourseItem;
+  dessert: OmakaseCourseItem;
+}
+
+export interface MasterChefsOmakaseExperience {
+  id: string;
+  title: string;
+  description: string;
+  assetFolders: {
+    appetizers: string;
+    specialties: string;
+    desserts: string;
+  };
+  courses: MasterChefOmakaseCourse[];
+}
+
 export interface Reward {
   id: string;
   title: string;
@@ -124,6 +153,7 @@ export interface ReservationExperience {
 export interface SushiData {
   brand: BrandData;
   featuredAssets: FeaturedAssets;
+  masterChefsOmakaseExperience: MasterChefsOmakaseExperience;
   menu: MenuItem[];
   chefs: Chef[];
   pairings: SakePairing[];

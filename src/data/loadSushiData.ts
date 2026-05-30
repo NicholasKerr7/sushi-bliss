@@ -5,6 +5,7 @@ import type {
   BrandData,
   Chef,
   FeaturedAssets,
+  MasterChefsOmakaseExperience,
   MenuCategory,
   MenuItem,
   SakePairing,
@@ -61,6 +62,7 @@ interface RawChef {
 interface RawSushiData {
   brand: BrandData;
   featuredAssets: FeaturedAssets;
+  masterChefsOmakaseExperience: MasterChefsOmakaseExperience;
   menu: RawMenuItem[];
   chefs: RawChef[];
   pairings: RawPairing[];
@@ -238,6 +240,7 @@ const menu = data.menu.map(normalizeMenuItem);
 export const sushiData: SushiData = {
   brand: data.brand,
   featuredAssets: data.featuredAssets,
+  masterChefsOmakaseExperience: data.masterChefsOmakaseExperience,
   menu,
   chefs: data.chefs.map(normalizeChef),
   pairings: menu.map((item) => item.sakePairing),

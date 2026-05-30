@@ -24,6 +24,11 @@ export function getFeaturedAssets() {
   return data.featuredAssets;
 }
 
+/** Returns the dedicated chef-course asset set for the Master Chefs Omakase Experience. */
+export function getMasterChefsOmakaseExperience() {
+  return data.masterChefsOmakaseExperience;
+}
+
 /** Finds all manifest assets in a package folder such as menu, icons, or ambience. */
 export function getAssetsByFolder(folder: string): AssetManifestEntry[] {
   return data.assets.filter((asset) => asset.folder === folder);
@@ -111,31 +116,33 @@ export function getReservationOptions() {
 export function getReservationExperiences(): ReservationExperience[] {
   const ambience = data.featuredAssets.ambience;
   const getImage = (index: number): AssetRef => ambience[index] ?? data.featuredAssets.heroSushi;
+  const getExperienceImage = (experienceId: string, fallbackIndex: number): AssetRef =>
+    ambience.find((asset) => asset.experienceId === experienceId) ?? getImage(fallbackIndex);
   return [
     {
       id: "main-dining-room",
       title: "Main Dining Room",
       description: "Lantern-lit tables with a calm view of the room.",
-      image: getImage(1),
+      image: getExperienceImage("main-dining-room", 0),
     },
     {
       id: "sushi-bar",
       title: "Sushi Bar",
       description: "A close view of knife work, plating, and service rhythm.",
-      image: getImage(0),
+      image: getExperienceImage("sushi-bar", 1),
     },
     {
       id: "chef-counter",
       title: "Chef's Counter",
       description: "An intimate omakase counter with direct chef pacing.",
-      image: getImage(2),
+      image: getExperienceImage("chef-counter", 2),
       premium: true,
     },
     {
       id: "lantern-terrace",
       title: "Outdoor Lantern Terrace",
       description: "Seasonal open-air seating under warm garden light.",
-      image: getImage(3),
+      image: getExperienceImage("lantern-terrace", 3),
     },
   ];
 }

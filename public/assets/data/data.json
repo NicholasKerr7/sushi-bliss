@@ -10,7 +10,8 @@
       "Cleaned package removes __MACOSX and .DS_Store files.",
       "Pairing filenames are normalized as sushi-or-sashimi-name + sake-name.",
       "Text should be rendered dynamically in the app; pairing images are treated as standalone visual assets.",
-      "Screenshots are retained as design references before rebuilding screens."
+      "Screenshots are retained as design references before rebuilding screens.",
+      "Omakase appetizer, specialty, and dessert images are reserved for the Master Chefs Omakase Experience."
     ]
   },
   "brand": {
@@ -2268,24 +2269,44 @@
     ],
     "ambience": [
       {
+        "id": "main-dining-room-ambience",
+        "title": "Main Dining Room",
+        "experienceId": "main-dining-room",
         "filePath": "public/assets/ambience/elegant-sushi-bar-ambience-at-night.webp",
-        "publicUrl": "/assets/ambience/elegant-sushi-bar-ambience-at-night.webp"
+        "publicUrl": "/assets/ambience/elegant-sushi-bar-ambience-at-night.webp",
+        "role": "Main Dining Room"
       },
       {
+        "id": "sushi-bar-ambience",
+        "title": "Sushi Bar",
+        "experienceId": "sushi-bar",
         "filePath": "public/assets/ambience/intimate-sushi-bar-dining-experience.webp",
-        "publicUrl": "/assets/ambience/intimate-sushi-bar-dining-experience.webp"
+        "publicUrl": "/assets/ambience/intimate-sushi-bar-dining-experience.webp",
+        "role": "Sushi Bar"
       },
       {
+        "id": "chef-counter-ambience",
+        "title": "Chef's Counter",
+        "experienceId": "chef-counter",
         "filePath": "public/assets/ambience/moody-japanese-inspired-dining-ambiance-at-night.webp",
-        "publicUrl": "/assets/ambience/moody-japanese-inspired-dining-ambiance-at-night.webp"
+        "publicUrl": "/assets/ambience/moody-japanese-inspired-dining-ambiance-at-night.webp",
+        "role": "Chef's Counter"
       },
       {
+        "id": "lantern-terrace-ambience",
+        "title": "Outdoor Lantern Terrace",
+        "experienceId": "lantern-terrace",
         "filePath": "public/assets/ambience/rooftop-dining-in-a-japanese-haven.webp",
-        "publicUrl": "/assets/ambience/rooftop-dining-in-a-japanese-haven.webp"
+        "publicUrl": "/assets/ambience/rooftop-dining-in-a-japanese-haven.webp",
+        "role": "Outdoor Lantern Terrace"
       },
       {
+        "id": "private-dining-ambience",
+        "title": "Private Dining Detail",
+        "experienceId": "private-dining",
         "filePath": "public/assets/ambience/sushi-bliss-ambience-detail.webp",
-        "publicUrl": "/assets/ambience/sushi-bliss-ambience-detail.webp"
+        "publicUrl": "/assets/ambience/sushi-bliss-ambience-detail.webp",
+        "role": "Private Dining Detail"
       }
     ],
     "screensToRedesignFrom": [
@@ -2432,6 +2453,118 @@
         "width": 1672,
         "height": 941,
         "sizeBytes": 1838562
+      }
+    ]
+  },
+  "masterChefsOmakaseExperience": {
+    "id": "master-chefs-omakase-experience",
+    "title": "Master Chefs Omakase Experience",
+    "description": "A chef-led tasting journey that uses the dedicated appetizer, specialty, and dessert assets outside the standard ordering menu.",
+    "assetFolders": {
+      "appetizers": "public/assets/omakase/appetizers",
+      "specialties": "public/assets/omakase/specialties",
+      "desserts": "public/assets/omakase/desserts"
+    },
+    "courses": [
+      {
+        "chefId": "hiroshi-tanaka",
+        "sequence": 1,
+        "appetizer": {
+          "title": "Harmony Toro Tartare",
+          "image": {
+            "filePath": "public/assets/omakase/appetizers/harmony-toro-tartare-appetizer.webp",
+            "publicUrl": "/assets/omakase/appetizers/harmony-toro-tartare-appetizer.webp"
+          }
+        },
+        "specialty": {
+          "title": "Chef Special Sashimi Selection",
+          "image": {
+            "filePath": "public/assets/omakase/specialties/chef-special-sashimi-selection.webp",
+            "publicUrl": "/assets/omakase/specialties/chef-special-sashimi-selection.webp"
+          }
+        },
+        "dessert": {
+          "title": "Black Sesame Mochi",
+          "image": {
+            "filePath": "public/assets/omakase/desserts/black-sesame-mochi-dessert.webp",
+            "publicUrl": "/assets/omakase/desserts/black-sesame-mochi-dessert.webp"
+          }
+        }
+      },
+      {
+        "chefId": "kenji-sato",
+        "sequence": 2,
+        "appetizer": {
+          "title": "Legacy Scallop Yuzu",
+          "image": {
+            "filePath": "public/assets/omakase/appetizers/legacy-scallop-yuzu-appetizer.webp",
+            "publicUrl": "/assets/omakase/appetizers/legacy-scallop-yuzu-appetizer.webp"
+          }
+        },
+        "specialty": {
+          "title": "Sous Chef Seared Sushi Special",
+          "image": {
+            "filePath": "public/assets/omakase/specialties/sous-chef-seared-sushi-special.webp",
+            "publicUrl": "/assets/omakase/specialties/sous-chef-seared-sushi-special.webp"
+          }
+        },
+        "dessert": {
+          "title": "Yuzu Panna Cotta",
+          "image": {
+            "filePath": "public/assets/omakase/desserts/yuzu-panna-cotta-dessert.webp",
+            "publicUrl": "/assets/omakase/desserts/yuzu-panna-cotta-dessert.webp"
+          }
+        }
+      },
+      {
+        "chefId": "ren-mori",
+        "sequence": 3,
+        "appetizer": {
+          "title": "Mastery Caviar Rice",
+          "image": {
+            "filePath": "public/assets/omakase/appetizers/mastery-caviar-rice-appetizer.webp",
+            "publicUrl": "/assets/omakase/appetizers/mastery-caviar-rice-appetizer.webp"
+          }
+        },
+        "specialty": {
+          "title": "Lead Chef Omakase Nigiri Flight",
+          "image": {
+            "filePath": "public/assets/omakase/specialties/lead-chef-omakase-nigiri-flight.webp",
+            "publicUrl": "/assets/omakase/specialties/lead-chef-omakase-nigiri-flight.webp"
+          }
+        },
+        "dessert": {
+          "title": "Dark Chocolate Matcha",
+          "image": {
+            "filePath": "public/assets/omakase/desserts/dark-chocolate-matcha-dessert.webp",
+            "publicUrl": "/assets/omakase/desserts/dark-chocolate-matcha-dessert.webp"
+          }
+        }
+      },
+      {
+        "chefId": "aiko-nakamura",
+        "sequence": 4,
+        "appetizer": {
+          "title": "Bliss Seasonal Amuse-Bouche",
+          "image": {
+            "filePath": "public/assets/omakase/appetizers/bliss-seasonal-amuse-bouche-appetizer.webp",
+            "publicUrl": "/assets/omakase/appetizers/bliss-seasonal-amuse-bouche-appetizer.webp"
+          }
+        },
+        "specialty": {
+          "title": "Pastry Chef Matcha Signature Dessert",
+          "image": {
+            "filePath": "public/assets/omakase/specialties/pastry-chef-matcha-signature-dessert.webp",
+            "publicUrl": "/assets/omakase/specialties/pastry-chef-matcha-signature-dessert.webp"
+          }
+        },
+        "dessert": {
+          "title": "Matcha Mousse",
+          "image": {
+            "filePath": "public/assets/omakase/desserts/matcha-mousse-dessert.webp",
+            "publicUrl": "/assets/omakase/desserts/matcha-mousse-dessert.webp"
+          }
+        }
       }
     ]
   }

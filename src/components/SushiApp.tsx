@@ -53,6 +53,7 @@ import {
   getFeaturedAssets,
   getFeaturedItems,
   getItemById,
+  getMasterChefsOmakaseExperience,
   getMenuItems,
   getPairings,
   getRelatedItems,
@@ -94,8 +95,8 @@ const rewards = getRewards();
 const pairings = getPairings();
 const ambienceAssets = getAssetsByFolder("ambience");
 const editorialAssets = getAssetsByFolder("editorial");
-const specialtyAssets = getAssetsByFolder("specialties");
 const ingredientAssets = getAssetsByFolder("ingredients");
+const masterChefsOmakaseExperience = getMasterChefsOmakaseExperience();
 const chefProfile = chefs.find((chef) => chef.id === "hiroshi-tanaka") ?? chefs[0];
 const profileImage = chefProfile.profileImage?.publicUrl ?? chefProfile.standingImage.publicUrl;
 const heroAsset = featuredAssets.heroSushi;
@@ -1026,7 +1027,10 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
   const experiences = getReservationExperiences();
   const selectedSlot = slots.find((slot) => slot.time === form.time);
   const selectedExperience = getReservationExperienceTitle(form.seating);
-  const summaryImage = assetUrl(specialtyAssets[1] ?? specialtyAssets[0], heroAsset.publicUrl);
+  const featuredOmakaseCourse =
+    masterChefsOmakaseExperience.courses.find((course) => course.chefId === "ren-mori") ??
+    masterChefsOmakaseExperience.courses[0];
+  const summaryImage = assetUrl(featuredOmakaseCourse?.specialty.image, heroAsset.publicUrl);
 
   return (
     <div className="space-y-5">

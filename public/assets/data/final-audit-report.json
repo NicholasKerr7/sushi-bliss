@@ -1,10 +1,11 @@
 {
   "summary": {
-    "totalAssets": 202,
+    "totalAssets": 198,
     "menuItems": 38,
     "pairingImages": 38,
     "screenshots": 16,
     "chefs": 4,
+    "masterChefsOmakaseCourses": 4,
     "missingReferencesInDataJson": 0,
     "duplicateFileNames": 0,
     "exactDuplicateAssetGroups": 1
@@ -95,13 +96,9 @@
     ],
     "brand": [
       "public/assets/brand/sushi-bliss-app-icon.png",
-      "public/assets/brand/sushi-bliss-app-icon.webp",
       "public/assets/brand/sushi-bliss-floral-emblem-icon.png",
-      "public/assets/brand/sushi-bliss-floral-emblem-on-black.webp",
       "public/assets/brand/sushi-bliss-primary-logo.png",
-      "public/assets/brand/sushi-bliss-primary-logo.webp",
       "public/assets/brand/sushi-bliss-secondary-brand-mark.png",
-      "public/assets/brand/sushi-bliss-secondary-brand-mark.webp",
       "public/assets/brand/wave-pattern-card.png"
     ],
     "chefs": [
@@ -200,18 +197,6 @@
       "public/assets/maps/live-tracking-map-card.png",
       "public/assets/maps/sushi-bliss-tokyo-map-transparent.webp"
     ],
-    "menu/appetizers": [
-      "public/assets/menu/appetizers/bliss-seasonal-amuse-bouche-appetizer.webp",
-      "public/assets/menu/appetizers/harmony-toro-tartare-appetizer.webp",
-      "public/assets/menu/appetizers/legacy-scallop-yuzu-appetizer.webp",
-      "public/assets/menu/appetizers/mastery-caviar-rice-appetizer.webp"
-    ],
-    "menu/desserts": [
-      "public/assets/menu/desserts/black-sesame-mochi-dessert.webp",
-      "public/assets/menu/desserts/dark-chocolate-matcha-dessert.webp",
-      "public/assets/menu/desserts/matcha-mousse-dessert.webp",
-      "public/assets/menu/desserts/yuzu-panna-cotta-dessert.webp"
-    ],
     "menu/sashimi": [
       "public/assets/menu/sashimi/red-snapper-sashimi.webp",
       "public/assets/menu/sashimi/salmon-sashimi.webp",
@@ -252,6 +237,24 @@
       "public/assets/menu/sushi/uni-nigiri.webp",
       "public/assets/menu/sushi/vegetarian-temaki.webp",
       "public/assets/menu/sushi/whitefish-nigiri.webp"
+    ],
+    "omakase/appetizers": [
+      "public/assets/omakase/appetizers/bliss-seasonal-amuse-bouche-appetizer.webp",
+      "public/assets/omakase/appetizers/harmony-toro-tartare-appetizer.webp",
+      "public/assets/omakase/appetizers/legacy-scallop-yuzu-appetizer.webp",
+      "public/assets/omakase/appetizers/mastery-caviar-rice-appetizer.webp"
+    ],
+    "omakase/desserts": [
+      "public/assets/omakase/desserts/black-sesame-mochi-dessert.webp",
+      "public/assets/omakase/desserts/dark-chocolate-matcha-dessert.webp",
+      "public/assets/omakase/desserts/matcha-mousse-dessert.webp",
+      "public/assets/omakase/desserts/yuzu-panna-cotta-dessert.webp"
+    ],
+    "omakase/specialties": [
+      "public/assets/omakase/specialties/chef-special-sashimi-selection.webp",
+      "public/assets/omakase/specialties/lead-chef-omakase-nigiri-flight.webp",
+      "public/assets/omakase/specialties/pastry-chef-matcha-signature-dessert.webp",
+      "public/assets/omakase/specialties/sous-chef-seared-sushi-special.webp"
     ],
     "pairings": [
       "public/assets/pairings/avocado-nigiri-dassai-45-junmai-daiginjo.webp",
@@ -309,18 +312,13 @@
       "public/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
       "public/assets/screenshots/sushi-bliss-user-interface-design.png",
       "public/assets/screenshots/timeless-sushi-dining-experience-ui.png"
-    ],
-    "specialties": [
-      "public/assets/specialties/chef-special-sashimi-selection.webp",
-      "public/assets/specialties/lead-chef-omakase-nigiri-flight.webp",
-      "public/assets/specialties/pastry-chef-matcha-signature-dessert.webp",
-      "public/assets/specialties/sous-chef-seared-sushi-special.webp"
     ]
   },
-  "exactDuplicateAssetGroups": [
-    [
+  "duplicateFileNameGroups": {},
+  "exactDuplicateAssetGroups": {
+    "5c777e75ebd644afc25b63f6032ee0d602b3f03d27e37083c2e931b765d75d72": [
       "public/assets/chefs/hiroshi-tanaka-head-chef-standing.webp",
       "public/assets/chefs/hiroshi-tanaka-profile-photo.webp"
     ]
-  ]
+  }
 }
