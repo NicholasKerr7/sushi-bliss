@@ -1,17 +1,17 @@
 {
   "meta": {
     "project": "Sushi Bliss",
-    "packageName": "sushi-bliss-final-app-assets",
-    "version": "final-pass-cleaned",
-    "generatedAt": "2026-05-27",
+    "packageName": "sushi-bliss-final-tidy-screenshots",
+    "version": "final-tidy-screenshots-pass",
+    "generatedAt": "2026-05-31",
     "assetBasePath": "public/assets",
     "publicBaseUrl": "/assets",
     "notes": [
       "Cleaned package removes __MACOSX and .DS_Store files.",
       "Pairing filenames are normalized as sushi-or-sashimi-name + sake-name.",
       "Text should be rendered dynamically in the app; pairing images are treated as standalone visual assets.",
-      "Screenshots are retained as design references before rebuilding screens.",
-      "Omakase appetizer, specialty, and dessert images are reserved for the Master Chefs Omakase Experience."
+      "Omakase appetizer, specialty, and dessert images are reserved for the Master Chefs Omakase Experience.",
+      "Only the final tidy screenshot package is retained as the design reference set."
     ]
   },
   "brand": {
@@ -2104,148 +2104,1404 @@
   ],
   "screenshots": [
     {
-      "id": "chatgpt-image-may-25-2026-08-35-21-pm-1",
-      "role": "reference",
-      "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
-      "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
-      "width": 1122,
-      "height": 1402,
-      "sizeBytes": 2733615
-    },
-    {
-      "id": "chatgpt-image-may-25-2026-08-35-21-pm-2",
-      "role": "reference",
-      "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
-      "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+      "id": "desktop-01-home-dashboard",
+      "role": "01-home-dashboard",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-01-home-dashboard.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-01-home-dashboard.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 2776620
+      "sizeBytes": 1758496
     },
     {
-      "id": "elegant-sushi-bliss-website-mockup",
-      "role": "landing",
-      "filePath": "public/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
-      "publicUrl": "/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+      "id": "desktop-02-menu-overview",
+      "role": "02-menu-overview",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-02-menu-overview.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-02-menu-overview.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1960587
+      "sizeBytes": 1744139
     },
     {
-      "id": "luxury-sushi-app-with-elegant-ui",
-      "role": "home",
-      "filePath": "public/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
-      "publicUrl": "/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+      "id": "desktop-03-menu-category-nigiri",
+      "role": "03-menu-category-nigiri",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-03-menu-category-nigiri.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-03-menu-category-nigiri.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1853384
+      "sizeBytes": 1690182
     },
     {
-      "id": "sushi-bliss-checkout-experience-2",
-      "role": "checkout",
-      "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience-2.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+      "id": "desktop-04-item-detail-otoro-nigiri",
+      "role": "04-item-detail-otoro-nigiri",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-04-item-detail-otoro-nigiri.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-04-item-detail-otoro-nigiri.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1669612
+      "sizeBytes": 1769870
     },
     {
-      "id": "sushi-bliss-checkout-experience",
-      "role": "checkout",
-      "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience.png",
+      "id": "desktop-05-item-customization-add-ons",
+      "role": "05-item-customization-add-ons",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-05-item-customization-add-ons.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-05-item-customization-add-ons.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1746741
+      "sizeBytes": 1522491
     },
     {
-      "id": "sushi-bliss-contact-page-design",
-      "role": "contact",
-      "filePath": "public/assets/screenshots/sushi-bliss-contact-page-design.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-contact-page-design.png",
+      "id": "desktop-06-cart",
+      "role": "06-cart",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-06-cart.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-06-cart.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1817884
+      "sizeBytes": 1518538
     },
     {
-      "id": "sushi-bliss-loyalty-dashboard-concept",
-      "role": "loyalty",
-      "filePath": "public/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+      "id": "desktop-07-checkout",
+      "role": "07-checkout",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-07-checkout.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-07-checkout.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1822530
+      "sizeBytes": 1499795
     },
     {
-      "id": "sushi-bliss-order-confirmation-design",
-      "role": "orderConfirmation",
-      "filePath": "public/assets/screenshots/sushi-bliss-order-confirmation-design.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+      "id": "desktop-08-checkout-review",
+      "role": "08-checkout-review",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-08-checkout-review.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-08-checkout-review.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1846209
+      "sizeBytes": 1491674
     },
     {
-      "id": "sushi-bliss-order-tracking-interface",
-      "role": "orderTracking",
-      "filePath": "public/assets/screenshots/sushi-bliss-order-tracking-interface.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+      "id": "desktop-09-order-confirmation",
+      "role": "09-order-confirmation",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-09-order-confirmation.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-09-order-confirmation.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1711658
+      "sizeBytes": 1507982
     },
     {
-      "id": "sushi-bliss-ordering-interface-mockup",
-      "role": "ordering",
-      "filePath": "public/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+      "id": "desktop-10-orders-dashboard",
+      "role": "10-orders-dashboard",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-10-orders-dashboard.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-10-orders-dashboard.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1894820
+      "sizeBytes": 1533380
     },
     {
-      "id": "sushi-bliss-reservation-interface-mockups",
-      "role": "reservations",
-      "filePath": "public/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+      "id": "desktop-11-reservations-main",
+      "role": "11-reservations-main",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-11-reservations-main.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-11-reservations-main.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1887961
+      "sizeBytes": 1664379
     },
     {
-      "id": "sushi-bliss-ui-mockup-design",
-      "role": "menuHome",
-      "filePath": "public/assets/screenshots/sushi-bliss-ui-mockup-design.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+      "id": "desktop-12-choose-reservation-experience",
+      "role": "12-choose-reservation-experience",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-12-choose-reservation-experience.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-12-choose-reservation-experience.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1917470
+      "sizeBytes": 1555746
     },
     {
-      "id": "sushi-bliss-ui-ux-design-mockup",
-      "role": "uiUx",
-      "filePath": "public/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+      "id": "desktop-13-reservation-review",
+      "role": "13-reservation-review",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-13-reservation-review.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-13-reservation-review.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1847496
+      "sizeBytes": 1615147
     },
     {
-      "id": "sushi-bliss-user-interface-design",
-      "role": "profile",
-      "filePath": "public/assets/screenshots/sushi-bliss-user-interface-design.png",
-      "publicUrl": "/assets/screenshots/sushi-bliss-user-interface-design.png",
+      "id": "desktop-14-reservation-history",
+      "role": "14-reservation-history",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-14-reservation-history.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-14-reservation-history.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1741918
+      "sizeBytes": 1640015
     },
     {
-      "id": "timeless-sushi-dining-experience-ui",
-      "role": "home",
-      "filePath": "public/assets/screenshots/timeless-sushi-dining-experience-ui.png",
-      "publicUrl": "/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+      "id": "desktop-15-omakase-experience",
+      "role": "15-omakase-experience",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-15-omakase-experience.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-15-omakase-experience.png",
       "width": 1672,
       "height": 941,
-      "sizeBytes": 1838562
+      "sizeBytes": 1832432
+    },
+    {
+      "id": "desktop-16-omakase-package-review",
+      "role": "16-omakase-package-review",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-16-omakase-package-review.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-16-omakase-package-review.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1667459
+    },
+    {
+      "id": "desktop-17-loyalty-dashboard",
+      "role": "17-loyalty-dashboard",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-17-loyalty-dashboard.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-17-loyalty-dashboard.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1694966
+    },
+    {
+      "id": "desktop-18-member-pass-rewards",
+      "role": "18-member-pass-rewards",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-18-member-pass-rewards.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-18-member-pass-rewards.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1687470
+    },
+    {
+      "id": "desktop-19-profile-dashboard",
+      "role": "19-profile-dashboard",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-19-profile-dashboard.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-19-profile-dashboard.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1517459
+    },
+    {
+      "id": "desktop-20-account-settings-preferences",
+      "role": "20-account-settings-preferences",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-20-account-settings-preferences.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-20-account-settings-preferences.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1441289
+    },
+    {
+      "id": "desktop-21-contact",
+      "role": "21-contact",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-21-contact.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-21-contact.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1298028
+    },
+    {
+      "id": "desktop-22-help-center",
+      "role": "22-help-center",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-22-help-center.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-22-help-center.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1490295
+    },
+    {
+      "id": "desktop-23-notifications-center",
+      "role": "23-notifications-center",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-23-notifications-center.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-23-notifications-center.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1409450
+    },
+    {
+      "id": "desktop-24-favorites",
+      "role": "24-favorites",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-24-favorites.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-24-favorites.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1751316
+    },
+    {
+      "id": "desktop-25-promotions-offers",
+      "role": "25-promotions-offers",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-25-promotions-offers.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-25-promotions-offers.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1745981
+    },
+    {
+      "id": "desktop-26-referral-earn",
+      "role": "26-referral-earn",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-26-referral-earn.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-26-referral-earn.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1615167
+    },
+    {
+      "id": "desktop-27-locations",
+      "role": "27-locations",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-27-locations.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-27-locations.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1815327
+    },
+    {
+      "id": "desktop-28-gift-experience",
+      "role": "28-gift-experience",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-28-gift-experience.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-28-gift-experience.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1571290
+    },
+    {
+      "id": "desktop-29-gift-checkout",
+      "role": "29-gift-checkout",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-29-gift-checkout.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-29-gift-checkout.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1692471
+    },
+    {
+      "id": "desktop-30-gift-confirmation",
+      "role": "30-gift-confirmation",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-30-gift-confirmation.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-30-gift-confirmation.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1431397
+    },
+    {
+      "id": "desktop-31-about-our-story",
+      "role": "31-about-our-story",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-31-about-our-story.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-31-about-our-story.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1782114
+    },
+    {
+      "id": "desktop-32-master-chefs-team",
+      "role": "32-master-chefs-team",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-32-master-chefs-team.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-32-master-chefs-team.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1832099
+    },
+    {
+      "id": "desktop-33-sourcing-ingredients",
+      "role": "33-sourcing-ingredients",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-33-sourcing-ingredients.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-33-sourcing-ingredients.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1764423
+    },
+    {
+      "id": "desktop-34-restaurant-atmosphere-gallery",
+      "role": "34-restaurant-atmosphere-gallery",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-34-restaurant-atmosphere-gallery.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-34-restaurant-atmosphere-gallery.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1860839
+    },
+    {
+      "id": "desktop-35-faq-article-detail",
+      "role": "35-faq-article-detail",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-35-faq-article-detail.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-35-faq-article-detail.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1553634
+    },
+    {
+      "id": "desktop-36-notification-detail",
+      "role": "36-notification-detail",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-36-notification-detail.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-36-notification-detail.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1391235
+    },
+    {
+      "id": "desktop-37-offer-detail",
+      "role": "37-offer-detail",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-37-offer-detail.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-37-offer-detail.png",
+      "width": 1586,
+      "height": 992,
+      "sizeBytes": 1699280
+    },
+    {
+      "id": "desktop-38-location-detail",
+      "role": "38-location-detail",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-38-location-detail.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-38-location-detail.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1674500
+    },
+    {
+      "id": "desktop-39-modify-reservation",
+      "role": "39-modify-reservation",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-39-modify-reservation.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-39-modify-reservation.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1562524
+    },
+    {
+      "id": "desktop-40-cancel-reservation-modal",
+      "role": "40-cancel-reservation-modal",
+      "device": "desktop",
+      "filePath": "public/assets/screenshots/desktop/desktop-40-cancel-reservation-modal.png",
+      "publicUrl": "/assets/screenshots/desktop/desktop-40-cancel-reservation-modal.png",
+      "width": 1672,
+      "height": 941,
+      "sizeBytes": 1519473
+    },
+    {
+      "id": "mobile-01",
+      "role": "01",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-01.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-01.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1615279
+    },
+    {
+      "id": "mobile-02",
+      "role": "02",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-02.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-02.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1639206
+    },
+    {
+      "id": "mobile-03",
+      "role": "03",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-03.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-03.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1589548
+    },
+    {
+      "id": "mobile-04",
+      "role": "04",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-04.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-04.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1721421
+    },
+    {
+      "id": "mobile-05",
+      "role": "05",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-05.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-05.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1629716
+    },
+    {
+      "id": "mobile-06",
+      "role": "06",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-06.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-06.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1582497
+    },
+    {
+      "id": "mobile-07",
+      "role": "07",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-07.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-07.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1516566
+    },
+    {
+      "id": "mobile-08",
+      "role": "08",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-08.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-08.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1516934
+    },
+    {
+      "id": "mobile-09",
+      "role": "09",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-09.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-09.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1385635
+    },
+    {
+      "id": "mobile-10",
+      "role": "10",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-10.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-10.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1366050
+    },
+    {
+      "id": "mobile-11",
+      "role": "11",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-11.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-11.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 990743
+    },
+    {
+      "id": "mobile-12",
+      "role": "12",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-12.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-12.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1312932
+    },
+    {
+      "id": "mobile-13",
+      "role": "13",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-13.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-13.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1300210
+    },
+    {
+      "id": "mobile-14",
+      "role": "14",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-14.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-14.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1432126
+    },
+    {
+      "id": "mobile-15",
+      "role": "15",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-15.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-15.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1397202
+    },
+    {
+      "id": "mobile-16",
+      "role": "16",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-16.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-16.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1601788
+    },
+    {
+      "id": "mobile-17",
+      "role": "17",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-17.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-17.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1671876
+    },
+    {
+      "id": "mobile-18",
+      "role": "18",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-18.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-18.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1460529
+    },
+    {
+      "id": "mobile-19",
+      "role": "19",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-19.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-19.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1443252
+    },
+    {
+      "id": "mobile-20",
+      "role": "20",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-20.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-20.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1607557
+    },
+    {
+      "id": "mobile-21",
+      "role": "21",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-21.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-21.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1626393
+    },
+    {
+      "id": "mobile-22",
+      "role": "22",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-22.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-22.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1739064
+    },
+    {
+      "id": "mobile-23",
+      "role": "23",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-23.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-23.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1596787
+    },
+    {
+      "id": "mobile-24",
+      "role": "24",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-24.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-24.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1533119
+    },
+    {
+      "id": "mobile-25",
+      "role": "25",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-25.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-25.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1694201
+    },
+    {
+      "id": "mobile-26",
+      "role": "26",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-26.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-26.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1549038
+    },
+    {
+      "id": "mobile-27",
+      "role": "27",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-27.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-27.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1181606
+    },
+    {
+      "id": "mobile-28",
+      "role": "28",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-28.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-28.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1447721
+    },
+    {
+      "id": "mobile-29",
+      "role": "29",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-29.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-29.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1563876
+    },
+    {
+      "id": "mobile-30",
+      "role": "30",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-30.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-30.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1385635
+    },
+    {
+      "id": "mobile-31",
+      "role": "31",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-31.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-31.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1591928
+    },
+    {
+      "id": "mobile-32",
+      "role": "32",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-32.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-32.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1385165
+    },
+    {
+      "id": "mobile-33",
+      "role": "33",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-33.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-33.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1568773
+    },
+    {
+      "id": "mobile-34",
+      "role": "34",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-34.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-34.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1456171
+    },
+    {
+      "id": "mobile-35",
+      "role": "35",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-35.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-35.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1437413
+    },
+    {
+      "id": "mobile-36",
+      "role": "36",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-36.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-36.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1452077
+    },
+    {
+      "id": "mobile-37",
+      "role": "37",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-37.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-37.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1483191
+    },
+    {
+      "id": "mobile-38",
+      "role": "38",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-38.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-38.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1623183
+    },
+    {
+      "id": "mobile-39",
+      "role": "39",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-39.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-39.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1300441
+    },
+    {
+      "id": "mobile-40",
+      "role": "40",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-40.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-40.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1344042
+    },
+    {
+      "id": "mobile-41",
+      "role": "41",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-41.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-41.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1363920
+    },
+    {
+      "id": "mobile-42",
+      "role": "42",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-42.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-42.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1424697
+    },
+    {
+      "id": "mobile-43",
+      "role": "43",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-43.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-43.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1451244
+    },
+    {
+      "id": "mobile-44",
+      "role": "44",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-44.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-44.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1704147
+    },
+    {
+      "id": "mobile-45",
+      "role": "45",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-45.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-45.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1732207
+    },
+    {
+      "id": "mobile-46",
+      "role": "46",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-46.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-46.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1507959
+    },
+    {
+      "id": "mobile-47",
+      "role": "47",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-47.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-47.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1744856
+    },
+    {
+      "id": "mobile-48",
+      "role": "48",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-48.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-48.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1567419
+    },
+    {
+      "id": "mobile-49",
+      "role": "49",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-49.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-49.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1691702
+    },
+    {
+      "id": "mobile-50",
+      "role": "50",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-50.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-50.png",
+      "width": 863,
+      "height": 1822,
+      "sizeBytes": 1679173
+    },
+    {
+      "id": "mobile-51",
+      "role": "51",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-51.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-51.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1760246
+    },
+    {
+      "id": "mobile-52",
+      "role": "52",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-52.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-52.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1550252
+    },
+    {
+      "id": "mobile-53",
+      "role": "53",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-53.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-53.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1388771
+    },
+    {
+      "id": "mobile-54",
+      "role": "54",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-54.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-54.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1476835
+    },
+    {
+      "id": "mobile-55",
+      "role": "55",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-55.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-55.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1711695
+    },
+    {
+      "id": "mobile-56",
+      "role": "56",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-56.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-56.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1712498
+    },
+    {
+      "id": "mobile-57",
+      "role": "57",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-57.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-57.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1736694
+    },
+    {
+      "id": "mobile-58",
+      "role": "58",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-58.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-58.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1538244
+    },
+    {
+      "id": "mobile-59",
+      "role": "59",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-59.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-59.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1787272
+    },
+    {
+      "id": "mobile-60",
+      "role": "60",
+      "device": "mobile",
+      "filePath": "public/assets/screenshots/mobile/mobile-60.png",
+      "publicUrl": "/assets/screenshots/mobile/mobile-60.png",
+      "width": 941,
+      "height": 1672,
+      "sizeBytes": 1581717
+    },
+    {
+      "id": "tablet-01-home-dashboard",
+      "role": "01-home-dashboard",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-01-home-dashboard.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-01-home-dashboard.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1656308
+    },
+    {
+      "id": "tablet-02-search-filter",
+      "role": "02-search-filter",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-02-search-filter.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-02-search-filter.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1726621
+    },
+    {
+      "id": "tablet-03-menu-overview",
+      "role": "03-menu-overview",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-03-menu-overview.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-03-menu-overview.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1843274
+    },
+    {
+      "id": "tablet-04-menu-category-nigiri",
+      "role": "04-menu-category-nigiri",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-04-menu-category-nigiri.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-04-menu-category-nigiri.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1822019
+    },
+    {
+      "id": "tablet-05-item-detail-otoro-nigiri",
+      "role": "05-item-detail-otoro-nigiri",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-05-item-detail-otoro-nigiri.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-05-item-detail-otoro-nigiri.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1783802
+    },
+    {
+      "id": "tablet-06-item-detail-expanded",
+      "role": "06-item-detail-expanded",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-06-item-detail-expanded.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-06-item-detail-expanded.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1724784
+    },
+    {
+      "id": "tablet-07-item-customization-add-ons",
+      "role": "07-item-customization-add-ons",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-07-item-customization-add-ons.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-07-item-customization-add-ons.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1727797
+    },
+    {
+      "id": "tablet-08-cart",
+      "role": "08-cart",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-08-cart.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-08-cart.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1551005
+    },
+    {
+      "id": "tablet-09-checkout-delivery-pickup",
+      "role": "09-checkout-delivery-pickup",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-09-checkout-delivery-pickup.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-09-checkout-delivery-pickup.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1555843
+    },
+    {
+      "id": "tablet-10-checkout-review-confirm",
+      "role": "10-checkout-review-confirm",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-10-checkout-review-confirm.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-10-checkout-review-confirm.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1592551
+    },
+    {
+      "id": "tablet-11-orders-dashboard",
+      "role": "11-orders-dashboard",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-11-orders-dashboard.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-11-orders-dashboard.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1637684
+    },
+    {
+      "id": "tablet-12-live-order-tracking",
+      "role": "12-live-order-tracking",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-12-live-order-tracking.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-12-live-order-tracking.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1714546
+    },
+    {
+      "id": "tablet-13-reservations-main",
+      "role": "13-reservations-main",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-13-reservations-main.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-13-reservations-main.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1734528
+    },
+    {
+      "id": "tablet-14-choose-reservation-experience",
+      "role": "14-choose-reservation-experience",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-14-choose-reservation-experience.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-14-choose-reservation-experience.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1709088
+    },
+    {
+      "id": "tablet-15-reservation-review",
+      "role": "15-reservation-review",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-15-reservation-review.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-15-reservation-review.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1544159
+    },
+    {
+      "id": "tablet-16-reservation-confirmation",
+      "role": "16-reservation-confirmation",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-16-reservation-confirmation.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-16-reservation-confirmation.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1557440
+    },
+    {
+      "id": "tablet-17-reservation-history",
+      "role": "17-reservation-history",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-17-reservation-history.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-17-reservation-history.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1663818
+    },
+    {
+      "id": "tablet-18-modify-reservation",
+      "role": "18-modify-reservation",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-18-modify-reservation.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-18-modify-reservation.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1473799
+    },
+    {
+      "id": "tablet-19-locations",
+      "role": "19-locations",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-19-locations.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-19-locations.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1786179
+    },
+    {
+      "id": "tablet-20-cancel-reservation",
+      "role": "20-cancel-reservation",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-20-cancel-reservation.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-20-cancel-reservation.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1567586
+    },
+    {
+      "id": "tablet-21-omakase-experience",
+      "role": "21-omakase-experience",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-21-omakase-experience.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-21-omakase-experience.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1734417
+    },
+    {
+      "id": "tablet-22-omakase-package-review",
+      "role": "22-omakase-package-review",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-22-omakase-package-review.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-22-omakase-package-review.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1718042
+    },
+    {
+      "id": "tablet-23-gift-experience",
+      "role": "23-gift-experience",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-23-gift-experience.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-23-gift-experience.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1567405
+    },
+    {
+      "id": "tablet-24-gift-checkout",
+      "role": "24-gift-checkout",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-24-gift-checkout.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-24-gift-checkout.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1565239
+    },
+    {
+      "id": "tablet-25-gift-confirmation",
+      "role": "25-gift-confirmation",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-25-gift-confirmation.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-25-gift-confirmation.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1600742
+    },
+    {
+      "id": "tablet-26-loyalty-dashboard",
+      "role": "26-loyalty-dashboard",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-26-loyalty-dashboard.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-26-loyalty-dashboard.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1699299
+    },
+    {
+      "id": "tablet-27-member-pass-rewards",
+      "role": "27-member-pass-rewards",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-27-member-pass-rewards.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-27-member-pass-rewards.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1607905
+    },
+    {
+      "id": "tablet-28-profile-dashboard",
+      "role": "28-profile-dashboard",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-28-profile-dashboard.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-28-profile-dashboard.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1482921
+    },
+    {
+      "id": "tablet-29-favorites",
+      "role": "29-favorites",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-29-favorites.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-29-favorites.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1656862
+    },
+    {
+      "id": "tablet-30-account-settings-preferences",
+      "role": "30-account-settings-preferences",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-30-account-settings-preferences.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-30-account-settings-preferences.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1394348
+    },
+    {
+      "id": "tablet-31-contact",
+      "role": "31-contact",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-31-contact.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-31-contact.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1480397
+    },
+    {
+      "id": "tablet-32-help-center",
+      "role": "32-help-center",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-32-help-center.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-32-help-center.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1621196
+    },
+    {
+      "id": "tablet-33-faq-article-detail",
+      "role": "33-faq-article-detail",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-33-faq-article-detail.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-33-faq-article-detail.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1351189
+    },
+    {
+      "id": "tablet-34-notifications-center",
+      "role": "34-notifications-center",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-34-notifications-center.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-34-notifications-center.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1365540
+    },
+    {
+      "id": "tablet-35-notification-detail",
+      "role": "35-notification-detail",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-35-notification-detail.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-35-notification-detail.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1391032
+    },
+    {
+      "id": "tablet-36-promotions-offers",
+      "role": "36-promotions-offers",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-36-promotions-offers.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-36-promotions-offers.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1517007
+    },
+    {
+      "id": "tablet-37-offer-detail",
+      "role": "37-offer-detail",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-37-offer-detail.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-37-offer-detail.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1696532
+    },
+    {
+      "id": "tablet-38-referral-earn",
+      "role": "38-referral-earn",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-38-referral-earn.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-38-referral-earn.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1490141
+    },
+    {
+      "id": "tablet-39-about-our-story",
+      "role": "39-about-our-story",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-39-about-our-story.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-39-about-our-story.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1704134
+    },
+    {
+      "id": "tablet-40-master-chefs-team",
+      "role": "40-master-chefs-team",
+      "device": "tablet",
+      "filePath": "public/assets/screenshots/tablet/tablet-40-master-chefs-team.png",
+      "publicUrl": "/assets/screenshots/tablet/tablet-40-master-chefs-team.png",
+      "width": 1086,
+      "height": 1448,
+      "sizeBytes": 1665453
     }
   ],
   "featuredAssets": {
@@ -2311,148 +3567,1404 @@
     ],
     "screensToRedesignFrom": [
       {
-        "id": "chatgpt-image-may-25-2026-08-35-21-pm-1",
-        "role": "reference",
-        "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
-        "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-1.png",
-        "width": 1122,
-        "height": 1402,
-        "sizeBytes": 2733615
-      },
-      {
-        "id": "chatgpt-image-may-25-2026-08-35-21-pm-2",
-        "role": "reference",
-        "filePath": "public/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
-        "publicUrl": "/assets/screenshots/chatgpt-image-may-25-2026-08-35-21-pm-2.png",
+        "id": "desktop-01-home-dashboard",
+        "role": "01-home-dashboard",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-01-home-dashboard.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-01-home-dashboard.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 2776620
+        "sizeBytes": 1758496
       },
       {
-        "id": "elegant-sushi-bliss-website-mockup",
-        "role": "landing",
-        "filePath": "public/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
-        "publicUrl": "/assets/screenshots/elegant-sushi-bliss-website-mockup.png",
+        "id": "desktop-02-menu-overview",
+        "role": "02-menu-overview",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-02-menu-overview.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-02-menu-overview.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1960587
+        "sizeBytes": 1744139
       },
       {
-        "id": "luxury-sushi-app-with-elegant-ui",
-        "role": "home",
-        "filePath": "public/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
-        "publicUrl": "/assets/screenshots/luxury-sushi-app-with-elegant-ui.png",
+        "id": "desktop-03-menu-category-nigiri",
+        "role": "03-menu-category-nigiri",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-03-menu-category-nigiri.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-03-menu-category-nigiri.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1853384
+        "sizeBytes": 1690182
       },
       {
-        "id": "sushi-bliss-checkout-experience-2",
-        "role": "checkout",
-        "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience-2.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience-2.png",
+        "id": "desktop-04-item-detail-otoro-nigiri",
+        "role": "04-item-detail-otoro-nigiri",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-04-item-detail-otoro-nigiri.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-04-item-detail-otoro-nigiri.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1669612
+        "sizeBytes": 1769870
       },
       {
-        "id": "sushi-bliss-checkout-experience",
-        "role": "checkout",
-        "filePath": "public/assets/screenshots/sushi-bliss-checkout-experience.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-checkout-experience.png",
+        "id": "desktop-05-item-customization-add-ons",
+        "role": "05-item-customization-add-ons",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-05-item-customization-add-ons.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-05-item-customization-add-ons.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1746741
+        "sizeBytes": 1522491
       },
       {
-        "id": "sushi-bliss-contact-page-design",
-        "role": "contact",
-        "filePath": "public/assets/screenshots/sushi-bliss-contact-page-design.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-contact-page-design.png",
+        "id": "desktop-06-cart",
+        "role": "06-cart",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-06-cart.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-06-cart.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1817884
+        "sizeBytes": 1518538
       },
       {
-        "id": "sushi-bliss-loyalty-dashboard-concept",
-        "role": "loyalty",
-        "filePath": "public/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-loyalty-dashboard-concept.png",
+        "id": "desktop-07-checkout",
+        "role": "07-checkout",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-07-checkout.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-07-checkout.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1822530
+        "sizeBytes": 1499795
       },
       {
-        "id": "sushi-bliss-order-confirmation-design",
-        "role": "orderConfirmation",
-        "filePath": "public/assets/screenshots/sushi-bliss-order-confirmation-design.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-order-confirmation-design.png",
+        "id": "desktop-08-checkout-review",
+        "role": "08-checkout-review",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-08-checkout-review.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-08-checkout-review.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1846209
+        "sizeBytes": 1491674
       },
       {
-        "id": "sushi-bliss-order-tracking-interface",
-        "role": "orderTracking",
-        "filePath": "public/assets/screenshots/sushi-bliss-order-tracking-interface.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-order-tracking-interface.png",
+        "id": "desktop-09-order-confirmation",
+        "role": "09-order-confirmation",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-09-order-confirmation.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-09-order-confirmation.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1711658
+        "sizeBytes": 1507982
       },
       {
-        "id": "sushi-bliss-ordering-interface-mockup",
-        "role": "ordering",
-        "filePath": "public/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-ordering-interface-mockup.png",
+        "id": "desktop-10-orders-dashboard",
+        "role": "10-orders-dashboard",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-10-orders-dashboard.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-10-orders-dashboard.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1894820
+        "sizeBytes": 1533380
       },
       {
-        "id": "sushi-bliss-reservation-interface-mockups",
-        "role": "reservations",
-        "filePath": "public/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-reservation-interface-mockups.png",
+        "id": "desktop-11-reservations-main",
+        "role": "11-reservations-main",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-11-reservations-main.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-11-reservations-main.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1887961
+        "sizeBytes": 1664379
       },
       {
-        "id": "sushi-bliss-ui-mockup-design",
-        "role": "menuHome",
-        "filePath": "public/assets/screenshots/sushi-bliss-ui-mockup-design.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-ui-mockup-design.png",
+        "id": "desktop-12-choose-reservation-experience",
+        "role": "12-choose-reservation-experience",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-12-choose-reservation-experience.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-12-choose-reservation-experience.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1917470
+        "sizeBytes": 1555746
       },
       {
-        "id": "sushi-bliss-ui-ux-design-mockup",
-        "role": "uiUx",
-        "filePath": "public/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-ui-ux-design-mockup.png",
+        "id": "desktop-13-reservation-review",
+        "role": "13-reservation-review",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-13-reservation-review.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-13-reservation-review.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1847496
+        "sizeBytes": 1615147
       },
       {
-        "id": "sushi-bliss-user-interface-design",
-        "role": "profile",
-        "filePath": "public/assets/screenshots/sushi-bliss-user-interface-design.png",
-        "publicUrl": "/assets/screenshots/sushi-bliss-user-interface-design.png",
+        "id": "desktop-14-reservation-history",
+        "role": "14-reservation-history",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-14-reservation-history.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-14-reservation-history.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1741918
+        "sizeBytes": 1640015
       },
       {
-        "id": "timeless-sushi-dining-experience-ui",
-        "role": "home",
-        "filePath": "public/assets/screenshots/timeless-sushi-dining-experience-ui.png",
-        "publicUrl": "/assets/screenshots/timeless-sushi-dining-experience-ui.png",
+        "id": "desktop-15-omakase-experience",
+        "role": "15-omakase-experience",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-15-omakase-experience.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-15-omakase-experience.png",
         "width": 1672,
         "height": 941,
-        "sizeBytes": 1838562
+        "sizeBytes": 1832432
+      },
+      {
+        "id": "desktop-16-omakase-package-review",
+        "role": "16-omakase-package-review",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-16-omakase-package-review.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-16-omakase-package-review.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1667459
+      },
+      {
+        "id": "desktop-17-loyalty-dashboard",
+        "role": "17-loyalty-dashboard",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-17-loyalty-dashboard.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-17-loyalty-dashboard.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1694966
+      },
+      {
+        "id": "desktop-18-member-pass-rewards",
+        "role": "18-member-pass-rewards",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-18-member-pass-rewards.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-18-member-pass-rewards.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1687470
+      },
+      {
+        "id": "desktop-19-profile-dashboard",
+        "role": "19-profile-dashboard",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-19-profile-dashboard.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-19-profile-dashboard.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1517459
+      },
+      {
+        "id": "desktop-20-account-settings-preferences",
+        "role": "20-account-settings-preferences",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-20-account-settings-preferences.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-20-account-settings-preferences.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1441289
+      },
+      {
+        "id": "desktop-21-contact",
+        "role": "21-contact",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-21-contact.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-21-contact.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1298028
+      },
+      {
+        "id": "desktop-22-help-center",
+        "role": "22-help-center",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-22-help-center.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-22-help-center.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1490295
+      },
+      {
+        "id": "desktop-23-notifications-center",
+        "role": "23-notifications-center",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-23-notifications-center.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-23-notifications-center.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1409450
+      },
+      {
+        "id": "desktop-24-favorites",
+        "role": "24-favorites",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-24-favorites.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-24-favorites.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1751316
+      },
+      {
+        "id": "desktop-25-promotions-offers",
+        "role": "25-promotions-offers",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-25-promotions-offers.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-25-promotions-offers.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1745981
+      },
+      {
+        "id": "desktop-26-referral-earn",
+        "role": "26-referral-earn",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-26-referral-earn.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-26-referral-earn.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1615167
+      },
+      {
+        "id": "desktop-27-locations",
+        "role": "27-locations",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-27-locations.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-27-locations.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1815327
+      },
+      {
+        "id": "desktop-28-gift-experience",
+        "role": "28-gift-experience",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-28-gift-experience.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-28-gift-experience.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1571290
+      },
+      {
+        "id": "desktop-29-gift-checkout",
+        "role": "29-gift-checkout",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-29-gift-checkout.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-29-gift-checkout.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1692471
+      },
+      {
+        "id": "desktop-30-gift-confirmation",
+        "role": "30-gift-confirmation",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-30-gift-confirmation.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-30-gift-confirmation.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1431397
+      },
+      {
+        "id": "desktop-31-about-our-story",
+        "role": "31-about-our-story",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-31-about-our-story.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-31-about-our-story.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1782114
+      },
+      {
+        "id": "desktop-32-master-chefs-team",
+        "role": "32-master-chefs-team",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-32-master-chefs-team.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-32-master-chefs-team.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1832099
+      },
+      {
+        "id": "desktop-33-sourcing-ingredients",
+        "role": "33-sourcing-ingredients",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-33-sourcing-ingredients.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-33-sourcing-ingredients.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1764423
+      },
+      {
+        "id": "desktop-34-restaurant-atmosphere-gallery",
+        "role": "34-restaurant-atmosphere-gallery",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-34-restaurant-atmosphere-gallery.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-34-restaurant-atmosphere-gallery.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1860839
+      },
+      {
+        "id": "desktop-35-faq-article-detail",
+        "role": "35-faq-article-detail",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-35-faq-article-detail.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-35-faq-article-detail.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1553634
+      },
+      {
+        "id": "desktop-36-notification-detail",
+        "role": "36-notification-detail",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-36-notification-detail.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-36-notification-detail.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1391235
+      },
+      {
+        "id": "desktop-37-offer-detail",
+        "role": "37-offer-detail",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-37-offer-detail.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-37-offer-detail.png",
+        "width": 1586,
+        "height": 992,
+        "sizeBytes": 1699280
+      },
+      {
+        "id": "desktop-38-location-detail",
+        "role": "38-location-detail",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-38-location-detail.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-38-location-detail.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1674500
+      },
+      {
+        "id": "desktop-39-modify-reservation",
+        "role": "39-modify-reservation",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-39-modify-reservation.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-39-modify-reservation.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1562524
+      },
+      {
+        "id": "desktop-40-cancel-reservation-modal",
+        "role": "40-cancel-reservation-modal",
+        "device": "desktop",
+        "filePath": "public/assets/screenshots/desktop/desktop-40-cancel-reservation-modal.png",
+        "publicUrl": "/assets/screenshots/desktop/desktop-40-cancel-reservation-modal.png",
+        "width": 1672,
+        "height": 941,
+        "sizeBytes": 1519473
+      },
+      {
+        "id": "mobile-01",
+        "role": "01",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-01.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-01.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1615279
+      },
+      {
+        "id": "mobile-02",
+        "role": "02",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-02.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-02.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1639206
+      },
+      {
+        "id": "mobile-03",
+        "role": "03",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-03.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-03.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1589548
+      },
+      {
+        "id": "mobile-04",
+        "role": "04",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-04.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-04.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1721421
+      },
+      {
+        "id": "mobile-05",
+        "role": "05",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-05.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-05.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1629716
+      },
+      {
+        "id": "mobile-06",
+        "role": "06",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-06.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-06.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1582497
+      },
+      {
+        "id": "mobile-07",
+        "role": "07",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-07.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-07.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1516566
+      },
+      {
+        "id": "mobile-08",
+        "role": "08",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-08.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-08.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1516934
+      },
+      {
+        "id": "mobile-09",
+        "role": "09",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-09.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-09.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1385635
+      },
+      {
+        "id": "mobile-10",
+        "role": "10",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-10.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-10.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1366050
+      },
+      {
+        "id": "mobile-11",
+        "role": "11",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-11.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-11.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 990743
+      },
+      {
+        "id": "mobile-12",
+        "role": "12",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-12.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-12.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1312932
+      },
+      {
+        "id": "mobile-13",
+        "role": "13",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-13.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-13.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1300210
+      },
+      {
+        "id": "mobile-14",
+        "role": "14",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-14.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-14.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1432126
+      },
+      {
+        "id": "mobile-15",
+        "role": "15",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-15.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-15.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1397202
+      },
+      {
+        "id": "mobile-16",
+        "role": "16",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-16.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-16.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1601788
+      },
+      {
+        "id": "mobile-17",
+        "role": "17",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-17.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-17.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1671876
+      },
+      {
+        "id": "mobile-18",
+        "role": "18",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-18.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-18.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1460529
+      },
+      {
+        "id": "mobile-19",
+        "role": "19",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-19.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-19.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1443252
+      },
+      {
+        "id": "mobile-20",
+        "role": "20",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-20.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-20.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1607557
+      },
+      {
+        "id": "mobile-21",
+        "role": "21",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-21.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-21.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1626393
+      },
+      {
+        "id": "mobile-22",
+        "role": "22",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-22.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-22.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1739064
+      },
+      {
+        "id": "mobile-23",
+        "role": "23",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-23.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-23.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1596787
+      },
+      {
+        "id": "mobile-24",
+        "role": "24",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-24.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-24.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1533119
+      },
+      {
+        "id": "mobile-25",
+        "role": "25",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-25.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-25.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1694201
+      },
+      {
+        "id": "mobile-26",
+        "role": "26",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-26.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-26.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1549038
+      },
+      {
+        "id": "mobile-27",
+        "role": "27",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-27.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-27.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1181606
+      },
+      {
+        "id": "mobile-28",
+        "role": "28",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-28.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-28.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1447721
+      },
+      {
+        "id": "mobile-29",
+        "role": "29",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-29.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-29.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1563876
+      },
+      {
+        "id": "mobile-30",
+        "role": "30",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-30.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-30.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1385635
+      },
+      {
+        "id": "mobile-31",
+        "role": "31",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-31.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-31.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1591928
+      },
+      {
+        "id": "mobile-32",
+        "role": "32",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-32.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-32.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1385165
+      },
+      {
+        "id": "mobile-33",
+        "role": "33",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-33.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-33.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1568773
+      },
+      {
+        "id": "mobile-34",
+        "role": "34",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-34.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-34.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1456171
+      },
+      {
+        "id": "mobile-35",
+        "role": "35",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-35.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-35.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1437413
+      },
+      {
+        "id": "mobile-36",
+        "role": "36",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-36.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-36.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1452077
+      },
+      {
+        "id": "mobile-37",
+        "role": "37",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-37.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-37.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1483191
+      },
+      {
+        "id": "mobile-38",
+        "role": "38",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-38.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-38.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1623183
+      },
+      {
+        "id": "mobile-39",
+        "role": "39",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-39.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-39.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1300441
+      },
+      {
+        "id": "mobile-40",
+        "role": "40",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-40.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-40.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1344042
+      },
+      {
+        "id": "mobile-41",
+        "role": "41",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-41.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-41.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1363920
+      },
+      {
+        "id": "mobile-42",
+        "role": "42",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-42.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-42.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1424697
+      },
+      {
+        "id": "mobile-43",
+        "role": "43",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-43.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-43.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1451244
+      },
+      {
+        "id": "mobile-44",
+        "role": "44",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-44.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-44.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1704147
+      },
+      {
+        "id": "mobile-45",
+        "role": "45",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-45.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-45.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1732207
+      },
+      {
+        "id": "mobile-46",
+        "role": "46",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-46.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-46.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1507959
+      },
+      {
+        "id": "mobile-47",
+        "role": "47",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-47.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-47.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1744856
+      },
+      {
+        "id": "mobile-48",
+        "role": "48",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-48.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-48.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1567419
+      },
+      {
+        "id": "mobile-49",
+        "role": "49",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-49.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-49.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1691702
+      },
+      {
+        "id": "mobile-50",
+        "role": "50",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-50.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-50.png",
+        "width": 863,
+        "height": 1822,
+        "sizeBytes": 1679173
+      },
+      {
+        "id": "mobile-51",
+        "role": "51",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-51.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-51.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1760246
+      },
+      {
+        "id": "mobile-52",
+        "role": "52",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-52.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-52.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1550252
+      },
+      {
+        "id": "mobile-53",
+        "role": "53",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-53.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-53.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1388771
+      },
+      {
+        "id": "mobile-54",
+        "role": "54",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-54.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-54.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1476835
+      },
+      {
+        "id": "mobile-55",
+        "role": "55",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-55.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-55.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1711695
+      },
+      {
+        "id": "mobile-56",
+        "role": "56",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-56.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-56.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1712498
+      },
+      {
+        "id": "mobile-57",
+        "role": "57",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-57.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-57.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1736694
+      },
+      {
+        "id": "mobile-58",
+        "role": "58",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-58.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-58.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1538244
+      },
+      {
+        "id": "mobile-59",
+        "role": "59",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-59.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-59.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1787272
+      },
+      {
+        "id": "mobile-60",
+        "role": "60",
+        "device": "mobile",
+        "filePath": "public/assets/screenshots/mobile/mobile-60.png",
+        "publicUrl": "/assets/screenshots/mobile/mobile-60.png",
+        "width": 941,
+        "height": 1672,
+        "sizeBytes": 1581717
+      },
+      {
+        "id": "tablet-01-home-dashboard",
+        "role": "01-home-dashboard",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-01-home-dashboard.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-01-home-dashboard.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1656308
+      },
+      {
+        "id": "tablet-02-search-filter",
+        "role": "02-search-filter",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-02-search-filter.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-02-search-filter.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1726621
+      },
+      {
+        "id": "tablet-03-menu-overview",
+        "role": "03-menu-overview",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-03-menu-overview.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-03-menu-overview.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1843274
+      },
+      {
+        "id": "tablet-04-menu-category-nigiri",
+        "role": "04-menu-category-nigiri",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-04-menu-category-nigiri.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-04-menu-category-nigiri.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1822019
+      },
+      {
+        "id": "tablet-05-item-detail-otoro-nigiri",
+        "role": "05-item-detail-otoro-nigiri",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-05-item-detail-otoro-nigiri.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-05-item-detail-otoro-nigiri.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1783802
+      },
+      {
+        "id": "tablet-06-item-detail-expanded",
+        "role": "06-item-detail-expanded",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-06-item-detail-expanded.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-06-item-detail-expanded.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1724784
+      },
+      {
+        "id": "tablet-07-item-customization-add-ons",
+        "role": "07-item-customization-add-ons",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-07-item-customization-add-ons.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-07-item-customization-add-ons.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1727797
+      },
+      {
+        "id": "tablet-08-cart",
+        "role": "08-cart",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-08-cart.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-08-cart.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1551005
+      },
+      {
+        "id": "tablet-09-checkout-delivery-pickup",
+        "role": "09-checkout-delivery-pickup",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-09-checkout-delivery-pickup.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-09-checkout-delivery-pickup.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1555843
+      },
+      {
+        "id": "tablet-10-checkout-review-confirm",
+        "role": "10-checkout-review-confirm",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-10-checkout-review-confirm.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-10-checkout-review-confirm.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1592551
+      },
+      {
+        "id": "tablet-11-orders-dashboard",
+        "role": "11-orders-dashboard",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-11-orders-dashboard.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-11-orders-dashboard.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1637684
+      },
+      {
+        "id": "tablet-12-live-order-tracking",
+        "role": "12-live-order-tracking",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-12-live-order-tracking.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-12-live-order-tracking.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1714546
+      },
+      {
+        "id": "tablet-13-reservations-main",
+        "role": "13-reservations-main",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-13-reservations-main.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-13-reservations-main.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1734528
+      },
+      {
+        "id": "tablet-14-choose-reservation-experience",
+        "role": "14-choose-reservation-experience",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-14-choose-reservation-experience.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-14-choose-reservation-experience.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1709088
+      },
+      {
+        "id": "tablet-15-reservation-review",
+        "role": "15-reservation-review",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-15-reservation-review.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-15-reservation-review.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1544159
+      },
+      {
+        "id": "tablet-16-reservation-confirmation",
+        "role": "16-reservation-confirmation",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-16-reservation-confirmation.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-16-reservation-confirmation.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1557440
+      },
+      {
+        "id": "tablet-17-reservation-history",
+        "role": "17-reservation-history",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-17-reservation-history.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-17-reservation-history.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1663818
+      },
+      {
+        "id": "tablet-18-modify-reservation",
+        "role": "18-modify-reservation",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-18-modify-reservation.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-18-modify-reservation.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1473799
+      },
+      {
+        "id": "tablet-19-locations",
+        "role": "19-locations",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-19-locations.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-19-locations.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1786179
+      },
+      {
+        "id": "tablet-20-cancel-reservation",
+        "role": "20-cancel-reservation",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-20-cancel-reservation.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-20-cancel-reservation.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1567586
+      },
+      {
+        "id": "tablet-21-omakase-experience",
+        "role": "21-omakase-experience",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-21-omakase-experience.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-21-omakase-experience.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1734417
+      },
+      {
+        "id": "tablet-22-omakase-package-review",
+        "role": "22-omakase-package-review",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-22-omakase-package-review.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-22-omakase-package-review.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1718042
+      },
+      {
+        "id": "tablet-23-gift-experience",
+        "role": "23-gift-experience",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-23-gift-experience.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-23-gift-experience.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1567405
+      },
+      {
+        "id": "tablet-24-gift-checkout",
+        "role": "24-gift-checkout",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-24-gift-checkout.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-24-gift-checkout.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1565239
+      },
+      {
+        "id": "tablet-25-gift-confirmation",
+        "role": "25-gift-confirmation",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-25-gift-confirmation.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-25-gift-confirmation.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1600742
+      },
+      {
+        "id": "tablet-26-loyalty-dashboard",
+        "role": "26-loyalty-dashboard",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-26-loyalty-dashboard.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-26-loyalty-dashboard.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1699299
+      },
+      {
+        "id": "tablet-27-member-pass-rewards",
+        "role": "27-member-pass-rewards",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-27-member-pass-rewards.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-27-member-pass-rewards.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1607905
+      },
+      {
+        "id": "tablet-28-profile-dashboard",
+        "role": "28-profile-dashboard",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-28-profile-dashboard.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-28-profile-dashboard.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1482921
+      },
+      {
+        "id": "tablet-29-favorites",
+        "role": "29-favorites",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-29-favorites.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-29-favorites.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1656862
+      },
+      {
+        "id": "tablet-30-account-settings-preferences",
+        "role": "30-account-settings-preferences",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-30-account-settings-preferences.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-30-account-settings-preferences.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1394348
+      },
+      {
+        "id": "tablet-31-contact",
+        "role": "31-contact",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-31-contact.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-31-contact.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1480397
+      },
+      {
+        "id": "tablet-32-help-center",
+        "role": "32-help-center",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-32-help-center.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-32-help-center.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1621196
+      },
+      {
+        "id": "tablet-33-faq-article-detail",
+        "role": "33-faq-article-detail",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-33-faq-article-detail.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-33-faq-article-detail.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1351189
+      },
+      {
+        "id": "tablet-34-notifications-center",
+        "role": "34-notifications-center",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-34-notifications-center.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-34-notifications-center.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1365540
+      },
+      {
+        "id": "tablet-35-notification-detail",
+        "role": "35-notification-detail",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-35-notification-detail.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-35-notification-detail.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1391032
+      },
+      {
+        "id": "tablet-36-promotions-offers",
+        "role": "36-promotions-offers",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-36-promotions-offers.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-36-promotions-offers.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1517007
+      },
+      {
+        "id": "tablet-37-offer-detail",
+        "role": "37-offer-detail",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-37-offer-detail.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-37-offer-detail.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1696532
+      },
+      {
+        "id": "tablet-38-referral-earn",
+        "role": "38-referral-earn",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-38-referral-earn.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-38-referral-earn.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1490141
+      },
+      {
+        "id": "tablet-39-about-our-story",
+        "role": "39-about-our-story",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-39-about-our-story.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-39-about-our-story.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1704134
+      },
+      {
+        "id": "tablet-40-master-chefs-team",
+        "role": "40-master-chefs-team",
+        "device": "tablet",
+        "filePath": "public/assets/screenshots/tablet/tablet-40-master-chefs-team.png",
+        "publicUrl": "/assets/screenshots/tablet/tablet-40-master-chefs-team.png",
+        "width": 1086,
+        "height": 1448,
+        "sizeBytes": 1665453
       }
     ]
   },
@@ -2565,6 +5077,79 @@
             "publicUrl": "/assets/omakase/desserts/matcha-mousse-dessert.webp"
           }
         }
+      }
+    ]
+  },
+  "appContent": {
+    "member": {
+      "name": "Hiroshi Tanaka",
+      "email": "hiroshi.tanaka@email.com",
+      "phone": "+1 555 0188",
+      "tier": "Gold",
+      "nextTier": "Platinum",
+      "points": 3250,
+      "pointsToNextTier": 750,
+      "maxTierPoints": 4000,
+      "avatarChefId": "hiroshi-tanaka",
+      "address": "123 Kai Street, Tokyo",
+      "deliveryAddress": "123 Kai Street, Tokyo",
+      "dietary": "No shellfish, gluten sensitive",
+      "marketingOptIn": true
+    },
+    "location": {
+      "label": "Sushi Bliss Downtown",
+      "city": "Tokyo",
+      "country": "Japan",
+      "street": "123 Kai Street",
+      "postalLine": "Tokyo, 100-0001",
+      "phone": "+81-3-1234-5678",
+      "email": "hello@sushibliss.jp"
+    },
+    "hours": {
+      "days": "Mon - Sun",
+      "service": "11:30 AM - 11:00 PM",
+      "lastOrder": "Last Order: 10:30 PM"
+    },
+    "reservation": {
+      "weekday": "Sat",
+      "day": "24",
+      "month": "May",
+      "time": "7:00 PM",
+      "guests": 2,
+      "alternateGuests": 4,
+      "table": "Table A7"
+    },
+    "recentOrder": {
+      "title": "Sushi Bliss Deluxe",
+      "itemId": "dragon-roll",
+      "placedAtLabel": "May 10, 2024 · 5:50 PM",
+      "total": 85,
+      "status": "Delivered"
+    },
+    "benefits": [
+      {
+        "id": "premium-ingredients",
+        "title": "Premium Ingredients",
+        "copy": "Sourced Daily",
+        "icon": "flower"
+      },
+      {
+        "id": "expert-craftsmanship",
+        "title": "Expert Craftsmanship",
+        "copy": "By Master Chefs",
+        "icon": "chef"
+      },
+      {
+        "id": "authentic-experience",
+        "title": "Authentic Experience",
+        "copy": "Traditional. Refined.",
+        "icon": "profile"
+      },
+      {
+        "id": "exclusive-reservations",
+        "title": "Exclusive Reservations",
+        "copy": "Priority for Members",
+        "icon": "bag"
       }
     ]
   }

@@ -6,6 +6,7 @@ Date: 2026-05-30
 
 Primary source: `/Users/nick007/Downloads/sushi-bliss-final-app-assets.zip`
 Icon refresh source: `/Users/nick007/Downloads/nextjs-icon-assets/public/assets.zip`
+Screenshot reference source: `/Users/nick007/Downloads/sushi-bliss-final-tidy-screenshots 2.zip`
 
 Copied into:
 
@@ -27,13 +28,14 @@ public/assets/
 
 ## Verified Counts
 
-- `public/assets/data/data.json`: 38 menu items, 38 pairings, 4 chefs, 16 screenshot references, 4 master-chef omakase course sets.
-- `public/assets/data/asset-manifest.json`: 198 audited package assets.
-- Total copied files in `public/assets`: 201 including data files.
+- `public/assets/data/data.json`: 38 menu items, 38 pairings, 4 chefs, 140 final tidy screenshot references, 4 master-chef omakase course sets.
+- `public/assets/data/asset-manifest.json`: 322 audited package assets.
+- Total copied files in `public/assets`: 325 including data files.
 - Transparent icon assets now live directly in `public/assets/icons`; the old generated `icons-clean` folder was removed.
 - Map and live-tracking imagery from the refresh package live in `public/assets/maps`.
 - Brand assets are PNG-only; stale duplicate WebP logo variants were removed.
 - Appetizer, specialty, and dessert photography now lives under `public/assets/omakase` and is reserved for the Master Chefs Omakase Experience.
+- Screenshot design references now come only from the final tidy mobile, tablet, and desktop package.
 - Duplicate menu IDs: none.
 - Missing pairing references: none.
 - Missing chef notes: none.
