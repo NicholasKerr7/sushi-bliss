@@ -12,7 +12,6 @@ interface AppShellProps {
   iconUrls: {
     bell?: string;
     cart?: string;
-    menu?: string;
   };
   navItems: NavItem[];
   mobileNavItems: NavItem[];

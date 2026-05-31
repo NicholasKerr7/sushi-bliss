@@ -37,6 +37,14 @@ function assetUrl(asset: AssetRef | undefined, fallback = featuredAssets.heroSus
   return asset?.publicUrl ?? fallback;
 }
 
+/** Maps profile shortcut labels to the app section they should open. */
+function getProfileShortcutTarget(label: string): AppView {
+  if (label === "Rewards") return "loyalty";
+  if (label === "Support") return "contact";
+  if (label === "Reservations") return "reservations";
+  return "profile";
+}
+
 /** Renders the profile dashboard shown in the desktop and mobile references. */
 export function ProfileView({
   profile,
@@ -109,7 +117,7 @@ export function ProfileView({
                 <button
                   key={perk.label}
                   type="button"
-                  onClick={() => onNavigate(perk.label === "Rewards" ? "loyalty" : "profile")}
+                  onClick={() => onNavigate(getProfileShortcutTarget(perk.label))}
                   className="rounded-xl border border-[var(--sb-border)] bg-white/[0.03] px-2 py-3 transition hover:border-[var(--sb-gold)]"
                 >
                   {perk.icon ? <AssetIcon src={perk.icon} size={24} className="mx-auto mb-2" /> : null}

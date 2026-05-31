@@ -11,5 +11,5 @@ export function PageContainer({ children, className = "", variant = "default" }:
   const spacingClass =
     variant === "home" ? "px-0 pb-3 pt-0 sm:px-4 lg:px-5 lg:pb-14 lg:pt-28" : "px-4 pb-32 pt-20 sm:px-6 lg:px-5 lg:pb-14 lg:pt-28";
 
-  return <main className={`mx-auto min-h-screen w-full max-w-[1680px] ${spacingClass} ${className}`}>{children}</main>;
+  return <main className={`min-h-screen w-full max-w-none ${spacingClass} ${className}`}>{children}</main>;
 }

@@ -14,7 +14,8 @@ export function BottomNav({ items, activeView, floating = true, onNavigate }: Bo
     <nav className={`${floating ? "fixed bottom-0 left-0 right-0" : "relative"} z-50 px-4 pb-3 lg:hidden`}>
       <div className="mobile-safe-area mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[28px] border border-[var(--sb-border)] bg-black/82 px-2 pt-2 shadow-[0_0_40px_rgba(0,0,0,0.72)] backdrop-blur-2xl">
         {items.map(({ key, label, icon: Icon, assetIcon }) => {
-          const active = activeView === key || (key === "orders" && activeView === "orderOnline");
+          const profileSubView = activeView === "loyalty" || activeView === "contact" || activeView === "about" || activeView === "pairings";
+          const active = activeView === key || (key === "orders" && activeView === "orderOnline") || (key === "profile" && profileSubView);
           return (
             <button
               key={key}
