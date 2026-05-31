@@ -2,6 +2,7 @@ import rawData from "../../public/assets/data/data.json";
 import rawAssetManifest from "../../public/assets/data/asset-manifest.json";
 import type {
   AssetRef,
+  AppContent,
   BrandData,
   Chef,
   FeaturedAssets,
@@ -61,6 +62,7 @@ interface RawChef {
 
 interface RawSushiData {
   brand: BrandData;
+  appContent: AppContent;
   featuredAssets: FeaturedAssets;
   masterChefsOmakaseExperience: MasterChefsOmakaseExperience;
   menu: RawMenuItem[];
@@ -239,6 +241,7 @@ const menu = data.menu.map(normalizeMenuItem);
 /** Normalized Sushi Bliss data loaded once for client selectors. */
 export const sushiData: SushiData = {
   brand: data.brand,
+  appContent: data.appContent,
   featuredAssets: data.featuredAssets,
   masterChefsOmakaseExperience: data.masterChefsOmakaseExperience,
   menu,

@@ -47,6 +47,7 @@ import {
 } from "../data/menu";
 import {
   getAssetById,
+  getAppContent,
   getAssetsByFolder,
   getBrand,
   getChefs,
@@ -88,6 +89,7 @@ interface Notice {
 }
 
 const brand = getBrand();
+const appContent = getAppContent();
 const featuredAssets = getFeaturedAssets();
 const menuItems = getMenuItems();
 const chefs = getChefs();
@@ -174,7 +176,7 @@ export default function SushiApp() {
   const [tipPercent, setTipPercent] = useState(15);
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
-  const [loyaltyPoints, setLoyaltyPoints] = useState(3250);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(appContent.member.points);
   const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [reservationForm, setReservationForm] = useState<ReservationFormState>(() => createDefaultReservationForm());
@@ -183,13 +185,13 @@ export default function SushiApp() {
   const [storageReady, setStorageReady] = useState(false);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [profile, setProfile] = useState<GuestProfile>({
-    name: "Hiroshi Tanaka",
-    email: "hiroshi.tanaka@email.com",
-    phone: "+1 555 0188",
-    address: "123 Kai Street, Tokyo",
-    deliveryAddress: "123 Kai Street, Tokyo",
-    dietary: "No shellfish, gluten sensitive",
-    marketingOptIn: true,
+    name: appContent.member.name,
+    email: appContent.member.email,
+    phone: appContent.member.phone,
+    address: appContent.member.address,
+    deliveryAddress: appContent.member.deliveryAddress,
+    dietary: appContent.member.dietary,
+    marketingOptIn: appContent.member.marketingOptIn,
   });
 
   const groupedCart = useMemo(() => groupCartItems(cart), [cart]);
@@ -1381,7 +1383,7 @@ function PastOrderRow({ order, onReorder }: { order: OrderHistoryEntry; onReorde
 
 /** Renders the member loyalty dashboard and reward redemption cards. */
 function LoyaltyView({ loyaltyPoints, rewards, onRedeem }: { loyaltyPoints: number; rewards: Reward[]; onRedeem: (reward: Reward) => void }) {
-  const progressValue = Math.min(loyaltyPoints, 4000);
+  const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
   const featuredRewards = rewards.slice(0, 4);
 
   return (
@@ -1485,16 +1487,16 @@ function MemberStatusCard({ loyaltyPoints, progressValue }: { loyaltyPoints: num
         {iconAssets.flower ? <AssetIcon src={iconAssets.flower} size={46} /> : null}
         <div>
           <p className="editorial-title text-lg text-white">Bliss Member</p>
-          <p className="text-sm uppercase tracking-[0.16em] text-[var(--sb-gold)]">Gold Tier</p>
+          <p className="text-sm uppercase tracking-[0.16em] text-[var(--sb-gold)]">{appContent.member.tier} Tier</p>
         </div>
       </div>
       <p className="mt-6 text-xs uppercase tracking-[0.18em] text-[var(--sb-muted)]">Points Balance</p>
       <p className="mt-2 text-4xl text-white">{loyaltyPoints.toLocaleString()} <span className="text-lg uppercase text-[var(--sb-muted)]">pts</span></p>
       <div className="mt-4 flex items-center justify-between text-xs text-[var(--sb-muted)]">
-        <span>750 pts to reach Platinum</span>
-        <span>{progressValue.toLocaleString()} / 4,000</span>
+        <span>{appContent.member.pointsToNextTier.toLocaleString()} pts to reach {appContent.member.nextTier}</span>
+        <span>{progressValue.toLocaleString()} / {appContent.member.maxTierPoints.toLocaleString()}</span>
       </div>
-      <progress className="mt-2 h-2 w-full" value={progressValue} max={4000} />
+      <progress className="mt-2 h-2 w-full" value={progressValue} max={appContent.member.maxTierPoints} />
       <Button variant="outline" className="mt-5 h-11 w-full rounded-xl border-[var(--sb-border)] bg-black/30 uppercase tracking-[0.14em] text-[var(--sb-gold)]">
         View Benefits
       </Button>
@@ -1513,7 +1515,7 @@ function MemberPassCard() {
           {iconAssets.qr ? <AssetIcon src={iconAssets.qr} size={104} /> : <span className="font-mono text-3xl font-bold text-black">SB</span>}
         </div>
         <div className="text-sm text-[var(--sb-muted)] xl:mt-4">
-          <p className="font-semibold text-white">Hiroshi Tanaka</p>
+          <p className="font-semibold text-white">{appContent.member.name}</p>
           <p className="mt-3 uppercase tracking-[0.16em] text-[var(--sb-gold)]">Member ID</p>
           <p>SB12567890</p>
           <p className="mt-3 uppercase tracking-[0.16em] text-[var(--sb-gold)]">Joined</p>
@@ -1608,6 +1610,7 @@ function AboutView({ chefs, onSelectItem }: { chefs: Chef[]; onSelectItem: (item
 /** Renders contact details and validates private event inquiries. */
 function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) => void; showNotice: (message: string, tone?: Notice["tone"]) => void }) {
   const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
+  const { hours, location } = appContent;
   const socialLinks = [
     { label: "Instagram", icon: iconAssets.instagram },
     { label: "Facebook", icon: iconAssets.facebook },
@@ -1625,9 +1628,9 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
       <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <ContactInfoCard icon={iconAssets.mapPin} title="Location" lines={["Tokyo, Japan", "123 Kai Street", "Tokyo, 100-0001"]} action="View on map" />
-            <ContactInfoCard icon={iconAssets.phone} title="Contact Info" lines={["+81 3-1234-5678", "Call us anytime", "hello@sushibliss.jp"]} />
-            <ContactInfoCard icon={iconAssets.clock} title="Hours" lines={["Mon - Sun", "11:30 AM - 11:00 PM", "Last Order: 10:30 PM"]} action="Open now" />
+            <ContactInfoCard icon={iconAssets.mapPin} title="Location" lines={[`${location.city}, ${location.country}`, location.street, location.postalLine]} action="View on map" />
+            <ContactInfoCard icon={iconAssets.phone} title="Contact Info" lines={[location.phone, "Call us anytime", location.email]} />
+            <ContactInfoCard icon={iconAssets.clock} title="Hours" lines={[hours.days, hours.service, hours.lastOrder]} action="Open now" />
             <ContactInfoCard icon={iconAssets.flower} title="Follow Us" lines={socialLinks.map((link) => link.label)} socialLinks={socialLinks} />
           </div>
           <section className="grid gap-4 sm:grid-cols-2">
@@ -2187,18 +2190,11 @@ function SegmentedControl({ options, value, onChange }: { options: string[]; val
 
 /** Displays the shared trust badges that sit at the bottom of desktop references. */
 function DesktopBenefitsBar() {
-  const benefits = [
-    { icon: iconAssets.flower, title: "Premium Ingredients", copy: "Sourced Daily" },
-    { icon: iconAssets.about, title: "Expert Craftsmanship", copy: "By Master Chefs" },
-    { icon: iconAssets.profile, title: "Authentic Experience", copy: "Traditional. Refined." },
-    { icon: iconAssets.orders, title: "Exclusive Reservations", copy: "Priority for Members" },
-  ];
-
   return (
     <div className="luxury-panel hidden grid-cols-4 gap-0 p-0 lg:grid">
-      {benefits.map((benefit) => (
+      {appContent.benefits.map((benefit) => (
         <div key={benefit.title} className="flex items-center justify-center gap-4 border-r border-[var(--sb-border)] px-6 py-4 last:border-r-0">
-          {benefit.icon ? <AssetIcon src={benefit.icon} size={30} /> : null}
+          {iconAssets[benefit.icon as keyof typeof iconAssets] ? <AssetIcon src={iconAssets[benefit.icon as keyof typeof iconAssets] as string} size={30} /> : null}
           <span>
             <span className="block text-sm uppercase tracking-[0.16em] text-white/82">{benefit.title}</span>
             <span className="block text-sm text-white/58">{benefit.copy}</span>

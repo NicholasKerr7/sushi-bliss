@@ -5,7 +5,7 @@ import type { AppView } from "../layout/types";
 import { Button } from "../ui/button";
 import type { FilterCategory, SushiMenuItem } from "../../data/menu";
 import { getSushiIconAssets } from "../../data/icon-assets";
-import { getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
+import { getAppContent, getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
 import { formatCurrency } from "../../lib/format-utils";
 import type { Reservation } from "../../lib/reservation-utils";
 
@@ -25,6 +25,7 @@ interface HomeViewProps {
 const brand = getBrand();
 const featuredAssets = getFeaturedAssets();
 const reservationExperiences = getReservationExperiences();
+const appContent = getAppContent();
 const icons = getSushiIconAssets();
 
 const categoryTabs: Array<{ category: FilterCategory; icon?: string; label: string }> = [
@@ -62,7 +63,7 @@ export function HomeView({
   const specialItem = getHomeItem("truffle-wagyu-nigiri", featuredItems, 4);
   const memberItem = getHomeItem("ikura-gunkan", featuredItems, 5);
   const upcoming = reservations[0];
-  const progressValue = Math.min(loyaltyPoints, 5000);
+  const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
 
   return (
     <>
@@ -132,7 +133,6 @@ function MobileHomeView({
       </div>
 
       <div className="relative z-10 mx-auto max-w-[430px]">
-        <MobileStatusBar />
         <MobileHomeHeader />
         <MobileSearchBar
           query={query}
@@ -147,19 +147,6 @@ function MobileHomeView({
         <MemberCard item={memberItem} loyaltyPoints={loyaltyPoints} progressValue={progressValue} onNavigate={onNavigate} />
       </div>
     </section>
-  );
-}
-
-/** Mimics the native status row visible in the mobile screenshot frame. */
-function MobileStatusBar() {
-  return (
-    <div className="flex h-8 items-center justify-between px-8 text-[15px] font-semibold text-white">
-      <span>9:41</span>
-      <span className="flex items-center gap-1" aria-hidden="true">
-        <span className="h-3 w-4 rounded-[3px] border border-white/80" />
-        <span className="h-3 w-4 rounded-[3px] border border-white/80 bg-white/80" />
-      </span>
-    </div>
   );
 }
 
@@ -410,9 +397,9 @@ function MemberCard({ item, loyaltyPoints, progressValue, onNavigate }: MemberCa
             <span className="rounded-full bg-[var(--sb-gold)] px-2 py-0.5 text-[10px] font-bold uppercase text-black">Gold</span>
           </div>
           <p className="mt-2 text-[13px] text-white/78">
-            {loyaltyPoints.toLocaleString()} pts <span className="text-[var(--sb-gold)]">•</span> 750 pts to Platinum
+            {loyaltyPoints.toLocaleString()} pts <span className="text-[var(--sb-gold)]">•</span> {appContent.member.pointsToNextTier.toLocaleString()} pts to {appContent.member.nextTier}
           </p>
-          <progress className="mt-3 h-2 w-full" value={progressValue} max={5000} />
+          <progress className="mt-3 h-2 w-full" value={progressValue} max={appContent.member.maxTierPoints} />
           <button type="button" onClick={() => onNavigate("loyalty")} className="mt-3 flex items-center gap-1 text-[13px] text-[var(--sb-gold)]">
             View Benefits
             <ChevronRight className="h-4 w-4" />
@@ -507,13 +494,15 @@ interface DesktopInfoCardProps {
 
 /** Renders the location and hours card on the desktop hero. */
 function DesktopInfoCard({ onNavigate }: DesktopInfoCardProps) {
+  const { hours, location } = appContent;
+
   return (
     <aside className="self-center rounded-[14px] border border-[var(--sb-border)] bg-black/54 p-6 backdrop-blur-xl">
       <div className="flex gap-3">
         {icons.location ? <AssetIcon src={icons.location} size={25} /> : null}
         <div>
-          <p className="text-sm uppercase tracking-[0.16em] text-white">Tokyo · Japan</p>
-          <p className="mt-2 text-sm leading-6 text-white/70">123 Kai Street,<br />Tokyo, 100-0001<br />+81 3-1234-5678</p>
+          <p className="text-sm uppercase tracking-[0.16em] text-white">{location.city} · {location.country}</p>
+          <p className="mt-2 text-sm leading-6 text-white/70">{location.street},<br />{location.postalLine}<br />{location.phone}</p>
         </div>
       </div>
       <div className="my-6 h-px bg-[var(--sb-border)]" />
@@ -521,7 +510,7 @@ function DesktopInfoCard({ onNavigate }: DesktopInfoCardProps) {
         {icons.clock ? <AssetIcon src={icons.clock} size={24} /> : null}
         <div>
           <p className="text-sm uppercase tracking-[0.16em] text-white">Hours</p>
-          <p className="mt-2 text-sm leading-6 text-white/70">Mon - Sun<br />11:30 AM - 11:00 PM</p>
+          <p className="mt-2 text-sm leading-6 text-white/70">{hours.days}<br />{hours.service}</p>
         </div>
       </div>
       <button type="button" onClick={() => onNavigate("contact")} className="mt-7 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-[var(--sb-border)] text-sm uppercase tracking-[0.14em] text-[var(--sb-gold)]">
@@ -540,6 +529,8 @@ interface DesktopReservationCardProps {
 
 /** Renders the desktop reservation module with a screenshot-style date block. */
 function DesktopReservationCard({ experienceTitle, upcoming, onNavigate }: DesktopReservationCardProps) {
+  const { location, reservation } = appContent;
+
   return (
     <section className="rounded-[14px] border border-[var(--sb-border)] bg-black/42 p-6">
       <h2 className="flex items-center gap-3 text-lg uppercase tracking-[0.12em] text-white">
@@ -548,22 +539,22 @@ function DesktopReservationCard({ experienceTitle, upcoming, onNavigate }: Deskt
       </h2>
       <div className="mt-5 grid grid-cols-[82px_1fr_170px] overflow-hidden rounded-[10px] border border-[var(--sb-border)] bg-black/42">
         <div className="grid place-items-center border-r border-[var(--sb-border)] py-3 text-center">
-          <span className="text-xs uppercase text-white/72">Sat</span>
-          <span className="editorial-title text-3xl text-white">24</span>
-          <span className="text-xs uppercase text-white/72">May</span>
+          <span className="text-xs uppercase text-white/72">{reservation.weekday}</span>
+          <span className="editorial-title text-3xl text-white">{reservation.day}</span>
+          <span className="text-xs uppercase text-white/72">{reservation.month}</span>
         </div>
         <div className="px-5 py-4">
-          <p className="text-xl text-white">{upcoming ? new Date(upcoming.datetime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : "7:00 PM"}</p>
-          <p className="mt-2 text-sm text-white/72">{experienceTitle}<br />123 Kai Street, Tokyo</p>
+          <p className="text-xl text-white">{upcoming ? new Date(upcoming.datetime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }) : reservation.time}</p>
+          <p className="mt-2 text-sm text-white/72">{experienceTitle}<br />{location.street}, {location.city}</p>
         </div>
-        <button type="button" className="border-l border-[var(--sb-border)] px-4 text-sm text-[var(--sb-gold)]">2 Guests</button>
+        <button type="button" className="border-l border-[var(--sb-border)] px-4 text-sm text-[var(--sb-gold)]">{reservation.guests} Guests</button>
       </div>
       <Button className="red-glow-button mt-3 h-11 w-full rounded-[9px] uppercase tracking-[0.14em]" onClick={() => onNavigate("reservations")}>
         Find a Table
       </Button>
       <div className="mt-4 flex items-center justify-between text-sm text-white/62">
-        <span>4 Guests</span>
-        <span>Table A7</span>
+        <span>{reservation.alternateGuests} Guests</span>
+        <span>{reservation.table}</span>
         <button type="button" onClick={() => onNavigate("reservations")} className="rounded-full border border-[var(--sb-border)] px-4 py-1 text-[var(--sb-red-bright)]">Modify</button>
       </div>
     </section>
@@ -608,6 +599,8 @@ interface DesktopRecentOrderProps {
 
 /** Renders the desktop recent-order card with reorder entry point. */
 function DesktopRecentOrder({ item, onNavigate }: DesktopRecentOrderProps) {
+  const { recentOrder } = appContent;
+
   return (
     <section className="rounded-[14px] border border-[var(--sb-border)] bg-black/42 p-6">
       <div className="flex items-center justify-between">
@@ -622,9 +615,9 @@ function DesktopRecentOrder({ item, onNavigate }: DesktopRecentOrderProps) {
           <Image src={item.image.publicUrl} alt="" fill sizes="128px" className="object-cover" />
         </div>
         <span>
-          <span className="block text-lg text-white">Sushi Bliss Deluxe</span>
-          <span className="mt-1 block text-sm text-white/58">May 10, 2024 · 5:50 PM</span>
-          <span className="mt-1 block text-lg text-[var(--sb-gold)]">$85.00 <span className="ml-4 text-sm text-emerald-400">Delivered</span></span>
+          <span className="block text-lg text-white">{recentOrder.title}</span>
+          <span className="mt-1 block text-sm text-white/58">{recentOrder.placedAtLabel}</span>
+          <span className="mt-1 block text-lg text-[var(--sb-gold)]">{formatCurrency(recentOrder.total)} <span className="ml-4 text-sm text-emerald-400">{recentOrder.status}</span></span>
         </span>
         <ChevronRight className="h-5 w-5 text-[var(--sb-gold)]" />
       </button>
@@ -634,18 +627,11 @@ function DesktopRecentOrder({ item, onNavigate }: DesktopRecentOrderProps) {
 
 /** Renders the four desktop trust badges along the bottom edge. */
 function DesktopBenefitsStrip() {
-  const benefits = [
-    { icon: icons.flower, title: "Premium Ingredients", copy: "Sourced Daily" },
-    { icon: icons.chef, title: "Expert Craftsmanship", copy: "By Master Chefs" },
-    { icon: icons.profile, title: "Authentic Experience", copy: "Traditional. Refined." },
-    { icon: icons.bag, title: "Exclusive Reservations", copy: "Priority for Members" },
-  ];
-
   return (
     <div className="mx-3 mb-3 grid grid-cols-4 rounded-[14px] border border-[var(--sb-border)] bg-white/[0.04]">
-      {benefits.map((benefit) => (
+      {appContent.benefits.map((benefit) => (
         <div key={benefit.title} className="flex items-center justify-center gap-4 border-r border-[var(--sb-border)] px-6 py-4 last:border-r-0">
-          {benefit.icon ? <AssetIcon src={benefit.icon} size={32} /> : null}
+          {icons[benefit.icon as keyof typeof icons] ? <AssetIcon src={icons[benefit.icon as keyof typeof icons] as string} size={32} /> : null}
           <span>
             <span className="block text-sm uppercase tracking-[0.16em] text-white/82">{benefit.title}</span>
             <span className="block text-sm text-white/58">{benefit.copy}</span>

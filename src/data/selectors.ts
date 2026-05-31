@@ -19,6 +19,11 @@ export function getBrand() {
   return data.brand;
 }
 
+/** Returns shared app copy used across dashboard, profile, contact, and reservation cards. */
+export function getAppContent() {
+  return data.appContent;
+}
+
 /** Returns curated hero, ambience, sake, chef, and specialty asset groups. */
 export function getFeaturedAssets() {
   return data.featuredAssets;

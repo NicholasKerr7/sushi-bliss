@@ -45,7 +45,7 @@ try {
     import(pathToFileURL(path.join(outdir, relativePath)).href);
 
   const { sushiMenuData } = await importFromOutdir("data/menu.js");
-  const { getMasterChefsOmakaseExperience, getReservationExperiences } = await importFromOutdir("data/selectors.js");
+  const { getAppContent, getMasterChefsOmakaseExperience, getReservationExperiences } = await importFromOutdir("data/selectors.js");
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
   const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
@@ -174,6 +174,14 @@ try {
 
     assert.strictEqual(experience.courses.length, 4);
     assert.ok(coursePaths.every((publicUrl) => publicUrl.startsWith("/assets/omakase/")));
+  });
+
+  test("getAppContent exposes one shared content dataset", () => {
+    const content = getAppContent();
+
+    assert.strictEqual(content.member.name, "Hiroshi Tanaka");
+    assert.strictEqual(content.location.street, "123 Kai Street");
+    assert.strictEqual(content.benefits.length, 4);
   });
 
   // omakase-utils tests

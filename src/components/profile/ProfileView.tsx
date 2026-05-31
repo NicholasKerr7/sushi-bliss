@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import type { SushiMenuItem } from "../../data/menu";
 import { getSushiIconAssets } from "../../data/icon-assets";
-import { getAssetsByFolder, getFeaturedAssets, getItemById, getMenuItems } from "../../data/selectors";
+import { getAppContent, getAssetsByFolder, getFeaturedAssets, getItemById, getMenuItems } from "../../data/selectors";
 import type { AssetRef } from "../../data/types";
 import { formatCurrency } from "../../lib/format-utils";
 import type { OrderHistoryEntry } from "../../lib/order-utils";
@@ -26,6 +26,7 @@ interface ProfileViewProps {
 }
 
 const ambienceAssets = getAssetsByFolder("ambience");
+const appContent = getAppContent();
 const featuredAssets = getFeaturedAssets();
 const menuItems = getMenuItems();
 
@@ -49,7 +50,7 @@ export function ProfileView({
   onSelectItem,
 }: ProfileViewProps) {
   const nextReservation = reservations[0];
-  const progressValue = Math.min(loyaltyPoints, 5000);
+  const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
   const preferredItem = favorites[0] ?? getItemById("otoro-nigiri") ?? menuItems[0];
 
   return (
@@ -94,10 +95,10 @@ export function ProfileView({
             <h2 className="editorial-title mt-3 text-4xl text-white">Premium</h2>
             <p className="mt-2 text-sm text-[var(--sb-muted)]">You&apos;re enjoying exclusive benefits and elevated experiences.</p>
             <div className="mt-5 flex items-center justify-between text-sm text-white/72">
-              <span>{loyaltyPoints.toLocaleString()} / 5,000 pts to Next Tier</span>
-              <span>{Math.max(0, 5000 - loyaltyPoints).toLocaleString()} left</span>
+              <span>{loyaltyPoints.toLocaleString()} / {appContent.member.maxTierPoints.toLocaleString()} pts to Next Tier</span>
+              <span>{Math.max(0, appContent.member.maxTierPoints - loyaltyPoints).toLocaleString()} left</span>
             </div>
-            <progress className="mt-3 h-2 w-full" value={progressValue} max={5000} />
+            <progress className="mt-3 h-2 w-full" value={progressValue} max={appContent.member.maxTierPoints} />
             <div className="mt-5 grid grid-cols-4 gap-3 text-center text-xs text-white/68">
               {[
                 { label: "Reservations", icon: iconAssets.reservations },
@@ -145,7 +146,7 @@ export function ProfileView({
           {orderHistory.map((order) => (
             <ProfileListRow key={order.id} icon={iconAssets.orders} title={`Order ${order.confirmationCode}`} copy={`${new Date(order.placedAt).toLocaleDateString()} · ${formatCurrency(order.total)}`} />
           ))}
-          {orderHistory.length === 0 ? <ProfileListRow icon={iconAssets.reservations} title="Reservation Confirmed" copy="May 18, 2024 · 7:00 PM · Table A7" /> : null}
+          {orderHistory.length === 0 ? <ProfileListRow icon={iconAssets.reservations} title="Reservation Confirmed" copy={`${appContent.reservation.month} ${appContent.reservation.day} · ${appContent.reservation.time} · ${appContent.reservation.table}`} /> : null}
           <ProfileListRow icon={iconAssets.profile} title="Profile Updated" copy="Privacy · Notifications · Security" />
         </ProfileDashboardCard>
 
@@ -160,9 +161,9 @@ export function ProfileView({
                 <p className="editorial-title mt-1 text-5xl text-white">24 <span className="text-lg">May</span></p>
                 <p className="mt-3 text-2xl text-white">{nextReservation ? formatReservationDateTime(nextReservation.datetime) : "7:00 PM"}</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">
-                  {nextReservation ? `${nextReservation.seating} · ${nextReservation.guests} Guests` : "Table A7 · 2 Guests"}
+                  {nextReservation ? `${nextReservation.seating} · ${nextReservation.guests} Guests` : `${appContent.reservation.table} · ${appContent.reservation.guests} Guests`}
                   <br />
-                  Sushi Bliss Downtown, 123 Kai Street, Tokyo
+                  {appContent.location.label}, {appContent.location.street}, {appContent.location.city}
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">

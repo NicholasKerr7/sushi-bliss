@@ -150,8 +150,75 @@ export interface ReservationExperience {
   premium?: boolean;
 }
 
+export interface AppMemberContent {
+  name: string;
+  email: string;
+  phone: string;
+  tier: string;
+  nextTier: string;
+  points: number;
+  pointsToNextTier: number;
+  maxTierPoints: number;
+  avatarChefId: string;
+  address: string;
+  deliveryAddress: string;
+  dietary: string;
+  marketingOptIn: boolean;
+}
+
+export interface AppLocationContent {
+  label: string;
+  city: string;
+  country: string;
+  street: string;
+  postalLine: string;
+  phone: string;
+  email: string;
+}
+
+export interface AppHoursContent {
+  days: string;
+  service: string;
+  lastOrder: string;
+}
+
+export interface AppReservationContent {
+  weekday: string;
+  day: string;
+  month: string;
+  time: string;
+  guests: number;
+  alternateGuests: number;
+  table: string;
+}
+
+export interface AppRecentOrderContent {
+  title: string;
+  itemId: string;
+  placedAtLabel: string;
+  total: number;
+  status: string;
+}
+
+export interface AppBenefitContent {
+  id: string;
+  title: string;
+  copy: string;
+  icon: string;
+}
+
+export interface AppContent {
+  member: AppMemberContent;
+  location: AppLocationContent;
+  hours: AppHoursContent;
+  reservation: AppReservationContent;
+  recentOrder: AppRecentOrderContent;
+  benefits: AppBenefitContent[];
+}
+
 export interface SushiData {
   brand: BrandData;
+  appContent: AppContent;
   featuredAssets: FeaturedAssets;
   masterChefsOmakaseExperience: MasterChefsOmakaseExperience;
   menu: MenuItem[];

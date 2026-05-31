@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getMasterChefsOmakaseExperience, getReservationExperiences } from "../data/selectors";
+import { getAppContent, getMasterChefsOmakaseExperience, getReservationExperiences } from "../data/selectors";
 
 describe("data selectors", () => {
   it("maps reservation ambience roles to the corrected dining room and sushi bar images", () => {
@@ -21,5 +21,13 @@ describe("data selectors", () => {
 
     expect(experience.courses).toHaveLength(4);
     expect(coursePaths.every((publicUrl) => publicUrl.startsWith("/assets/omakase/"))).toBe(true);
+  });
+
+  it("exposes one shared app content dataset for repeated dashboard values", () => {
+    const content = getAppContent();
+
+    expect(content.member.name).toBe("Hiroshi Tanaka");
+    expect(content.location.street).toBe("123 Kai Street");
+    expect(content.benefits).toHaveLength(4);
   });
 });
