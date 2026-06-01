@@ -42,6 +42,7 @@ function getProfileShortcutTarget(label: string): AppView {
   if (label === "Rewards") return "loyalty";
   if (label === "Support") return "contact";
   if (label === "Reservations") return "reservations";
+  if (label === "Settings") return "accountSettings";
   return "profile";
 }
 
@@ -71,7 +72,7 @@ export function ProfileView({
             <div className="relative h-44 w-44 overflow-hidden rounded-full border border-[var(--sb-gold)] shadow-[0_0_42px_rgba(202,164,93,0.25)]">
               <Image src={profileImage} alt={`${profile.name} profile`} fill sizes="176px" className="object-cover" />
             </div>
-            <Button variant="outline" className="mt-4 h-10 rounded-full border-[var(--sb-border)] bg-black/40 text-[var(--sb-gold)]" onClick={() => onNavigate("profile")}>
+            <Button variant="outline" className="mt-4 h-10 rounded-full border-[var(--sb-border)] bg-black/40 text-[var(--sb-gold)]" onClick={() => onNavigate("accountSettings")}>
               Account Settings
             </Button>
           </div>
@@ -92,7 +93,7 @@ export function ProfileView({
               <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("reservations")}>
                 Reservation History
               </Button>
-              <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("loyalty")}>
+              <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("accountSettings")}>
                 Account Settings
               </Button>
             </div>
@@ -107,12 +108,13 @@ export function ProfileView({
               <span>{Math.max(0, appContent.member.maxTierPoints - loyaltyPoints).toLocaleString()} left</span>
             </div>
             <progress className="mt-3 h-2 w-full" value={progressValue} max={appContent.member.maxTierPoints} />
-            <div className="mt-5 grid grid-cols-4 gap-3 text-center text-xs text-white/68">
+            <div className="mt-5 grid grid-cols-2 gap-3 text-center text-xs text-white/68 sm:grid-cols-5">
               {[
                 { label: "Reservations", icon: iconAssets.reservations },
                 { label: "Upgrades", icon: iconAssets.orders },
                 { label: "Rewards", icon: iconAssets.loyalty },
                 { label: "Support", icon: iconAssets.headset },
+                { label: "Settings", icon: iconAssets.settings },
               ].map((perk) => (
                 <button
                   key={perk.label}
@@ -158,7 +160,7 @@ export function ProfileView({
           <ProfileListRow icon={iconAssets.profile} title="Profile Updated" copy="Privacy · Notifications · Security" />
         </ProfileDashboardCard>
 
-        <ProfileDashboardCard title="Upcoming Reservation" action="View Details">
+        <ProfileDashboardCard title="Upcoming Reservation" action="View Details" onAction={() => onNavigate("reservationDetails")}>
           <div className="grid gap-4 md:grid-cols-[260px_1fr]">
             <button type="button" onClick={() => preferredItem && onSelectItem(preferredItem)} className="relative min-h-40 overflow-hidden rounded-2xl border border-[var(--sb-border)]">
               {preferredItem ? <Image src={preferredItem.image.publicUrl} alt="" fill sizes="260px" className="object-cover" /> : null}
@@ -175,7 +177,7 @@ export function ProfileView({
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
-                <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("reservations")}>
+                <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("reservationDetails")}>
                   View Details
                 </Button>
                 <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("reservations")}>
@@ -205,12 +207,12 @@ function ProfileField({ label, value, onChange }: { label: string; value: string
 }
 
 /** Provides a reusable glass dashboard card for the profile screen. */
-function ProfileDashboardCard({ title, action, children }: { title: string; action: string; children: ReactNode }) {
+function ProfileDashboardCard({ title, action, children, onAction }: { title: string; action: string; children: ReactNode; onAction?: () => void }) {
   return (
     <section className="luxury-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="editorial-title text-lg text-white">{title}</h2>
-        <button type="button" className="text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button>
+        <button type="button" onClick={onAction} className="text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button>
       </div>
       <div className="grid gap-3">{children}</div>
     </section>

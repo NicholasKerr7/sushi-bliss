@@ -31,12 +31,14 @@ import {
   X,
 } from "lucide-react";
 import { HomeView } from "./home/HomeView";
+import { AccountSettingsView, NotificationsView, PersonalInformationView, PrivacySecurityView } from "./account/AccountScreens";
 import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
 import { ProfileView } from "./profile/ProfileView";
 import type { GuestProfile } from "./profile/types";
+import { ReservationDetailsView } from "./reservations/ReservationDetailsView";
 import type { AppView, NavItem } from "./layout/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -219,8 +221,8 @@ function createDemoReservations(): Reservation[] {
       name: appContent.member.name,
       phone: appContent.member.phone,
       seating: "Counter",
-      occasion: "Dinner",
-      notes: "Window-adjacent counter seating preferred.",
+      occasion: "Birthday",
+      notes: "Please prepare a small surprise if possible. Thank you!",
       confirmationCode: "SB-RSV-0524",
       createdAt: new Date("2024-05-20T12:00:00").getTime(),
     },
@@ -571,8 +573,19 @@ export default function SushiApp() {
                 reservations={reservations}
                 profile={profile}
                 onFormChange={updateReservationForm}
+                onNavigate={navigate}
                 onSave={saveReservation}
                 onProfileChange={setProfile}
+              />
+            ) : null}
+            {activeView === "reservationDetails" ? (
+              <ReservationDetailsView
+                profile={profile}
+                profileImage={profileImage}
+                reservations={reservations}
+                loyaltyPoints={loyaltyPoints}
+                onNavigate={navigate}
+                showNotice={showNotice}
               />
             ) : null}
             {activeView === "orders" ? (
@@ -599,6 +612,28 @@ export default function SushiApp() {
                 onSelectItem={setSelectedItem}
               />
             ) : null}
+            {activeView === "personalInformation" ? (
+              <PersonalInformationView
+                profile={profile}
+                profileImage={profileImage}
+                loyaltyPoints={loyaltyPoints}
+                onProfileChange={setProfile}
+                onNavigate={navigate}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "accountSettings" ? (
+              <AccountSettingsView
+                profile={profile}
+                profileImage={profileImage}
+                loyaltyPoints={loyaltyPoints}
+                onProfileChange={setProfile}
+                onNavigate={navigate}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "privacySecurity" ? <PrivacySecurityView onNavigate={navigate} /> : null}
+            {activeView === "notifications" ? <NotificationsView onNavigate={navigate} /> : null}
             {activeView === "loyalty" ? (
               <LoyaltyView
                 loyaltyPoints={loyaltyPoints}
@@ -1623,12 +1658,13 @@ interface ReservationsViewProps {
   reservations: Reservation[];
   profile: GuestProfile;
   onFormChange: (patch: Partial<ReservationFormState>) => void;
+  onNavigate: (view: AppView) => void;
   onSave: () => void;
   onProfileChange: (profile: GuestProfile | ((profile: GuestProfile) => GuestProfile)) => void;
 }
 
 /** Renders the complete reservation booking flow and live summary. */
-function ReservationsView({ form, reservations, profile, onFormChange, onSave, onProfileChange }: ReservationsViewProps) {
+function ReservationsView({ form, reservations, profile, onFormChange, onNavigate, onSave, onProfileChange }: ReservationsViewProps) {
   const slots = getReservationSlots(form.date, form.guests, reservations);
   const experiences = getReservationExperiences();
   const selectedSlot = slots.find((slot) => slot.time === form.time);
@@ -1649,6 +1685,7 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
         slots={slots}
         summaryImage={summaryImage}
         onFormChange={onFormChange}
+        onNavigate={onNavigate}
         onSave={onSave}
       />
       <div className="hidden space-y-5 md:block">
@@ -1788,6 +1825,7 @@ function MobileReservationsFlow({
   slots,
   summaryImage,
   onFormChange,
+  onNavigate,
   onSave,
 }: {
   experiences: ReturnType<typeof getReservationExperiences>;
@@ -1798,6 +1836,7 @@ function MobileReservationsFlow({
   slots: ReturnType<typeof getReservationSlots>;
   summaryImage: string;
   onFormChange: (patch: Partial<ReservationFormState>) => void;
+  onNavigate: (view: AppView) => void;
   onSave: () => void;
 }) {
   const upcomingReservations = reservations.length > 0 ? reservations : [];
@@ -1830,7 +1869,7 @@ function MobileReservationsFlow({
             <ReservationFact icon={iconAssets.clock} value={appContent.reservation.time} />
             <ReservationFact icon={iconAssets.group} value={`${appContent.reservation.guests} Guests`} />
             <ReservationFact icon={iconAssets.mapPin} value={`${appContent.location.label}\n${appContent.location.street}, ${appContent.location.city}`} />
-            <button type="button" className="flex w-full items-center justify-between pt-3 text-left text-[var(--sb-red-bright)]">
+            <button type="button" onClick={() => onNavigate("reservationDetails")} className="flex w-full items-center justify-between pt-3 text-left text-[var(--sb-red-bright)]">
               View Reservation
               <ChevronRight className="h-5 w-5 text-[var(--sb-gold)]" />
             </button>
@@ -1847,18 +1886,19 @@ function MobileReservationsFlow({
       </section>
       <section className="space-y-3">
         {upcomingReservations.map((reservation) => (
-          <ReservationHistoryRow
-            key={reservation.id}
-            date={formatReservationDateTime(reservation.datetime)}
-            guests={`${reservation.guests} Guests`}
-            image={summaryImage}
-            place={appContent.location.label}
-            time={new Date(reservation.datetime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-          />
+            <ReservationHistoryRow
+              key={reservation.id}
+              date={formatReservationDateTime(reservation.datetime)}
+              guests={`${reservation.guests} Guests`}
+              image={summaryImage}
+              place={appContent.location.label}
+              time={new Date(reservation.datetime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
+              onClick={() => onNavigate("reservationDetails")}
+            />
         ))}
         {upcomingReservations.length === 0
           ? fallbackReservations.map((reservation) => (
-              <ReservationHistoryRow key={reservation.date} date={reservation.date} guests={reservation.guests} image={reservation.image} place={reservation.place} time={reservation.time} />
+              <ReservationHistoryRow key={reservation.date} date={reservation.date} guests={reservation.guests} image={reservation.image} place={reservation.place} time={reservation.time} onClick={() => onNavigate("reservationDetails")} />
             ))
           : null}
       </section>
@@ -1952,7 +1992,7 @@ function ReservationFactCard({ icon, label, value }: { icon?: string; label: str
 }
 
 /** Renders one reservation history row for the mobile list. */
-function ReservationHistoryRow({ date, guests, image, place, time }: { date: string; guests: string; image: string; place: string; time: string }) {
+function ReservationHistoryRow({ date, guests, image, place, time, onClick }: { date: string; guests: string; image: string; place: string; time: string; onClick: () => void }) {
   return (
     <article className="grid min-h-[118px] grid-cols-[30%_1fr_auto] items-center gap-4 rounded-[16px] border border-[var(--sb-border)] bg-black/46 p-3">
       <div className="relative h-full min-h-[92px] overflow-hidden rounded-[10px]"><Image src={image} alt="" fill sizes="130px" className="object-cover" /></div>
@@ -1961,7 +2001,7 @@ function ReservationHistoryRow({ date, guests, image, place, time }: { date: str
         <p className="mt-1 text-lg text-white">{time}</p>
         <p className="text-sm text-[var(--sb-muted)]">{guests} • {place}</p>
       </div>
-      <button type="button" className="rounded-[10px] border border-[var(--sb-border)] px-4 py-2 text-[var(--sb-gold)]">View</button>
+      <button type="button" onClick={onClick} className="rounded-[10px] border border-[var(--sb-border)] px-4 py-2 text-[var(--sb-gold)]">View</button>
     </article>
   );
 }

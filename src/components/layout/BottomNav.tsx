@@ -8,14 +8,41 @@ interface BottomNavProps {
   onNavigate: (view: AppView) => void;
 }
 
+const profileSubViews: AppView[] = [
+  "loyalty",
+  "contact",
+  "about",
+  "pairings",
+  "personalInformation",
+  "accountSettings",
+  "privacySecurity",
+  "notifications",
+  "help",
+  "supportChat",
+  "faq",
+  "offers",
+  "offerDetails",
+  "referral",
+  "giftExperience",
+  "giftCheckout",
+  "giftConfirmation",
+  "favorites",
+  "recentlyViewed",
+];
+
+const reservationSubViews: AppView[] = ["reservationDetails", "omakase"];
+
 /** Provides the persistent mobile tab bar shown across the ordering app. */
 export function BottomNav({ items, activeView, floating = true, onNavigate }: BottomNavProps) {
   return (
     <nav className={`${floating ? "fixed bottom-0 left-0 right-0" : "relative"} z-50 px-4 pb-3 lg:hidden`}>
       <div className="mobile-safe-area mx-auto grid max-w-md grid-cols-5 gap-1 rounded-[28px] border border-[var(--sb-border)] bg-black/82 px-2 pt-2 shadow-[0_0_40px_rgba(0,0,0,0.72)] backdrop-blur-2xl">
         {items.map(({ key, label, icon: Icon, assetIcon }) => {
-          const profileSubView = activeView === "loyalty" || activeView === "contact" || activeView === "about" || activeView === "pairings";
-          const active = activeView === key || (key === "orders" && activeView === "orderOnline") || (key === "profile" && profileSubView);
+          const active =
+            activeView === key ||
+            (key === "orders" && activeView === "orderOnline") ||
+            (key === "profile" && profileSubViews.includes(activeView)) ||
+            (key === "reservations" && reservationSubViews.includes(activeView));
           return (
             <button
               key={key}
