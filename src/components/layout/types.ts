@@ -6,6 +6,7 @@ export type AppView =
   | "orderOnline"
   | "reservations"
   | "reservationDetails"
+  | "reservationConfirmation"
   | "modifyReservation"
   | "cancelReservation"
   | "orders"

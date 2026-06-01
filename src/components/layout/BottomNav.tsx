@@ -41,7 +41,7 @@ const profileSubViews: AppView[] = [
   "reservationHistory",
 ];
 
-const reservationSubViews: AppView[] = ["reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
+const reservationSubViews: AppView[] = ["reservationDetails", "reservationConfirmation", "modifyReservation", "cancelReservation", "omakase"];
 const orderSubViews: AppView[] = ["orders", "orderOnline", "orderTracking"];
 
 /** Provides the persistent mobile tab bar shown across the ordering app. */

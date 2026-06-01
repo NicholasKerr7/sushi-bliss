@@ -20,7 +20,7 @@ interface DesktopHeaderProps {
 }
 
 const aboutSubViews: AppView[] = ["about", "aboutStory", "chefsTeam", "sourcing", "atmosphere"];
-const reservationSubViews: AppView[] = ["reservations", "reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
+const reservationSubViews: AppView[] = ["reservations", "reservationDetails", "reservationConfirmation", "modifyReservation", "cancelReservation", "omakase"];
 const notificationSubViews: AppView[] = ["notifications", "notificationDetail"];
 const orderSubViews: AppView[] = ["orders", "orderTracking"];
 

@@ -65,6 +65,7 @@ import { NotificationDetailView, NotificationsCenterView } from "./notifications
 import { LiveOrderTrackingView } from "./orders/LiveOrderTrackingView";
 import { ProfileView } from "./profile/ProfileView";
 import type { GuestProfile } from "./profile/types";
+import { ReservationConfirmationView } from "./reservations/ReservationConfirmationView";
 import { ReservationDetailsView } from "./reservations/ReservationDetailsView";
 import { CancelReservationView, ModifyReservationView } from "./reservations/ReservationManagementViews";
 import type { AppView, NavItem } from "./layout/types";
@@ -417,8 +418,7 @@ export default function SushiApp() {
       phone: current.phone || reservation.phone,
     }));
     setReservationForm(createDefaultReservationForm(new Date(), { name: reservation.name, phone: reservation.phone }));
-    showNotice(`Reservation confirmed: ${reservation.confirmationCode}`, "success");
-    navigate("profile");
+    navigate("reservationConfirmation");
   };
 
   /** Persists edits to the active reservation and returns guests to the details page. */
@@ -639,6 +639,14 @@ export default function SushiApp() {
                 profileImage={profileImage}
                 reservations={reservations}
                 loyaltyPoints={loyaltyPoints}
+                onNavigate={navigate}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "reservationConfirmation" ? (
+              <ReservationConfirmationView
+                profile={profile}
+                reservations={reservations}
                 onNavigate={navigate}
                 showNotice={showNotice}
               />
