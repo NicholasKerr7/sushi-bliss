@@ -19,6 +19,11 @@ const profileSubViews: AppView[] = [
   "pairings",
   "personalInformation",
   "accountSettings",
+  "savedAddresses",
+  "addAddress",
+  "paymentMethods",
+  "addCard",
+  "dietaryPreferences",
   "privacySecurity",
   "notifications",
   "notificationDetail",
@@ -33,6 +38,7 @@ const profileSubViews: AppView[] = [
   "giftConfirmation",
   "favorites",
   "recentlyViewed",
+  "reservationHistory",
 ];
 
 const reservationSubViews: AppView[] = ["reservationDetails", "modifyReservation", "cancelReservation", "omakase"];

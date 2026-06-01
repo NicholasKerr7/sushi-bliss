@@ -35,6 +35,14 @@ import { AboutStoryView, AtmosphereGalleryView, ChefsTeamView, SourcingIngredien
 import { HomeView } from "./home/HomeView";
 import { AccountSettingsView, PersonalInformationView, PrivacySecurityView } from "./account/AccountScreens";
 import {
+  AddAddressView,
+  AddCardView,
+  DietaryPreferencesView,
+  PaymentMethodsView,
+  ReservationHistoryView,
+  SavedAddressesView,
+} from "./account/ProfileUtilityScreens";
+import {
   FaqArticleView,
   FavoritesView,
   GiftCheckoutView,
@@ -684,6 +692,55 @@ export default function SushiApp() {
                 loyaltyPoints={loyaltyPoints}
                 onProfileChange={setProfile}
                 onNavigate={navigate}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "savedAddresses" ? (
+              <SavedAddressesView
+                profile={profile}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "addAddress" ? (
+              <AddAddressView
+                profile={profile}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "paymentMethods" ? (
+              <PaymentMethodsView
+                profile={profile}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "addCard" ? (
+              <AddCardView
+                profile={profile}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "dietaryPreferences" ? (
+              <DietaryPreferencesView
+                profile={profile}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "reservationHistory" ? (
+              <ReservationHistoryView
+                profile={profile}
+                reservations={reservations}
+                onNavigate={navigate}
+                onProfileChange={setProfile}
                 showNotice={showNotice}
               />
             ) : null}

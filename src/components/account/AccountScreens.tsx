@@ -92,7 +92,7 @@ export function AccountSettingsView({ loyaltyPoints, profile, profileImage, onNa
     { icon: iconAssets.bell, title: "Notifications", copy: "Manage alerts and updates", target: "notifications" },
     { icon: iconAssets.settings, title: "Privacy & Security", copy: "Control your data and privacy", target: "privacySecurity" },
     { icon: iconAssets.creditCard, title: "Password", copy: "Change or update your password", target: "privacySecurity" },
-    { icon: iconAssets.creditCard, title: "Payment Preferences", copy: "Manage cards and billing details" },
+    { icon: iconAssets.creditCard, title: "Payment Preferences", copy: "Manage cards and billing details", target: "paymentMethods" },
     { icon: iconAssets.location, title: "Language", copy: "Select your preferred language", value: "English" },
     { icon: iconAssets.flower, title: "App Appearance", copy: "Choose your preferred theme", value: "Dark" },
     { icon: iconAssets.x, title: "Log Out", copy: "Sign out from your Sushi Bliss account", tone: "danger" },
@@ -107,10 +107,10 @@ export function AccountSettingsView({ loyaltyPoints, profile, profileImage, onNa
             {[
               ["Account Overview", "profile"],
               ["Personal Information", "personalInformation"],
-              ["Dietary Preferences", "accountSettings"],
+              ["Dietary Preferences", "dietaryPreferences"],
               ["Privacy & Security", "privacySecurity"],
               ["Notifications", "notifications"],
-              ["Payment Methods", "accountSettings"],
+              ["Payment Methods", "paymentMethods"],
               ["Loyalty & Rewards", "loyalty"],
               ["Order History", "orders"],
             ].map(([label, view]) => (
@@ -165,7 +165,7 @@ export function AccountSettingsView({ loyaltyPoints, profile, profileImage, onNa
 
           <section className="hidden grid-cols-2 gap-4 md:grid">
             <NotificationPanel />
-            <AccountPreferenceCard title="Saved Cards" icon={iconAssets.creditCard} action="Add Card">
+            <AccountPreferenceCard title="Saved Cards" icon={iconAssets.creditCard} action="Add Card" onAction={() => onNavigate("addCard")}>
               {["Visa **** 4242", "Mastercard **** 8888", "Amex **** 1005"].map((card, index) => (
                 <PreferenceLine key={card} icon={iconAssets.creditCard} label={card} value={index === 0 ? "Default" : `Expires 0${index + 7}/27`} />
               ))}
@@ -319,7 +319,7 @@ function AccountMemberCard({ loyaltyPoints, profile, profileImage, onNavigate }:
 }
 
 /** Wraps a desktop/tablet account preference module. */
-function AccountPreferenceCard({ action, children, icon, title }: { action?: string; children: ReactNode; icon?: string; title: string }) {
+function AccountPreferenceCard({ action, children, icon, onAction, title }: { action?: string; children: ReactNode; icon?: string; onAction?: () => void; title: string }) {
   return (
     <section className="luxury-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -327,7 +327,7 @@ function AccountPreferenceCard({ action, children, icon, title }: { action?: str
           {icon ? <AssetIcon src={icon} size={25} /> : null}
           {title}
         </h2>
-        {action ? <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button> : null}
+        {action ? <button type="button" onClick={onAction} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button> : null}
       </div>
       {children}
     </section>

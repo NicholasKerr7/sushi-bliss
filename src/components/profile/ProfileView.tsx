@@ -41,7 +41,7 @@ function assetUrl(asset: AssetRef | undefined, fallback = featuredAssets.heroSus
 function getProfileShortcutTarget(label: string): AppView {
   if (label === "Rewards") return "loyalty";
   if (label === "Support") return "contact";
-  if (label === "Reservations") return "reservations";
+  if (label === "Reservations") return "reservationHistory";
   if (label === "Settings") return "accountSettings";
   return "profile";
 }
@@ -90,7 +90,7 @@ export function ProfileView({
               A devoted sushi enthusiast with a taste for excellence and unforgettable experiences.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("reservations")}>
+              <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("reservationHistory")}>
                 Reservation History
               </Button>
               <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("accountSettings")}>
@@ -132,20 +132,20 @@ export function ProfileView({
       </section>
 
       <section className="grid gap-5 xl:grid-cols-4">
-        <ProfileDashboardCard title="Saved Addresses" action="Manage">
+        <ProfileDashboardCard title="Saved Addresses" action="Manage" onAction={() => onNavigate("savedAddresses")}>
           <ProfileField label="Home" value={profile.address} onChange={(value) => onProfileChange({ ...profile, address: value, deliveryAddress: profile.deliveryAddress || value })} />
           <ProfileField label="Delivery" value={profile.deliveryAddress} onChange={(value) => onProfileChange({ ...profile, deliveryAddress: value })} />
         </ProfileDashboardCard>
-        <ProfileDashboardCard title="Payment Methods" action="Manage">
+        <ProfileDashboardCard title="Payment Methods" action="Manage" onAction={() => onNavigate("paymentMethods")}>
           <ProfileListRow icon={iconAssets.cart} title="Visa **** 4242" copy="Expires 08/26" />
           <ProfileListRow icon={iconAssets.creditCard} title="Mastercard **** 8888" copy="Expires 11/25" />
         </ProfileDashboardCard>
-        <ProfileDashboardCard title="Dining Preferences" action="Manage">
+        <ProfileDashboardCard title="Dining Preferences" action="Manage" onAction={() => onNavigate("dietaryPreferences")}>
           <ProfileListRow icon={iconAssets.reservations} title="Preferred Seating" copy="Counter Seat" />
           <ProfileListRow icon={iconAssets.about} title="Favorite Chefs" copy="Chef Kenji, Chef Aiko" />
           <ProfileListRow icon={iconAssets.loyalty} title="Service Style" copy="Traditional Omakase" />
         </ProfileDashboardCard>
-        <ProfileDashboardCard title="Dietary Preferences" action="Manage">
+        <ProfileDashboardCard title="Dietary Preferences" action="Manage" onAction={() => onNavigate("dietaryPreferences")}>
           <ProfileField label="Dietary Notes" value={profile.dietary} onChange={(value) => onProfileChange({ ...profile, dietary: value })} />
           <ProfileListRow icon={iconAssets.check} title="No Artificial Additives" copy="Saved preference" />
         </ProfileDashboardCard>
@@ -180,7 +180,7 @@ export function ProfileView({
                 <Button variant="outline" className="rounded-xl border-[var(--sb-border)] bg-black/35 px-5 text-[var(--sb-gold)]" onClick={() => onNavigate("reservationDetails")}>
                   View Details
                 </Button>
-                <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("reservations")}>
+                <Button className="red-glow-button rounded-xl px-5" onClick={() => onNavigate("modifyReservation")}>
                   Modify Reservation
                 </Button>
               </div>
@@ -212,7 +212,7 @@ function ProfileDashboardCard({ title, action, children, onAction }: { title: st
     <section className="luxury-panel p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="editorial-title text-lg text-white">{title}</h2>
-        <button type="button" onClick={onAction} className="text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button>
+        <button type="button" onClick={onAction} aria-label={`${action} ${title}`} className="text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{action}</button>
       </div>
       <div className="grid gap-3">{children}</div>
     </section>
