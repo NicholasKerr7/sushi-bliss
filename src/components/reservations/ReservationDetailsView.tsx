@@ -52,7 +52,7 @@ export function ReservationDetailsView({
       <header className="text-center">
         <p className="text-xs uppercase tracking-[0.28em] text-[var(--sb-gold)] md:hidden">Reservation</p>
         <h1 className="editorial-title mt-2 text-[36px] uppercase leading-none text-[var(--sb-gold)] sm:text-[46px] md:text-[64px] md:text-white">
-          Reservation <span className="hidden text-[var(--sb-red-bright)] md:inline">Details</span>
+          Reservation <span className="md:text-[var(--sb-red-bright)]">Details</span>
         </h1>
         <p className="mt-4 hidden text-xl text-[var(--sb-gold)] md:block">Review your details before confirming your reservation.</p>
       </header>
