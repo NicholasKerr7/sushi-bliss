@@ -64,7 +64,7 @@ export function AppShell({
         />
       )}
       {children}
-      <BottomNav items={mobileNavItems} activeView={activeView} floating={activeView !== "home"} onNavigate={onNavigate} />
+      <BottomNav items={mobileNavItems} activeView={activeView} floating={activeView !== "home" && activeView !== "orderTracking"} onNavigate={onNavigate} />
     </div>
   );
 }

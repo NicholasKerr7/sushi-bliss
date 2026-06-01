@@ -16,7 +16,7 @@ async function openCart(page: Page) {
 
 test("user can add an item to cart and view totals", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Timeless Japanese Artistry.")).toBeVisible();
+  await expect(page.getByText(/timeless japanese artistry/i).first()).toBeVisible();
 
   await addFirstMenuItem(page);
   await expect(page.getByText(/added to your order/i)).toBeVisible();

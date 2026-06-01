@@ -22,6 +22,7 @@ interface DesktopHeaderProps {
 const aboutSubViews: AppView[] = ["about", "aboutStory", "chefsTeam", "sourcing", "atmosphere"];
 const reservationSubViews: AppView[] = ["reservations", "reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
 const notificationSubViews: AppView[] = ["notifications", "notificationDetail"];
+const orderSubViews: AppView[] = ["orders", "orderTracking"];
 
 /** Keeps top-nav active states aligned when a detail route belongs to a primary section. */
 function isDesktopNavActive(item: NavItem, activeView: AppView): boolean {
@@ -30,6 +31,7 @@ function isDesktopNavActive(item: NavItem, activeView: AppView): boolean {
   if (targetView === "about") return aboutSubViews.includes(activeView);
   if (targetView === "reservations") return reservationSubViews.includes(activeView);
   if (targetView === "notifications") return notificationSubViews.includes(activeView);
+  if (targetView === "orders") return orderSubViews.includes(activeView);
   return false;
 }
 

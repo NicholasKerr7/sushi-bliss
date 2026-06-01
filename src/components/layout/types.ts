@@ -9,6 +9,7 @@ export type AppView =
   | "modifyReservation"
   | "cancelReservation"
   | "orders"
+  | "orderTracking"
   | "profile"
   | "personalInformation"
   | "accountSettings"

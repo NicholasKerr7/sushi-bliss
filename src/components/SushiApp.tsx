@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
-  Bell,
   Calendar,
   Check,
   ChefHat,
@@ -63,6 +62,7 @@ import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
 import { NotificationDetailView, NotificationsCenterView } from "./notifications/NotificationScreens";
+import { LiveOrderTrackingView } from "./orders/LiveOrderTrackingView";
 import { ProfileView } from "./profile/ProfileView";
 import type { GuestProfile } from "./profile/types";
 import { ReservationDetailsView } from "./reservations/ReservationDetailsView";
@@ -134,16 +134,17 @@ const heroAsset = featuredAssets.heroSushi;
 
 const iconAssets = getSushiIconAssets();
 
-const desktopNav: NavItem[] = [
+const baseDesktopNav: NavItem[] = [
   { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
   { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
   { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
   { key: "orderOnline", id: "order-online", label: "Order Online", icon: ShoppingBag, assetIcon: iconAssets.orders },
-  { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
   { key: "about", label: "About Us", icon: ChefHat, assetIcon: iconAssets.about },
   { key: "contact", label: "Contact", icon: Mail, assetIcon: iconAssets.contact },
-  { key: "notifications", label: "Notifications", icon: Bell, assetIcon: iconAssets.bell },
 ];
+
+const loyaltyDesktopNavItem: NavItem = { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty };
+const ordersDesktopNavItem: NavItem = { key: "orders", label: "Orders", icon: ShoppingBag, assetIcon: iconAssets.orders };
 
 const mobileNav: NavItem[] = [
   { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
@@ -152,6 +153,17 @@ const mobileNav: NavItem[] = [
   { key: "orders", label: "Orders", icon: ShoppingBag, assetIcon: iconAssets.orders },
   { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
 ];
+
+/** Builds the contextual desktop nav used by screenshot groups with section-specific tabs. */
+function getDesktopNavItems(activeView: AppView): NavItem[] {
+  if (activeView === "loyalty") {
+    return [...baseDesktopNav.slice(0, 4), loyaltyDesktopNavItem, ...baseDesktopNav.slice(4)];
+  }
+  if (activeView === "orders" || activeView === "orderTracking") {
+    return [...baseDesktopNav, ordersDesktopNavItem];
+  }
+  return baseDesktopNav;
+}
 
 const categoryIcons: Partial<Record<MenuCategory, typeof Sparkles>> = {
   "Chef Specials": ChefHat,
@@ -536,7 +548,7 @@ export default function SushiApp() {
       activeView={activeView}
       cartCount={cart.length}
       iconUrls={{ bell: iconAssets.bell, cart: iconAssets.cart }}
-      navItems={desktopNav}
+      navItems={getDesktopNavItems(activeView)}
       mobileNavItems={mobileNav}
       profileName={profile.name}
       profileImage={profileImage}
@@ -655,6 +667,17 @@ export default function SushiApp() {
               <OrdersView
                 latestOrder={latestOrder ?? orderHistory[0] ?? null}
                 orderHistory={orderHistory}
+                onNavigate={navigate}
+                onReorder={(items) => {
+                  setCart((current) => [...current, ...items]);
+                  setShowCart(true);
+                }}
+              />
+            ) : null}
+            {activeView === "orderTracking" ? (
+              <LiveOrderTrackingView
+                order={latestOrder ?? orderHistory[0] ?? null}
+                profileImage={profileImage}
                 onNavigate={navigate}
                 onReorder={(items) => {
                   setCart((current) => [...current, ...items]);
@@ -2268,7 +2291,7 @@ function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { late
         {!latestOrder ? (
           <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("orderOnline")} />
         ) : (
-          <ActiveOrderPanel order={latestOrder} onReorder={onReorder} />
+          <ActiveOrderPanel order={latestOrder} onReorder={onReorder} onViewTracking={() => onNavigate("orderTracking")} />
         )}
         <section className="luxury-panel p-5 sm:p-6">
           <div className="flex items-center gap-3">
@@ -2318,7 +2341,7 @@ function MobileOrdersView({
       <div>
         <h2 className="editorial-title text-2xl uppercase tracking-[0.04em] text-[var(--sb-gold)]">Active Order</h2>
         {latestOrder ? (
-          <MobileActiveOrderCard order={latestOrder} onReorder={onReorder} />
+          <MobileActiveOrderCard order={latestOrder} onReorder={onReorder} onViewTracking={() => onNavigate("orderTracking")} />
         ) : (
           <EmptyState title="No active order" copy="Start a new order and live tracking will appear here." actionLabel="Order now" onAction={() => onNavigate("orderOnline")} />
         )}
@@ -2336,7 +2359,7 @@ function MobileOrdersView({
 }
 
 /** Shows the active mobile order card with product previews, totals, ETA, and tracking. */
-function MobileActiveOrderCard({ order, onReorder }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void }) {
+function MobileActiveOrderCard({ order, onReorder, onViewTracking }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void; onViewTracking: () => void }) {
   const visibleItems = order.items.slice(0, 3);
   const hiddenItemCount = Math.max(order.items.length - visibleItems.length, 0);
 
@@ -2373,9 +2396,12 @@ function MobileActiveOrderCard({ order, onReorder }: { order: OrderHistoryEntry;
       </div>
       <div className="gold-divider my-5" />
       <MobileOrderTimeline orderType={order.type} />
-      <Button variant="outline" className="mt-7 h-16 w-full rounded-full border-[var(--sb-border-strong)] bg-black/20 text-lg uppercase tracking-[0.12em] text-[var(--sb-gold)]" onClick={() => onReorder(order.items)}>
+      <Button variant="outline" className="mt-7 h-16 w-full rounded-full border-[var(--sb-border-strong)] bg-black/20 text-lg uppercase tracking-[0.12em] text-[var(--sb-gold)]" onClick={onViewTracking}>
         View Details
         <ChevronRight className="ml-3 h-5 w-5" />
+      </Button>
+      <Button className="red-glow-button mt-3 h-14 w-full rounded-full uppercase tracking-[0.12em]" onClick={() => onReorder(order.items)}>
+        Order Again
       </Button>
     </article>
   );
@@ -2436,7 +2462,7 @@ function MobileOrderTimeline({ orderType }: { orderType: FulfillmentType }) {
 }
 
 /** Displays the screenshot-style active order card with timeline and actions. */
-function ActiveOrderPanel({ order, onReorder }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void }) {
+function ActiveOrderPanel({ order, onReorder, onViewTracking }: { order: OrderHistoryEntry; onReorder: (items: SushiMenuItem[]) => void; onViewTracking: () => void }) {
   return (
     <section className="luxury-panel overflow-hidden p-0">
       <div className="border-b border-[var(--sb-border)] px-5 py-4">
@@ -2478,7 +2504,7 @@ function ActiveOrderPanel({ order, onReorder }: { order: OrderHistoryEntry; onRe
 
         <div className="rounded-2xl border border-[var(--sb-border)] bg-black/32 p-4">
           <SummaryLine label="Total" value={formatCurrency(order.total)} strong />
-          <Button variant="outline" className="mt-4 h-11 w-full rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]">
+          <Button variant="outline" className="mt-4 h-11 w-full rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={onViewTracking}>
             View Details
           </Button>
           <Button className="red-glow-button mt-3 h-11 w-full rounded-xl uppercase tracking-[0.14em]" onClick={() => onReorder(order.items)}>

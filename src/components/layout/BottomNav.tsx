@@ -42,6 +42,7 @@ const profileSubViews: AppView[] = [
 ];
 
 const reservationSubViews: AppView[] = ["reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
+const orderSubViews: AppView[] = ["orders", "orderOnline", "orderTracking"];
 
 /** Provides the persistent mobile tab bar shown across the ordering app. */
 export function BottomNav({ items, activeView, floating = true, onNavigate }: BottomNavProps) {
@@ -51,7 +52,7 @@ export function BottomNav({ items, activeView, floating = true, onNavigate }: Bo
         {items.map(({ key, label, icon: Icon, assetIcon }) => {
           const active =
             activeView === key ||
-            (key === "orders" && activeView === "orderOnline") ||
+            (key === "orders" && orderSubViews.includes(activeView)) ||
             (key === "profile" && profileSubViews.includes(activeView)) ||
             (key === "reservations" && reservationSubViews.includes(activeView));
           return (
