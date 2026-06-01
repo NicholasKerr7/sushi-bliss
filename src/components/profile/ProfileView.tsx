@@ -152,7 +152,7 @@ export function ProfileView({
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[0.86fr_1fr]">
-        <ProfileDashboardCard title="Recent Activity" action="View All">
+        <ProfileDashboardCard title="Recent Activity" action="View All" onAction={() => onNavigate("recentlyViewed")}>
           {orderHistory.map((order) => (
             <ProfileListRow key={order.id} icon={iconAssets.orders} title={`Order ${order.confirmationCode}`} copy={`${new Date(order.placedAt).toLocaleDateString()} · ${formatCurrency(order.total)}`} />
           ))}
@@ -189,7 +189,7 @@ export function ProfileView({
         </ProfileDashboardCard>
       </section>
 
-      <ProfilePanel title="Favorite Items" empty="Tap hearts in the menu to save favorites." onAction={() => onNavigate("menu")} action="Browse">
+      <ProfilePanel title="Favorite Items" empty="Tap hearts in the menu to save favorites." onAction={() => onNavigate("favorites")} action="View All">
         {favorites.map((item) => (
           <button key={item.id} type="button" onClick={() => onSelectItem(item)} className="flex items-center gap-3 rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-3 text-left">
             <span className="relative h-16 w-20 shrink-0 overflow-hidden rounded-xl"><Image src={item.image.publicUrl} alt="" fill sizes="80px" className="object-cover" /></span>

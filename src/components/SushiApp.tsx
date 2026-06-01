@@ -32,6 +32,22 @@ import {
 } from "lucide-react";
 import { HomeView } from "./home/HomeView";
 import { AccountSettingsView, NotificationsView, PersonalInformationView, PrivacySecurityView } from "./account/AccountScreens";
+import {
+  FaqArticleView,
+  FavoritesView,
+  GiftCheckoutView,
+  GiftConfirmationView,
+  GiftExperienceView,
+  HelpCenterView,
+  LocationDetailsView,
+  LocationsView,
+  OmakaseExperienceView,
+  OfferDetailsView,
+  OffersView,
+  RecentlyViewedView,
+  ReferralView,
+  SupportChatView,
+} from "./experience/ExperienceScreens";
 import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
@@ -634,6 +650,27 @@ export default function SushiApp() {
             ) : null}
             {activeView === "privacySecurity" ? <PrivacySecurityView onNavigate={navigate} /> : null}
             {activeView === "notifications" ? <NotificationsView onNavigate={navigate} /> : null}
+            {activeView === "help" ? <HelpCenterView onNavigate={navigate} /> : null}
+            {activeView === "supportChat" ? <SupportChatView onNavigate={navigate} /> : null}
+            {activeView === "faq" ? <FaqArticleView onNavigate={navigate} /> : null}
+            {activeView === "locations" ? <LocationsView onNavigate={navigate} /> : null}
+            {activeView === "locationDetails" ? <LocationDetailsView onNavigate={navigate} /> : null}
+            {activeView === "offers" ? <OffersView onNavigate={navigate} /> : null}
+            {activeView === "offerDetails" ? <OfferDetailsView onNavigate={navigate} /> : null}
+            {activeView === "referral" ? <ReferralView showNotice={showNotice} /> : null}
+            {activeView === "giftExperience" ? <GiftExperienceView onNavigate={navigate} /> : null}
+            {activeView === "giftCheckout" ? <GiftCheckoutView profile={profile} onNavigate={navigate} /> : null}
+            {activeView === "giftConfirmation" ? <GiftConfirmationView onNavigate={navigate} /> : null}
+            {activeView === "favorites" ? (
+              <FavoritesView
+                favorites={favoriteItems}
+                onAddToCart={addToCart}
+                onNavigate={navigate}
+                onSelectItem={setSelectedItem}
+              />
+            ) : null}
+            {activeView === "recentlyViewed" ? <RecentlyViewedView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "omakase" ? <OmakaseExperienceView onNavigate={navigate} /> : null}
             {activeView === "loyalty" ? (
               <LoyaltyView
                 loyaltyPoints={loyaltyPoints}
@@ -2447,6 +2484,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
           action="Invite Friends"
           copy="Share Sushi Bliss with friends. You both earn 500 points."
           image={assetUrl(featuredAssets.sakeSets[0], heroAsset.publicUrl)}
+          onAction={() => onNavigate("referral")}
           title="Refer & Earn"
         />
         <div className="luxury-panel p-5">
@@ -2473,6 +2511,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
           action="Explore Rewards"
           copy="Exclusive rewards for our most devoted members."
           image={assetUrl(getItemById("uni-gunkan")?.image, heroAsset.publicUrl)}
+          onAction={() => onNavigate("offers")}
           title="Chef's Tasting Rewards"
         />
       </section>
@@ -2555,12 +2594,12 @@ function MobileLoyaltyView({
       </section>
       <div className="grid grid-cols-4 gap-3">
         {[
-          { icon: iconAssets.gift, title: "Available Rewards", copy: "Browse & Redeem" },
-          { icon: iconAssets.crown, title: "Benefits", copy: "Exclusive Member Perks" },
-          { icon: iconAssets.clock, title: "Activity", copy: "Track Your Points" },
-          { icon: iconAssets.qr, title: "Member Pass", copy: "Show Your Digital Pass" },
+          { icon: iconAssets.gift, title: "Available Rewards", copy: "Browse & Redeem", target: "offers" as AppView },
+          { icon: iconAssets.crown, title: "Benefits", copy: "Exclusive Member Perks", target: "giftExperience" as AppView },
+          { icon: iconAssets.clock, title: "Activity", copy: "Track Your Points", target: "recentlyViewed" as AppView },
+          { icon: iconAssets.qr, title: "Member Pass", copy: "Show Your Digital Pass", target: "referral" as AppView },
         ].map((action) => (
-          <button key={action.title} type="button" className="min-h-[128px] rounded-[16px] border border-[var(--sb-border)] bg-black/44 p-3 text-center">
+          <button key={action.title} type="button" onClick={() => onNavigate(action.target)} className="min-h-[128px] rounded-[16px] border border-[var(--sb-border)] bg-black/44 p-3 text-center">
             {action.icon ? <AssetIcon src={action.icon} size={36} className="mx-auto" /> : null}
             <span className="mt-3 block text-sm uppercase leading-5 text-white">{action.title}</span>
             <span className="mt-2 block text-xs leading-5 text-[var(--sb-muted)]">{action.copy}</span>
@@ -2664,7 +2703,7 @@ function RewardCard({ reward, onRedeem }: { reward: Reward; onRedeem: (reward: R
 }
 
 /** Shows a compact image-backed loyalty information module. */
-function LoyaltyInfoCard({ action, copy, image, title }: { action: string; copy: string; image: string; title: string }) {
+function LoyaltyInfoCard({ action, copy, image, onAction, title }: { action: string; copy: string; image: string; onAction?: () => void; title: string }) {
   return (
     <section className="luxury-panel relative min-h-[168px] overflow-hidden p-5">
       <Image src={image} alt="" fill sizes="360px" className="object-cover opacity-38" />
@@ -2672,7 +2711,7 @@ function LoyaltyInfoCard({ action, copy, image, title }: { action: string; copy:
       <div className="relative z-10 max-w-[230px]">
         <h2 className="editorial-title text-xl text-white">{title}</h2>
         <p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">{copy}</p>
-        <button type="button" className="mt-4 rounded-xl border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button>
+        <button type="button" onClick={onAction} className="mt-4 rounded-xl border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button>
       </div>
     </section>
   );
@@ -2772,7 +2811,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
-        <FAQPanel />
+        <FAQPanel onNavigate={onNavigate} />
         <div className="luxury-panel relative overflow-hidden p-5">
           <Image src={heroAsset.publicUrl} alt="" fill sizes="760px" className="object-cover opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/74 to-black/30" />
@@ -2934,7 +2973,7 @@ function ContactMapCard() {
 }
 
 /** Shows the compact FAQ list used on the contact screen. */
-function FAQPanel() {
+function FAQPanel({ onNavigate }: { onNavigate: (view: AppView) => void }) {
   const questions = [
     "Do you take reservations?",
     "Do you offer delivery?",
@@ -2948,7 +2987,7 @@ function FAQPanel() {
       <h2 className="editorial-title text-xl text-[var(--sb-gold)]">Frequently Asked Questions</h2>
       <div className="mt-5 space-y-2">
         {questions.map((question) => (
-          <button key={question} type="button" className="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--sb-border)] bg-black/30 px-3 text-left text-sm text-[var(--sb-muted)]">
+          <button key={question} type="button" onClick={() => onNavigate("help")} className="flex h-11 w-full items-center justify-between rounded-xl border border-[var(--sb-border)] bg-black/30 px-3 text-left text-sm text-[var(--sb-muted)]">
             {question}
             <Plus className="h-4 w-4 text-[var(--sb-gold)]" />
           </button>
