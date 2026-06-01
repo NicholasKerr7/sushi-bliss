@@ -12,11 +12,16 @@ const profileSubViews: AppView[] = [
   "loyalty",
   "contact",
   "about",
+  "aboutStory",
+  "chefsTeam",
+  "sourcing",
+  "atmosphere",
   "pairings",
   "personalInformation",
   "accountSettings",
   "privacySecurity",
   "notifications",
+  "notificationDetail",
   "help",
   "supportChat",
   "faq",
@@ -30,7 +35,7 @@ const profileSubViews: AppView[] = [
   "recentlyViewed",
 ];
 
-const reservationSubViews: AppView[] = ["reservationDetails", "omakase"];
+const reservationSubViews: AppView[] = ["reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
 
 /** Provides the persistent mobile tab bar shown across the ordering app. */
 export function BottomNav({ items, activeView, floating = true, onNavigate }: BottomNavProps) {

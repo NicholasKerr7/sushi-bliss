@@ -54,7 +54,15 @@ export function AppShell({
         onNavigate={onNavigate}
         onCartClick={onCartClick}
       />
-      {activeView === "home" ? null : <MobileHeader brand={brand} cartCount={cartCount} iconUrls={iconUrls} onCartClick={onCartClick} />}
+      {activeView === "home" ? null : (
+        <MobileHeader
+          brand={brand}
+          cartCount={cartCount}
+          iconUrls={iconUrls}
+          onCartClick={onCartClick}
+          onNotificationsClick={() => onNavigate("notifications")}
+        />
+      )}
       {children}
       <BottomNav items={mobileNavItems} activeView={activeView} floating={activeView !== "home"} onNavigate={onNavigate} />
     </div>

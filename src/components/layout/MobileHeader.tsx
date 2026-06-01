@@ -11,10 +11,11 @@ interface MobileHeaderProps {
     cart?: string;
   };
   onCartClick: () => void;
+  onNotificationsClick: () => void;
 }
 
 /** Renders the compact mobile header for secondary app screens. */
-export function MobileHeader({ brand, cartCount, iconUrls, onCartClick }: MobileHeaderProps) {
+export function MobileHeader({ brand, cartCount, iconUrls, onCartClick, onNotificationsClick }: MobileHeaderProps) {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-3 lg:hidden">
       <div className="flex items-center justify-between">
@@ -42,6 +43,7 @@ export function MobileHeader({ brand, cartCount, iconUrls, onCartClick }: Mobile
           </button>
           <button
             type="button"
+            onClick={onNotificationsClick}
             aria-label="Notifications"
             className="relative grid h-12 w-12 place-items-center rounded-full border border-[var(--sb-border)] bg-black/44 text-[var(--sb-gold)] backdrop-blur-xl"
           >

@@ -19,6 +19,20 @@ interface DesktopHeaderProps {
   onCartClick: () => void;
 }
 
+const aboutSubViews: AppView[] = ["about", "aboutStory", "chefsTeam", "sourcing", "atmosphere"];
+const reservationSubViews: AppView[] = ["reservations", "reservationDetails", "modifyReservation", "cancelReservation", "omakase"];
+const notificationSubViews: AppView[] = ["notifications", "notificationDetail"];
+
+/** Keeps top-nav active states aligned when a detail route belongs to a primary section. */
+function isDesktopNavActive(item: NavItem, activeView: AppView): boolean {
+  const targetView = item.target ?? item.key;
+  if (targetView === activeView) return true;
+  if (targetView === "about") return aboutSubViews.includes(activeView);
+  if (targetView === "reservations") return reservationSubViews.includes(activeView);
+  if (targetView === "notifications") return notificationSubViews.includes(activeView);
+  return false;
+}
+
 /** Renders the glass desktop navigation bar from the reference dashboard. */
 export function DesktopHeader({
   brand,
@@ -33,11 +47,11 @@ export function DesktopHeader({
 }: DesktopHeaderProps) {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 hidden px-6 pt-5 lg:block">
-      <div className="luxury-panel mx-auto flex h-[76px] w-full max-w-[1680px] items-center gap-8 rounded-[26px] px-6">
+      <div className="luxury-panel mx-auto flex h-[76px] w-full max-w-[1680px] items-center gap-4 rounded-[26px] px-4 xl:gap-8 xl:px-6">
         <button
           type="button"
           onClick={() => onNavigate("home")}
-          className="flex min-w-[180px] items-center gap-3 text-left text-white transition hover:text-[var(--sb-gold)]"
+          className="flex min-w-[150px] items-center gap-3 text-left text-white transition hover:text-[var(--sb-gold)] xl:min-w-[180px]"
         >
           <Image src={brand.assets.icon.publicUrl} alt="" width={44} height={44} className="rounded-full" />
           <span className="editorial-title text-lg leading-[0.95] tracking-[0.34em]">
@@ -49,13 +63,13 @@ export function DesktopHeader({
         <nav className="flex flex-1 items-center justify-center gap-1">
           {navItems.map((item) => {
             const targetView = item.target ?? item.key;
-            const isActive = activeView === targetView;
+            const isActive = isDesktopNavActive(item, activeView);
             return (
               <button
                 key={item.id ?? `${item.key}-${item.label}`}
                 type="button"
                 onClick={() => onNavigate(targetView)}
-                className={`relative rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] transition ${
+                className={`relative rounded-full px-2 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] transition xl:px-4 xl:text-xs xl:tracking-[0.22em] ${
                   isActive ? "text-[var(--sb-red-bright)]" : "text-white/78 hover:text-[var(--sb-gold)]"
                 }`}
               >
@@ -83,9 +97,10 @@ export function DesktopHeader({
           </button>
           <button
             type="button"
-          aria-label="Notifications"
-          className="relative grid h-11 w-11 place-items-center rounded-2xl border border-[var(--sb-border)] bg-white/[0.04] text-[var(--sb-gold)]"
-        >
+            onClick={() => onNavigate("notifications")}
+            aria-label="Notifications"
+            className="relative grid h-11 w-11 place-items-center rounded-2xl border border-[var(--sb-border)] bg-white/[0.04] text-[var(--sb-gold)]"
+          >
             {iconUrls.bell ? <AssetIcon src={iconUrls.bell} size={24} /> : <Bell className="h-5 w-5" />}
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-[var(--sb-red-bright)]" />
           </button>

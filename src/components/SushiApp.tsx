@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
+  Bell,
   Calendar,
   Check,
   ChefHat,
@@ -30,8 +31,9 @@ import {
   Utensils,
   X,
 } from "lucide-react";
+import { AboutStoryView, AtmosphereGalleryView, ChefsTeamView, SourcingIngredientsView } from "./about/AboutScreens";
 import { HomeView } from "./home/HomeView";
-import { AccountSettingsView, NotificationsView, PersonalInformationView, PrivacySecurityView } from "./account/AccountScreens";
+import { AccountSettingsView, PersonalInformationView, PrivacySecurityView } from "./account/AccountScreens";
 import {
   FaqArticleView,
   FavoritesView,
@@ -52,9 +54,11 @@ import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
+import { NotificationDetailView, NotificationsCenterView } from "./notifications/NotificationScreens";
 import { ProfileView } from "./profile/ProfileView";
 import type { GuestProfile } from "./profile/types";
 import { ReservationDetailsView } from "./reservations/ReservationDetailsView";
+import { CancelReservationView, ModifyReservationView } from "./reservations/ReservationManagementViews";
 import type { AppView, NavItem } from "./layout/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -99,7 +103,7 @@ import {
   type Reservation,
   type ReservationFormState,
 } from "../lib/reservation-utils";
-import type { AssetRef, Chef, Reward, SakePairing } from "../data/types";
+import type { AssetRef, Reward, SakePairing } from "../data/types";
 
 interface Notice {
   id: number;
@@ -115,8 +119,6 @@ const chefs = getChefs();
 const rewards = getRewards();
 const pairings = getPairings();
 const ambienceAssets = getAssetsByFolder("ambience");
-const editorialAssets = getAssetsByFolder("editorial");
-const ingredientAssets = getAssetsByFolder("ingredients");
 const masterChefsOmakaseExperience = getMasterChefsOmakaseExperience();
 const chefProfile = chefs.find((chef) => chef.id === "hiroshi-tanaka") ?? chefs[0];
 const profileImage = chefProfile.profileImage?.publicUrl ?? chefProfile.standingImage.publicUrl;
@@ -132,6 +134,7 @@ const desktopNav: NavItem[] = [
   { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
   { key: "about", label: "About Us", icon: ChefHat, assetIcon: iconAssets.about },
   { key: "contact", label: "Contact", icon: Mail, assetIcon: iconAssets.contact },
+  { key: "notifications", label: "Notifications", icon: Bell, assetIcon: iconAssets.bell },
 ];
 
 const mobileNav: NavItem[] = [
@@ -398,6 +401,22 @@ export default function SushiApp() {
     navigate("profile");
   };
 
+  /** Persists edits to the active reservation and returns guests to the details page. */
+  const updateReservation = (updatedReservation: Reservation) => {
+    setReservations((current) =>
+      current.map((reservation) => (reservation.id === updatedReservation.id ? updatedReservation : reservation))
+    );
+    showNotice("Reservation changes saved.", "success");
+    navigate("reservationDetails");
+  };
+
+  /** Removes a reservation after the cancellation confirmation flow is completed. */
+  const cancelReservation = (reservationId: number) => {
+    setReservations((current) => current.filter((reservation) => reservation.id !== reservationId));
+    showNotice("Reservation cancelled.", "success");
+    navigate("reservations");
+  };
+
   /** Validates checkout state and creates a mock order history entry. */
   const placeOrder = () => {
     if (cart.length === 0) {
@@ -604,6 +623,26 @@ export default function SushiApp() {
                 showNotice={showNotice}
               />
             ) : null}
+            {activeView === "modifyReservation" ? (
+              <ModifyReservationView
+                profile={profile}
+                reservations={reservations}
+                onCancelReservation={cancelReservation}
+                onNavigate={navigate}
+                onUpdateReservation={updateReservation}
+                showNotice={showNotice}
+              />
+            ) : null}
+            {activeView === "cancelReservation" ? (
+              <CancelReservationView
+                profile={profile}
+                reservations={reservations}
+                onCancelReservation={cancelReservation}
+                onNavigate={navigate}
+                onUpdateReservation={updateReservation}
+                showNotice={showNotice}
+              />
+            ) : null}
             {activeView === "orders" ? (
               <OrdersView
                 latestOrder={latestOrder ?? orderHistory[0] ?? null}
@@ -649,7 +688,8 @@ export default function SushiApp() {
               />
             ) : null}
             {activeView === "privacySecurity" ? <PrivacySecurityView onNavigate={navigate} /> : null}
-            {activeView === "notifications" ? <NotificationsView onNavigate={navigate} /> : null}
+            {activeView === "notifications" ? <NotificationsCenterView onNavigate={navigate} /> : null}
+            {activeView === "notificationDetail" ? <NotificationDetailView onNavigate={navigate} /> : null}
             {activeView === "help" ? <HelpCenterView onNavigate={navigate} /> : null}
             {activeView === "supportChat" ? <SupportChatView onNavigate={navigate} /> : null}
             {activeView === "faq" ? <FaqArticleView onNavigate={navigate} /> : null}
@@ -688,7 +728,10 @@ export default function SushiApp() {
                 }}
               />
             ) : null}
-            {activeView === "about" ? <AboutView chefs={chefs} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "about" || activeView === "aboutStory" ? <AboutStoryView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "chefsTeam" ? <ChefsTeamView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "sourcing" ? <SourcingIngredientsView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "atmosphere" ? <AtmosphereGalleryView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
             {activeView === "contact" ? <ContactView onNavigate={navigate} showNotice={showNotice} /> : null}
           </motion.div>
         </AnimatePresence>
@@ -2714,55 +2757,6 @@ function LoyaltyInfoCard({ action, copy, image, onAction, title }: { action: str
         <button type="button" onClick={onAction} className="mt-4 rounded-xl border border-[var(--sb-border)] px-4 py-2 text-xs uppercase tracking-[0.16em] text-[var(--sb-gold)]">{action}</button>
       </div>
     </section>
-  );
-}
-
-/** Renders the editorial restaurant story, sourcing cards, and chef lineup. */
-function AboutView({ chefs, onSelectItem }: { chefs: Chef[]; onSelectItem: (item: SushiMenuItem) => void }) {
-  return (
-    <div className="space-y-6">
-      <PageHero eyebrow="About Sushi Bliss" title="A Legacy Of Craft" copy="Rooted in tradition, shaped for the future, and paced around omotenashi." image={assetUrl(ambienceAssets[1], heroAsset.publicUrl)} />
-      <section className="grid gap-5 lg:grid-cols-3">
-        {[
-          { title: "Sourcing", image: ingredientAssets[1], copy: "Bluefin, uni, scallop, wasabi, and seasonal vegetables selected for balance." },
-          { title: "Omotenashi", image: ambienceAssets[0], copy: "Hospitality through pacing, attention, warmth, and quiet precision." },
-          { title: "Atmosphere", image: ambienceAssets[4], copy: "Black stone, lantern glow, smoke, sake, and a counter designed for memory." },
-        ].map((card) => (
-          <div key={card.title} className="luxury-panel overflow-hidden">
-            <div className="relative h-52"><Image src={assetUrl(card.image, heroAsset.publicUrl)} alt="" fill sizes="33vw" className="object-cover" /></div>
-            <div className="p-5"><h2 className="editorial-title text-2xl text-white">{card.title}</h2><p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">{card.copy}</p></div>
-          </div>
-        ))}
-      </section>
-      <section className="luxury-panel p-5 sm:p-6">
-        <SectionHeader eyebrow="Master Chefs" title="The Team" copy="Chef data is wired from the final package, including distinct standing and plating images." />
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {chefs.map((chef) => {
-            const signature = menuItems.find((item) => item.name === chef.sushi || item.name === chef.specialty);
-            return (
-              <article key={chef.id} className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
-                <div className="relative h-72">
-                  <Image src={chef.standingImage.publicUrl} alt="" fill sizes="280px" className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/92 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-semibold text-white">{chef.name}</h3>
-                    <p className="text-sm text-[var(--sb-gold)]">{chef.position}</p>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <p className="text-sm leading-6 text-[var(--sb-muted)]">{chef.about}</p>
-                  {signature ? (
-                    <Button variant="outline" className="mt-4 h-10 w-full rounded-xl border-[var(--sb-border)] bg-transparent text-[var(--sb-gold)]" onClick={() => onSelectItem(signature)}>
-                      View Signature
-                    </Button>
-                  ) : null}
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-    </div>
   );
 }
 

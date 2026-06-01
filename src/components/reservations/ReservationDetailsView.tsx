@@ -138,7 +138,7 @@ export function ReservationDetailsView({
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_1fr]">
-          <Button className="red-glow-button h-16 rounded-[16px] uppercase tracking-[0.16em]" onClick={() => onNavigate("reservations")}>
+          <Button className="red-glow-button h-16 rounded-[16px] uppercase tracking-[0.16em]" onClick={() => onNavigate("modifyReservation")}>
             <Pencil className="mr-3 h-5 w-5" />
             Modify Reservation
           </Button>
@@ -149,7 +149,10 @@ export function ReservationDetailsView({
           <Button
             variant="outline"
             className="h-16 rounded-[16px] border-[rgba(239,47,37,0.5)] bg-black/30 uppercase tracking-[0.16em] text-[var(--sb-red-bright)]"
-            onClick={() => showNotice("Cancellation flow is ready for confirmation.", "info")}
+            onClick={() => {
+              showNotice("Review the cancellation policy before confirming.", "info");
+              onNavigate("cancelReservation");
+            }}
           >
             <Trash2 className="mr-3 h-5 w-5" />
             Cancel Reservation
