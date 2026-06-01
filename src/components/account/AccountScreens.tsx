@@ -243,25 +243,6 @@ export function PrivacySecurityView({ onNavigate }: Pick<AccountScreenProps, "on
   );
 }
 
-/** Renders the notification preferences screen opened from account settings. */
-export function NotificationsView({ onNavigate }: Pick<AccountScreenProps, "onNavigate">) {
-  return (
-    <AccountScreenFrame title="Notifications" copy="Choose which Sushi Bliss updates should reach you." onBack={() => onNavigate("accountSettings")}>
-      <div className="mx-auto max-w-5xl space-y-5">
-        <section className="luxury-panel divide-y divide-[var(--sb-border)] overflow-hidden p-0">
-          <ToggleSettingRow icon={iconAssets.bell ? <AssetIcon src={iconAssets.bell} size={31} /> : <Globe2 className="h-7 w-7" />} title="Order Confirmations" copy="Get notified when your order status changes." defaultEnabled />
-          <ToggleSettingRow icon={iconAssets.calendar ? <AssetIcon src={iconAssets.calendar} size={31} /> : <Globe2 className="h-7 w-7" />} title="Reservation Reminders" copy="Receive reminders and updates about upcoming bookings." defaultEnabled />
-          <ToggleSettingRow icon={iconAssets.gift ? <AssetIcon src={iconAssets.gift} size={31} /> : <Globe2 className="h-7 w-7" />} title="Exclusive Offers" copy="Receive seasonal offers, omakase invitations, and member perks." defaultEnabled />
-        </section>
-        <section className="luxury-panel divide-y divide-[var(--sb-border)] overflow-hidden p-0">
-          <DisclosureSettingRow icon={iconAssets.loyalty ? <AssetIcon src={iconAssets.loyalty} size={31} /> : <Globe2 className="h-7 w-7" />} title="Bliss Rewards Updates" copy="Points balance and reward unlock alerts." value="On" />
-          <DisclosureSettingRow icon={iconAssets.email ? <AssetIcon src={iconAssets.email} size={31} /> : <Globe2 className="h-7 w-7" />} title="Newsletter" copy="Monthly stories from Sushi Bliss." value="Off" />
-        </section>
-      </div>
-    </AccountScreenFrame>
-  );
-}
-
 /** Provides a consistent account page frame with screenshot-like title spacing. */
 function AccountScreenFrame({ children, copy, onBack, title }: { children: ReactNode; copy: string; onBack: () => void; title: string }) {
   const [firstWord, ...restWords] = title.split(" ");

@@ -559,7 +559,7 @@ export function LocationDetailsView({ onNavigate }: Pick<ExperienceViewProps, "o
       </section>
       <section className="luxury-panel overflow-hidden p-0">
         <div className="relative min-h-[220px] p-6">
-          <Image src={featuredAssets.heroSushi.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-42" />
+          <Image src={featuredAssets.heroSushi.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-40" />
           <div className="relative z-10 max-w-lg">
             <h2 className="editorial-title text-4xl uppercase text-[var(--sb-gold)]">Sushi Bliss Downtown</h2>
             <p className="mt-5 flex gap-3 text-lg text-white/82">{iconAssets.mapPin ? <AssetIcon src={iconAssets.mapPin} size={26} /> : null}<span>1234 Robson Street<br />Vancouver, BC V6E 1C5<br />Canada</span></p>
