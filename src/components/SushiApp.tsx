@@ -154,6 +154,82 @@ function compactDate(dateValue: string): string {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+/** Builds a deterministic demo order so fresh sessions match the active-order references. */
+function createDemoOrderHistory(): OrderHistoryEntry[] {
+  const placedAt = new Date("2024-05-24T18:42:00").getTime();
+  const orderItems = [
+    getItemById("otoro-nigiri"),
+    getItemById("spicy-tuna-roll"),
+    getItemById("salmon-nigiri"),
+    getItemById("miso-soup"),
+  ].filter((item): item is SushiMenuItem => Boolean(item));
+  const subtotal = orderItems.reduce((sum, item) => sum + item.price, 0);
+
+  return [
+    {
+      id: 2024052401,
+      confirmationCode: "SB-2024-0524",
+      items: orderItems,
+      subtotal,
+      promoDiscount: 0,
+      tax: 6.49,
+      tip: 0,
+      total: 40.99,
+      method: "Visa **** 4242",
+      type: "Delivery",
+      ts: placedAt,
+      placedAt,
+      etaMinutes: 48,
+      fulfillmentTime: new Date("2024-05-24T19:30:00").getTime(),
+      deliveryAddress: appContent.member.deliveryAddress,
+      customerName: appContent.member.name,
+    },
+    {
+      id: 2024052101,
+      confirmationCode: "SB-84105",
+      items: [
+        getItemById("dragon-roll"),
+        getItemById("salmon-sashimi"),
+        getItemById("ikura-gunkan"),
+      ].filter((item): item is SushiMenuItem => Boolean(item)),
+      subtotal: 72.5,
+      promoDiscount: 0,
+      tax: 10,
+      tip: 10,
+      total: 92.5,
+      method: "Visa **** 4242",
+      type: "Pickup",
+      ts: new Date("2024-05-21T20:32:00").getTime(),
+      placedAt: new Date("2024-05-21T20:32:00").getTime(),
+      etaMinutes: 0,
+      fulfillmentTime: new Date("2024-05-21T21:05:00").getTime(),
+      deliveryAddress: "",
+      customerName: appContent.member.name,
+    },
+  ];
+}
+
+/** Builds the default upcoming reservation used before local user history exists. */
+function createDemoReservations(): Reservation[] {
+  return [
+    {
+      id: 2024052407,
+      datetime: "2024-05-24T19:00",
+      guests: 2,
+      name: appContent.member.name,
+      phone: appContent.member.phone,
+      seating: "Counter",
+      occasion: "Dinner",
+      notes: "Window-adjacent counter seating preferred.",
+      confirmationCode: "SB-RSV-0524",
+      createdAt: new Date("2024-05-20T12:00:00").getTime(),
+    },
+  ];
+}
+
+const demoOrderHistory = createDemoOrderHistory();
+const demoReservations = createDemoReservations();
+
 /** Coordinates app view state, persistence, ordering, reservations, and modals. */
 export default function SushiApp() {
   const [activeView, setActiveView] = useState<AppView>("home");
@@ -171,10 +247,10 @@ export default function SushiApp() {
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
   const [loyaltyPoints, setLoyaltyPoints] = useState(appContent.member.points);
   const [omakaseMood, setOmakaseMood] = useState<OmakaseMood>("Chef's Luxe");
-  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>(demoReservations);
   const [reservationForm, setReservationForm] = useState<ReservationFormState>(() => createDefaultReservationForm());
-  const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>([]);
-  const [latestOrder, setLatestOrder] = useState<OrderHistoryEntry | null>(null);
+  const [orderHistory, setOrderHistory] = useState<OrderHistoryEntry[]>(demoOrderHistory);
+  const [latestOrder, setLatestOrder] = useState<OrderHistoryEntry | null>(demoOrderHistory[0] ?? null);
   const [storageReady, setStorageReady] = useState(false);
   const [notices, setNotices] = useState<Notice[]>([]);
   const [profile, setProfile] = useState<GuestProfile>({
@@ -361,8 +437,16 @@ export default function SushiApp() {
         if (Array.isArray(ids)) setFavorites(ids.map(String));
       }
       if (savedProfile) setProfile((current) => ({ ...current, ...JSON.parse(savedProfile) }));
-      if (savedReservations) setReservations(hydrateReservations(JSON.parse(savedReservations)));
-      if (savedOrders) setOrderHistory(hydrateOrders(JSON.parse(savedOrders)));
+      if (savedReservations) {
+        const hydratedReservations = hydrateReservations(JSON.parse(savedReservations));
+        setReservations(hydratedReservations.length ? hydratedReservations : demoReservations);
+      }
+      if (savedOrders) {
+        const hydratedOrders = hydrateOrders(JSON.parse(savedOrders));
+        const nextOrders = hydratedOrders.length ? hydratedOrders : demoOrderHistory;
+        setOrderHistory(nextOrders);
+        setLatestOrder(nextOrders[0] ?? null);
+      }
       if (savedPoints) setLoyaltyPoints(Number(savedPoints));
     } catch {
       showNotice("Saved session could not be restored.", "error");
@@ -673,7 +757,7 @@ function MenuView({
 
   return (
     <div className="space-y-6">
-      <section className="lg:hidden">
+      <section className="md:hidden">
         {isSearchMode ? (
           <MobileSearchFilterMenu
             query={query}
@@ -705,7 +789,7 @@ function MenuView({
         )}
       </section>
 
-      <section className="hidden lg:block">
+      <section className="hidden md:block">
         <DesktopMenuDashboard
           activeCategory={activeCategory}
           deliveryFee={deliveryFee}
@@ -1143,7 +1227,7 @@ function DesktopMenuDashboard({
         </div>
         <section className="rounded-[14px] border border-[var(--sb-border)] bg-black/46 p-4">
           <MenuSectionHeading title="Chef's Specials" action="View Full Menu" />
-          <div className="mt-4 grid grid-cols-4 gap-4">
+          <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {featured.map((item, index) => (
               <MenuCard key={item.id} item={item} isFavorite={favorites.includes(item.id)} onAddToCart={onAddToCart} onSelectItem={onSelectItem} onToggleFavorite={onToggleFavorite} />
             ))}
@@ -1151,7 +1235,7 @@ function DesktopMenuDashboard({
         </section>
         <section className="rounded-[14px] border border-[var(--sb-border)] bg-black/46 p-4">
           <h2 className="mb-4 text-sm uppercase tracking-[0.16em] text-white">All Menu Items</h2>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-3 md:grid-cols-3">
             {allItems.slice(0, 9).map((item) => (
               <DesktopMenuCompactRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
             ))}
@@ -1567,7 +1651,7 @@ function ReservationsView({ form, reservations, profile, onFormChange, onSave, o
         onFormChange={onFormChange}
         onSave={onSave}
       />
-      <div className="hidden space-y-5 lg:block">
+      <div className="hidden space-y-5 md:block">
       <PageHero
         eyebrow="Reserve your experience."
         title="Reservations"
@@ -1725,7 +1809,7 @@ function MobileReservationsFlow({
   ];
 
   return (
-    <div className="space-y-7 lg:hidden">
+    <div className="space-y-7 md:hidden">
       <section className="relative -mx-4 min-h-[290px] overflow-hidden px-4 pb-6 pt-16">
         <Image src={assetUrl(ambienceAssets[2], heroAsset.publicUrl)} alt="" fill sizes="430px" className="object-cover opacity-50" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.42),rgba(0,0,0,0.95))]" />
@@ -1997,7 +2081,7 @@ function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { late
   return (
     <>
       <MobileOrdersView latestOrder={latestOrder} orderHistory={pastOrders} onNavigate={onNavigate} onReorder={onReorder} />
-      <div className="hidden space-y-5 lg:block">
+      <div className="hidden space-y-5 md:block">
         <PageHero
           eyebrow="Your orders, delivered with care."
           title="Orders"
@@ -2039,7 +2123,7 @@ function MobileOrdersView({
   onReorder: (items: SushiMenuItem[]) => void;
 }) {
   return (
-    <section className="space-y-7 lg:hidden">
+    <section className="space-y-7 md:hidden">
       <div className="pt-10 text-center">
         <h1 className="editorial-title text-[42px] leading-none text-white">
           My <span className="text-[var(--sb-gold)]">Orders</span>
@@ -2285,7 +2369,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
   return (
     <>
       <MobileLoyaltyView featuredRewards={featuredRewards} loyaltyPoints={loyaltyPoints} progressValue={progressValue} onNavigate={onNavigate} onRedeem={onRedeem} />
-      <div className="hidden space-y-5 lg:block">
+      <div className="hidden space-y-5 md:block">
       <section className="luxury-panel relative overflow-hidden p-5 sm:p-7">
         <Image src={heroAsset.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-70" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.72)_42%,rgba(0,0,0,0.34)_78%,rgba(0,0,0,0.84)_100%)]" />
@@ -2395,7 +2479,7 @@ function MobileLoyaltyView({
   const memberImage = getItemById("ikura-gunkan") ?? getItemById("salmon-nigiri") ?? menuItems[0];
 
   return (
-    <section className="space-y-5 lg:hidden">
+    <section className="space-y-5 md:hidden">
       <button type="button" aria-label="Back to profile" onClick={() => onNavigate("profile")} className="grid h-14 w-14 place-items-center rounded-full border border-[var(--sb-border)] bg-black/52 text-[var(--sb-gold)]">
         <ChevronRight className="h-5 w-5 rotate-180" />
       </button>
@@ -2616,7 +2700,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
   return (
     <>
       <MobileContactView location={location} hours={hours} socialLinks={socialLinks} onNavigate={onNavigate} showNotice={showNotice} />
-      <div className="hidden space-y-5 lg:block">
+      <div className="hidden space-y-5 md:block">
       <PageHero
         eyebrow="We'd love to hear from you"
         title="Contact Sushi Bliss"
@@ -2692,7 +2776,7 @@ function MobileContactView({
   const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
 
   return (
-    <section className="relative space-y-5 overflow-hidden pb-4 lg:hidden">
+    <section className="relative space-y-5 overflow-hidden pb-4 md:hidden">
       <Image src={assetUrl(contactHero, heroAsset.publicUrl)} alt="" fill sizes="100vw" className="-z-10 object-cover opacity-32" />
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.46)_0%,rgba(0,0,0,0.88)_30%,rgba(0,0,0,0.96)_100%)]" />
       <div className="pt-10">
