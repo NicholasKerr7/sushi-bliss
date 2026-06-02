@@ -115,6 +115,12 @@ import {
   type Reservation,
   type ReservationFormState,
 } from "../lib/reservation-utils";
+import {
+  createAppStateHref,
+  getAppUrlState,
+  getRelativeHrefFromLocation,
+  type AppUrlStatePatch,
+} from "../lib/app-url-state";
 import type { AssetRef, Reward, SakePairing } from "../data/types";
 
 interface Notice {
@@ -122,6 +128,8 @@ interface Notice {
   message: string;
   tone: "success" | "error" | "info";
 }
+
+type BrowserHistoryMode = "push" | "replace";
 
 const brand = getBrand();
 const appContent = getAppContent();
@@ -348,11 +356,50 @@ export default function SushiApp() {
     }, 3200);
   }, []);
 
-  /** Changes the active in-app view and returns the viewport to the top. */
-  const navigate = (view: AppView) => {
+  /** Writes view and detail-sheet state to browser history when a query value changes. */
+  const writeUrlState = useCallback((patch: AppUrlStatePatch, mode: BrowserHistoryMode) => {
+    if (typeof window === "undefined") return;
+
+    const nextHref = createAppStateHref(window.location.href, patch);
+    if (nextHref === getRelativeHrefFromLocation(window.location)) return;
+
+    if (mode === "replace") window.history.replaceState({ view: patch.view, itemId: patch.itemId }, "", nextHref);
+    else window.history.pushState({ view: patch.view, itemId: patch.itemId }, "", nextHref);
+  }, []);
+
+  /** Syncs the React screen state from the current URL and removes invalid query values. */
+  const syncStateFromUrl = useCallback((scrollToTop = false) => {
+    if (typeof window === "undefined") return;
+
+    const urlState = getAppUrlState(window.location.search);
+    const nextSelectedItem = urlState.itemId ? getItemById(urlState.itemId) ?? null : null;
+
+    setActiveView(urlState.view);
+    setSelectedItem(nextSelectedItem);
+    writeUrlState({ view: urlState.view, itemId: nextSelectedItem?.id ?? null }, "replace");
+
+    if (scrollToTop) window.scrollTo({ top: 0, behavior: "auto" });
+  }, [writeUrlState]);
+
+  /** Changes the active in-app view, clears transient detail sheets, and updates URL state. */
+  const navigate = useCallback((view: AppView, mode: BrowserHistoryMode = "push") => {
     setActiveView(view);
+    setSelectedItem(null);
+    writeUrlState({ view, itemId: null }, mode);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
-  };
+  }, [writeUrlState]);
+
+  /** Opens the menu detail sheet and gives that sheet a shareable item query state. */
+  const selectItem = useCallback((item: SushiMenuItem) => {
+    setSelectedItem(item);
+    writeUrlState({ itemId: item.id }, "push");
+  }, [writeUrlState]);
+
+  /** Closes the menu detail sheet and removes only the item query state. */
+  const closeSelectedItem = useCallback(() => {
+    setSelectedItem(null);
+    writeUrlState({ itemId: null }, "replace");
+  }, [writeUrlState]);
 
   /** Adds one or more menu items to the cart and awards lightweight mock points. */
   const addToCart = (item: SushiMenuItem, quantity = 1) => {
@@ -582,6 +629,16 @@ export default function SushiApp() {
     localStorage.setItem("sb_points", String(loyaltyPoints));
   }, [loyaltyPoints, storageReady]);
 
+  useEffect(() => {
+    syncStateFromUrl(false);
+
+    /** Restores screen state when guests use browser back or forward controls. */
+    const handlePopState = () => syncStateFromUrl(true);
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [syncStateFromUrl]);
+
   return (
     <AppShell
       brand={brand}
@@ -616,7 +673,7 @@ export default function SushiApp() {
                 onQueryChange={setQuery}
                 onCategoryChange={setActiveCategory}
                 onAddToCart={addToCart}
-                onSelectItem={setSelectedItem}
+                onSelectItem={selectItem}
               />
             ) : null}
             {activeView === "menu" ? (
@@ -638,7 +695,7 @@ export default function SushiApp() {
                 onDecreaseCartItem={decreaseCartItem}
                 onIncreaseCartItem={increaseCartItem}
                 onRemoveCartItem={removeCartItem}
-                onSelectItem={setSelectedItem}
+                onSelectItem={selectItem}
                 onShowCart={() => setShowCart(true)}
                 onToggleFavorite={toggleFavorite}
               />
@@ -658,11 +715,11 @@ export default function SushiApp() {
                 onFulfillmentChange={setFulfillment}
                 onNavigate={navigate}
                 onRemove={removeCartItem}
-                onSelectItem={setSelectedItem}
+                onSelectItem={selectItem}
                 onShowCart={() => setShowCart(true)}
               />
             ) : null}
-            {activeView === "pairings" ? <PairingsView items={menuItems} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "pairings" ? <PairingsView items={menuItems} onSelectItem={selectItem} /> : null}
             {activeView === "reservations" ? (
               <ReservationsView
                 form={reservationForm}
@@ -751,7 +808,7 @@ export default function SushiApp() {
                 loyaltyPoints={loyaltyPoints}
                 onProfileChange={setProfile}
                 onNavigate={navigate}
-                onSelectItem={setSelectedItem}
+                onSelectItem={selectItem}
               />
             ) : null}
             {activeView === "personalInformation" ? (
@@ -842,10 +899,10 @@ export default function SushiApp() {
                 favorites={favoriteItems}
                 onAddToCart={addToCart}
                 onNavigate={navigate}
-                onSelectItem={setSelectedItem}
+                onSelectItem={selectItem}
               />
             ) : null}
-            {activeView === "recentlyViewed" ? <RecentlyViewedView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "recentlyViewed" ? <RecentlyViewedView onNavigate={navigate} onSelectItem={selectItem} /> : null}
             {activeView === "omakase" ? <OmakaseExperienceView onNavigate={navigate} /> : null}
             {activeView === "omakasePackageReview" ? <OmakasePackageReviewView onNavigate={navigate} /> : null}
             {activeView === "loyalty" ? (
@@ -864,10 +921,10 @@ export default function SushiApp() {
                 onRedeem={redeemReward}
               />
             ) : null}
-            {activeView === "about" || activeView === "aboutStory" ? <AboutStoryView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
-            {activeView === "chefsTeam" ? <ChefsTeamView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
-            {activeView === "sourcing" ? <SourcingIngredientsView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
-            {activeView === "atmosphere" ? <AtmosphereGalleryView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
+            {activeView === "about" || activeView === "aboutStory" ? <AboutStoryView onNavigate={navigate} onSelectItem={selectItem} /> : null}
+            {activeView === "chefsTeam" ? <ChefsTeamView onNavigate={navigate} onSelectItem={selectItem} /> : null}
+            {activeView === "sourcing" ? <SourcingIngredientsView onNavigate={navigate} onSelectItem={selectItem} /> : null}
+            {activeView === "atmosphere" ? <AtmosphereGalleryView onNavigate={navigate} onSelectItem={selectItem} /> : null}
             {activeView === "contact" ? <ContactView onNavigate={navigate} showNotice={showNotice} /> : null}
           </motion.div>
         </AnimatePresence>
@@ -878,13 +935,13 @@ export default function SushiApp() {
           <ProductDetailModal
             item={selectedItem}
             isFavorite={favorites.includes(selectedItem.id)}
-            onClose={() => setSelectedItem(null)}
+            onClose={closeSelectedItem}
             onAddToCart={(item, quantity) => {
               addToCart(item, quantity);
-              setSelectedItem(null);
+              closeSelectedItem();
             }}
             onToggleFavorite={toggleFavorite}
-            onSelectItem={setSelectedItem}
+            onSelectItem={selectItem}
           />
         ) : null}
       </AnimatePresence>

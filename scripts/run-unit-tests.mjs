@@ -17,6 +17,7 @@ try {
       path.join(projectRoot, "src/data/menu.ts"),
       path.join(projectRoot, "src/data/selectors.ts"),
       path.join(projectRoot, "src/lib/cart-utils.ts"),
+      path.join(projectRoot, "src/lib/app-url-state.ts"),
       path.join(projectRoot, "src/lib/menu-utils.ts"),
       path.join(projectRoot, "src/lib/omakase-utils.ts"),
       path.join(projectRoot, "src/lib/order-utils.ts"),
@@ -46,6 +47,13 @@ try {
 
   const { sushiMenuData } = await importFromOutdir("data/menu.js");
   const { getAppContent, getMasterChefsOmakaseExperience, getReservationExperiences } = await importFromOutdir("data/selectors.js");
+  const {
+    APP_VIEW_QUERY_PARAM,
+    MENU_ITEM_QUERY_PARAM,
+    createAppStateHref,
+    getAppUrlState,
+    getRelativeHrefFromLocation,
+  } = await importFromOutdir("lib/app-url-state.js");
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
   const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
@@ -113,6 +121,49 @@ try {
 
   test("groupCartItems returns empty array for empty cart", () => {
     assert.deepStrictEqual(groupCartItems([]), []);
+  });
+
+  // app-url-state tests
+  test("getAppUrlState reads valid app views and selected item ids", () => {
+    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri`);
+
+    assert.strictEqual(state.view, "giftExperience");
+    assert.strictEqual(state.itemId, "otoro-nigiri");
+  });
+
+  test("getAppUrlState falls back to home for unsupported views", () => {
+    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=legacy-page`);
+
+    assert.strictEqual(state.view, "home");
+    assert.strictEqual(state.itemId, null);
+  });
+
+  test("createAppStateHref writes view and item query state without dropping existing params", () => {
+    const href = createAppStateHref("/?campaign=sakura", {
+      view: "giftCheckout",
+      itemId: "dragon-roll",
+    });
+
+    assert.strictEqual(href, "/?campaign=sakura&view=giftCheckout&item=dragon-roll");
+  });
+
+  test("createAppStateHref removes default view and closed item state", () => {
+    const href = createAppStateHref("/?campaign=sakura&view=giftCheckout&item=dragon-roll#order", {
+      view: "home",
+      itemId: null,
+    });
+
+    assert.strictEqual(href, "/?campaign=sakura#order");
+  });
+
+  test("getRelativeHrefFromLocation normalizes browser locations for history comparisons", () => {
+    const href = getRelativeHrefFromLocation({
+      pathname: "/",
+      search: "?view=menu",
+      hash: "#top",
+    });
+
+    assert.strictEqual(href, "/?view=menu#top");
   });
 
   // menu-utils tests
