@@ -84,7 +84,7 @@
       "specialty": "Otoro Nigiri",
       "sashimi": "Tuna Sashimi",
       "sushi": "Deluxe Toro Caviar Nigiri",
-      "about": "Founder and head chef of Sushi Bliss. Hiroshi is the older leader figure and guides the counter with Edomae discipline, bluefin precision, calm authority, and luxury restraint.",
+      "about": "Founder and head chef Hiroshi Tanaka brings decades of Edomae training to Sushi Bliss, guiding the counter with calm precision, restrained seasoning, and daily market-inspired sourcing.",
       "standingImage": {
         "filePath": "public/assets/chefs/hiroshi-tanaka-head-chef-standing.webp",
         "publicUrl": "/assets/chefs/hiroshi-tanaka-head-chef-standing.webp"
@@ -107,7 +107,7 @@
       "specialty": "Seared Sushi Special",
       "sashimi": "Hamachi Sashimi",
       "sushi": "Seared Beef Nigiri",
-      "about": "Sous chef focused on heat, timing, and finishing work. Kenji should remain visually distinct from the lead chef through his younger profile, cap styling, and clean station discipline.",
+      "about": "Sous chef Kenji Sato leads the hot kitchen and finishing station, balancing seared courses, sauces, and timing so each omakase sequence arrives with clean rhythm and warmth.",
       "standingImage": {
         "filePath": "public/assets/chefs/kenji-sato-sous-chef-standing.webp",
         "publicUrl": "/assets/chefs/kenji-sato-sous-chef-standing.webp"
@@ -127,7 +127,7 @@
       "specialty": "Omakase Nigiri Flight",
       "sashimi": "Red Snapper Sashimi",
       "sushi": "Dragon Roll",
-      "about": "Lead sushi chef responsible for knife work, pacing, and service rhythm. Ren is the distinct middle-aged chef without the same look as the sous chef, with a refined senior presence and exacting plating style.",
+      "about": "Lead sushi chef Ren Mori shapes the counter's knife work and service pacing, translating seasonal fish into precise nigiri, sashimi, and composed plates with quiet confidence.",
       "standingImage": {
         "filePath": "public/assets/chefs/ren-mori-lead-chef-standing.webp",
         "publicUrl": "/assets/chefs/ren-mori-lead-chef-standing.webp"
@@ -147,7 +147,7 @@
       "specialty": "Matcha Signature Dessert",
       "sashimi": "Scallop Sashimi",
       "sushi": "Salmon Temari Sushi",
-      "about": "Pastry chef and the lady chef in the team lineup. Aiko closes the omakase journey with matcha, citrus, black sesame, and delicate architectural dessert work.",
+      "about": "Pastry chef Aiko Nakamura creates the final movement of the meal with matcha, yuzu, black sesame, and delicate textures that close the omakase experience cleanly.",
       "standingImage": {
         "filePath": "public/assets/chefs/aiko-nakamura-pastry-chef-standing.webp",
         "publicUrl": "/assets/chefs/aiko-nakamura-pastry-chef-standing.webp"
