@@ -62,6 +62,7 @@ import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
+import { MemberPassRewardsView } from "./loyalty/MemberPassRewardsView";
 import { NotificationDetailView, NotificationsCenterView } from "./notifications/NotificationScreens";
 import { LiveOrderTrackingView } from "./orders/LiveOrderTrackingView";
 import { ProfileView } from "./profile/ProfileView";
@@ -159,7 +160,7 @@ const mobileNav: NavItem[] = [
 
 /** Builds the contextual desktop nav used by screenshot groups with section-specific tabs. */
 function getDesktopNavItems(activeView: AppView): NavItem[] {
-  if (activeView === "loyalty") {
+  if (activeView === "loyalty" || activeView === "memberPass") {
     return [...baseDesktopNav.slice(0, 4), loyaltyDesktopNavItem, ...baseDesktopNav.slice(4)];
   }
   if (activeView === "orders" || activeView === "orderTracking") {
@@ -350,6 +351,18 @@ export default function SushiApp() {
     setCart((current) => [...current, ...Array.from({ length: quantity }, () => item)]);
     setLoyaltyPoints((points) => points + quantity * 5);
     showNotice(`${item.name} added to your order.`, "success");
+  };
+
+  /** Redeems a loyalty reward and adds matching menu rewards to the cart when available. */
+  const redeemReward = (reward: Reward) => {
+    const rewardItem = getItemById(reward.id);
+    if (loyaltyPoints < reward.points) {
+      showNotice("More points are needed for that reward.", "error");
+      return;
+    }
+    setLoyaltyPoints((points) => points - reward.points);
+    if (rewardItem) addToCart(rewardItem, 1);
+    showNotice(`${reward.title} redeemed.`, "success");
   };
 
   /** Adds the generated omakase set to the cart as a bundled tasting order. */
@@ -830,16 +843,15 @@ export default function SushiApp() {
                 loyaltyPoints={loyaltyPoints}
                 rewards={rewards}
                 onNavigate={navigate}
-                onRedeem={(reward) => {
-                  const rewardItem = getItemById(reward.id);
-                  if (loyaltyPoints < reward.points) {
-                    showNotice("More points are needed for that reward.", "error");
-                    return;
-                  }
-                  setLoyaltyPoints((points) => points - reward.points);
-                  if (rewardItem) addToCart(rewardItem, 1);
-                  showNotice(`${reward.title} redeemed.`, "success");
-                }}
+                onRedeem={redeemReward}
+              />
+            ) : null}
+            {activeView === "memberPass" ? (
+              <MemberPassRewardsView
+                loyaltyPoints={loyaltyPoints}
+                rewards={rewards}
+                onNavigate={navigate}
+                onRedeem={redeemReward}
               />
             ) : null}
             {activeView === "about" || activeView === "aboutStory" ? <AboutStoryView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
@@ -2625,11 +2637,11 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[320px_1fr]">
-        <MemberPassCard />
+        <MemberPassCard onNavigate={onNavigate} />
         <div className="luxury-panel p-5">
           <div className="flex items-center justify-between gap-4">
             <h2 className="editorial-title text-xl text-white">Redeem Your Points</h2>
-            <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all rewards</button>
+            <button type="button" onClick={() => onNavigate("memberPass")} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all rewards</button>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             {featuredRewards.map((reward) => (
@@ -2679,7 +2691,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
       <section className="luxury-panel p-5">
         <div className="flex items-center justify-between gap-4">
           <h2 className="editorial-title text-xl text-white">Recent Rewards Activity</h2>
-          <button type="button" className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all activity</button>
+          <button type="button" onClick={() => onNavigate("memberPass")} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all activity</button>
         </div>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           {[
@@ -2754,10 +2766,10 @@ function MobileLoyaltyView({
       </section>
       <div className="grid grid-cols-4 gap-3">
         {[
-          { icon: iconAssets.gift, title: "Available Rewards", copy: "Browse & Redeem", target: "offers" as AppView },
+          { icon: iconAssets.gift, title: "Available Rewards", copy: "Browse & Redeem", target: "memberPass" as AppView },
           { icon: iconAssets.crown, title: "Benefits", copy: "Exclusive Member Perks", target: "giftExperience" as AppView },
           { icon: iconAssets.clock, title: "Activity", copy: "Track Your Points", target: "recentlyViewed" as AppView },
-          { icon: iconAssets.qr, title: "Member Pass", copy: "Show Your Digital Pass", target: "referral" as AppView },
+          { icon: iconAssets.qr, title: "Member Pass", copy: "Show Your Digital Pass", target: "memberPass" as AppView },
         ].map((action) => (
           <button key={action.title} type="button" onClick={() => onNavigate(action.target)} className="min-h-[128px] rounded-[16px] border border-[var(--sb-border)] bg-black/44 p-3 text-center">
             {action.icon ? <AssetIcon src={action.icon} size={36} className="mx-auto" /> : null}
@@ -2824,9 +2836,9 @@ function MemberStatusCard({ loyaltyPoints, progressValue }: { loyaltyPoints: num
 }
 
 /** Renders the scannable member pass panel using the packaged QR icon asset. */
-function MemberPassCard() {
+function MemberPassCard({ onNavigate }: { onNavigate: (view: AppView) => void }) {
   return (
-    <section className="luxury-panel p-5">
+    <button type="button" onClick={() => onNavigate("memberPass")} className="luxury-panel block w-full p-5 text-left transition hover:border-[var(--sb-gold)]">
       <h2 className="editorial-title text-xl text-white">Your Member Pass</h2>
       <p className="mt-1 text-sm text-[var(--sb-muted)]">Scan to earn and redeem.</p>
       <div className="mt-5 grid gap-4 sm:grid-cols-[132px_1fr] xl:block">
@@ -2841,7 +2853,7 @@ function MemberPassCard() {
           <p>Jan 15, 2024</p>
         </div>
       </div>
-    </section>
+    </button>
   );
 }
 

@@ -39,6 +39,7 @@ const profileSubViews: AppView[] = [
   "favorites",
   "recentlyViewed",
   "reservationHistory",
+  "memberPass",
 ];
 
 const reservationSubViews: AppView[] = [

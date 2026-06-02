@@ -72,7 +72,8 @@ export function AppShell({
           activeView !== "orderTracking" &&
           activeView !== "reservationReview" &&
           activeView !== "reservationConfirmation" &&
-          activeView !== "omakasePackageReview"
+          activeView !== "omakasePackageReview" &&
+          activeView !== "memberPass"
         }
         onNavigate={onNavigate}
       />

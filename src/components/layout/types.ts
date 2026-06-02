@@ -40,6 +40,7 @@ export type AppView =
   | "omakase"
   | "omakasePackageReview"
   | "loyalty"
+  | "memberPass"
   | "about"
   | "aboutStory"
   | "chefsTeam"

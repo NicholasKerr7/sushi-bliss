@@ -20,6 +20,7 @@ interface DesktopHeaderProps {
 }
 
 const aboutSubViews: AppView[] = ["about", "aboutStory", "chefsTeam", "sourcing", "atmosphere"];
+const loyaltySubViews: AppView[] = ["loyalty", "memberPass"];
 const reservationSubViews: AppView[] = [
   "reservations",
   "reservationReview",
@@ -38,6 +39,7 @@ function isDesktopNavActive(item: NavItem, activeView: AppView): boolean {
   const targetView = item.target ?? item.key;
   if (targetView === activeView) return true;
   if (targetView === "about") return aboutSubViews.includes(activeView);
+  if (targetView === "loyalty") return loyaltySubViews.includes(activeView);
   if (targetView === "reservations") return reservationSubViews.includes(activeView);
   if (targetView === "notifications") return notificationSubViews.includes(activeView);
   if (targetView === "orders") return orderSubViews.includes(activeView);
