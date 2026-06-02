@@ -67,7 +67,13 @@ export function AppShell({
       <BottomNav
         items={mobileNavItems}
         activeView={activeView}
-        floating={activeView !== "home" && activeView !== "orderTracking" && activeView !== "reservationReview" && activeView !== "reservationConfirmation"}
+        floating={
+          activeView !== "home" &&
+          activeView !== "orderTracking" &&
+          activeView !== "reservationReview" &&
+          activeView !== "reservationConfirmation" &&
+          activeView !== "omakasePackageReview"
+        }
         onNavigate={onNavigate}
       />
     </div>

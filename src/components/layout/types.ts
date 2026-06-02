@@ -38,6 +38,7 @@ export type AppView =
   | "favorites"
   | "recentlyViewed"
   | "omakase"
+  | "omakasePackageReview"
   | "loyalty"
   | "about"
   | "aboutStory"

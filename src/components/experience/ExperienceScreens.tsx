@@ -155,7 +155,7 @@ export function OmakaseExperienceView({ onNavigate }: Pick<ExperienceViewProps, 
         </div>
       </section>
 
-      <Button className="red-glow-button h-16 rounded-[16px] text-base uppercase tracking-[0.18em]" onClick={() => onNavigate("reservationDetails")}>
+      <Button className="red-glow-button h-16 rounded-[16px] text-base uppercase tracking-[0.18em]" onClick={() => onNavigate("omakasePackageReview")}>
         Choose Experience
         <ChevronRight className="ml-3 h-5 w-5" />
       </Button>

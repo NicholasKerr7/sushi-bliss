@@ -57,6 +57,7 @@ import {
   ReferralView,
   SupportChatView,
 } from "./experience/ExperienceScreens";
+import { OmakasePackageReviewView } from "./experience/OmakasePackageReviewView";
 import { AssetIcon } from "./icons/AssetIcon";
 import { AppShell } from "./layout/AppShell";
 import { PageContainer } from "./layout/PageContainer";
@@ -823,6 +824,7 @@ export default function SushiApp() {
             ) : null}
             {activeView === "recentlyViewed" ? <RecentlyViewedView onNavigate={navigate} onSelectItem={setSelectedItem} /> : null}
             {activeView === "omakase" ? <OmakaseExperienceView onNavigate={navigate} /> : null}
+            {activeView === "omakasePackageReview" ? <OmakasePackageReviewView onNavigate={navigate} /> : null}
             {activeView === "loyalty" ? (
               <LoyaltyView
                 loyaltyPoints={loyaltyPoints}
