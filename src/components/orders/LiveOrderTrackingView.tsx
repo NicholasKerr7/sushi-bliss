@@ -26,7 +26,8 @@ interface TrackingStage {
 
 const appContent = getAppContent();
 const iconAssets = getSushiIconAssets();
-const trackingMap = getAssetById("live-tracking-map-card")?.publicUrl ?? getAssetById("sushi-bliss-tokyo-map-transparent")?.publicUrl;
+const embeddedTrackingMap = getAssetById("live-delivery-tracking-map")?.publicUrl;
+const trackingMap = embeddedTrackingMap ?? getAssetById("live-tracking-map-card")?.publicUrl ?? getAssetById("sushi-bliss-tokyo-map-transparent")?.publicUrl;
 
 /** Renders the dedicated live-order tracking page from the mobile and tablet references. */
 export function LiveOrderTrackingView({ order, profileImage, onNavigate, onReorder }: LiveOrderTrackingViewProps) {
@@ -86,23 +87,36 @@ export function LiveOrderTrackingView({ order, profileImage, onNavigate, onReord
       </section>
 
       <section className="relative min-h-[300px] overflow-hidden rounded-[18px] border border-[var(--sb-border)] bg-black/54 md:min-h-[360px]">
-        {trackingMap ? <Image src={trackingMap} alt="" fill priority sizes="100vw" className="object-cover opacity-86" /> : null}
+        {trackingMap ? (
+          <Image
+            src={trackingMap}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={`${embeddedTrackingMap ? "object-contain" : "object-cover"} opacity-95`}
+          />
+        ) : null}
         <div className="absolute inset-0 bg-gradient-to-b from-black/6 via-transparent to-black/34" />
-        <div className="absolute bottom-5 left-5 rounded-[10px] border border-[var(--sb-border)] bg-black/62 px-4 py-2 text-xs text-[var(--sb-gold)] backdrop-blur-xl">
-          Real-time updates
-        </div>
-        <div className="absolute right-4 top-1/2 grid -translate-y-1/2 gap-2 rounded-[14px] border border-[var(--sb-border)] bg-black/62 p-2 text-[var(--sb-gold)] backdrop-blur-xl">
-          <button type="button" aria-label="Zoom in" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><Plus className="h-5 w-5" /></button>
-          <button type="button" aria-label="Zoom out" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><Minus className="h-5 w-5" /></button>
-          <button type="button" aria-label="Recenter map" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><LocateFixed className="h-5 w-5" /></button>
-        </div>
+        {!embeddedTrackingMap ? (
+          <>
+            <div className="absolute bottom-5 left-5 rounded-[10px] border border-[var(--sb-border)] bg-black/62 px-4 py-2 text-xs text-[var(--sb-gold)] backdrop-blur-xl">
+              Real-time updates
+            </div>
+            <div className="absolute right-4 top-1/2 grid -translate-y-1/2 gap-2 rounded-[14px] border border-[var(--sb-border)] bg-black/62 p-2 text-[var(--sb-gold)] backdrop-blur-xl">
+              <button type="button" aria-label="Zoom in" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><Plus className="h-5 w-5" /></button>
+              <button type="button" aria-label="Zoom out" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><Minus className="h-5 w-5" /></button>
+              <button type="button" aria-label="Recenter map" className="grid h-10 w-10 place-items-center rounded-[10px] hover:bg-white/[0.06]"><LocateFixed className="h-5 w-5" /></button>
+            </div>
+          </>
+        ) : null}
       </section>
 
       <TrackingTimeline order={order} />
 
       <section className="luxury-panel grid gap-5 p-4 md:grid-cols-[1fr_1.1fr_0.8fr] md:p-6">
         <div className="grid grid-cols-[86px_1fr] gap-4">
-          <Image src={profileImage} alt="" width={86} height={86} className="h-[86px] w-[86px] rounded-full border border-[var(--sb-gold)] object-cover" />
+          <Image src={iconAssets.riderAvatar ?? profileImage} alt="Kenji Sato courier" width={86} height={86} className="h-[86px] w-[86px] rounded-full border border-[var(--sb-gold)] object-cover" />
           <div>
             <p className="text-sm text-[var(--sb-gold)]">Your Courier</p>
             <h2 className="editorial-title mt-1 text-3xl text-white">Kenji Sato</h2>

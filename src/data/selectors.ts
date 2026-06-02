@@ -41,7 +41,8 @@ export function getAssetsByFolder(folder: string): AssetManifestEntry[] {
 
 /** Finds a single manifest asset by stable generated asset id. */
 export function getAssetById(id: string): AssetManifestEntry | undefined {
-  return data.assets.find((asset) => asset.id === id);
+  const matches = data.assets.filter((asset) => asset.id === id);
+  return matches.find((asset) => asset.folder.includes("/")) ?? matches[0];
 }
 
 /** Returns all normalized menu items. */

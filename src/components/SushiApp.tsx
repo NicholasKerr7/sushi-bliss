@@ -2901,7 +2901,7 @@ function LoyaltyInfoCard({ action, copy, image, onAction, title }: { action: str
 
 /** Renders contact details and validates private event inquiries. */
 function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) => void; showNotice: (message: string, tone?: Notice["tone"]) => void }) {
-  const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
+  const contactHero = getAssetById("elegant-table-setting-with-candlelight-and-berries") ?? getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
   const { hours, location } = appContent;
   const socialLinks = [
     { label: "Instagram", icon: iconAssets.instagram },
@@ -2985,7 +2985,7 @@ function MobileContactView({
   onNavigate: (view: AppView) => void;
   showNotice: (message: string, tone?: Notice["tone"]) => void;
 }) {
-  const contactHero = getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
+  const contactHero = getAssetById("elegant-table-setting-with-candlelight-and-berries") ?? getAssetById("sushi-bliss-ambience-detail") ?? ambienceAssets[0];
 
   return (
     <section className="relative space-y-5 overflow-hidden pb-4 md:hidden">
@@ -3091,7 +3091,7 @@ function ContactInfoCard({ action, icon, lines, socialLinks, title }: { action?:
 
 /** Renders the dark map module from the contact references without external map dependencies. */
 function ContactMapCard() {
-  const mapAsset = getAssetById("sushi-bliss-tokyo-map-transparent");
+  const mapAsset = getAssetById("tokyo-city-map-with-sushi-markers") ?? getAssetById("sushi-bliss-tokyo-map-transparent");
 
   return (
     <section className="luxury-panel relative min-h-[280px] overflow-hidden p-5" aria-label="Sushi Bliss Tokyo map">

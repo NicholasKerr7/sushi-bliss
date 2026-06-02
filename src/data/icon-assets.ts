@@ -2,6 +2,7 @@ import { getAssetById } from "./selectors";
 
 export const sushiIconAssetIds = {
   about: "chef-crest-icon",
+  alert: "gold-alert-icon",
   bag: "takeaway-bag-icon",
   bell: "notification-bell-icon",
   calendar: "calendar-icon",
@@ -38,11 +39,13 @@ export const sushiIconAssetIds = {
   profile: "user-icon",
   qr: "qr-code-icon",
   reservations: "calendar-icon",
+  riderAvatar: "delivery-rider-avatar",
   sashimi: "sashimi-icon",
   search: "search-icon",
   settings: "user-settings-icon",
   share: "share-icon",
   star: "star-icon",
+  ticket: "golden-ticket-icon",
   x: "x-icon",
 } as const;
 

@@ -31,7 +31,6 @@ const featuredAssets = getFeaturedAssets();
 const menuItems = getMenuItems();
 const chefs = getChefs();
 const ambienceAssets = getAssetsByFolder("ambience");
-const ingredientAssets = getAssetsByFolder("ingredients");
 const iconAssets = getSushiIconAssets();
 
 /** Resolves a packaged asset into a public URL with the hero image as a safe fallback. */
@@ -161,26 +160,26 @@ function StoryImageCard({
 
 /** Recreates the Our Story screenshot as a full-width responsive app page. */
 export function AboutStoryView({ onNavigate }: AboutScreenProps) {
-  const heroImage = assetUrl(getAssetById("sushi-bliss-master-chef-team") ?? getAssetById("hiroshi-tanaka-head-chef-plating"));
+  const heroImage = assetUrl(getAssetById("precision-in-sushi-preparation") ?? getAssetById("sushi-bliss-master-chef-team") ?? getAssetById("hiroshi-tanaka-head-chef-plating"));
   const storyCards = [
     {
       title: "Rooted In Heritage",
       copy: "Inspired by generations of Japanese culinary mastery, we source the finest seafood and authentic ingredients.",
-      image: assetUrl(getItemById("otoro-nigiri")?.image),
+      image: assetUrl(getAssetById("luxury-nigiri-with-gold-and-caviar") ?? getItemById("otoro-nigiri")?.image),
       icon: iconAssets.flower,
       target: "sourcing" as AppView,
     },
     {
       title: "Omotenashi",
       copy: "Every moment is thoughtful, personal, and unforgettable.",
-      image: assetUrl(getAssetById("moody-japanese-inspired-dining-ambiance-at-night")),
+      image: assetUrl(getAssetById("intimate-upscale-dining-room-setting") ?? getAssetById("moody-japanese-inspired-dining-ambiance-at-night")),
       icon: iconAssets.dining,
       target: "atmosphere" as AppView,
     },
     {
       title: "Atmosphere",
       copy: "Music, plating, lantern light, and stone detail create a serene escape.",
-      image: assetUrl(getAssetById("intimate-sushi-bar-dining-experience")),
+      image: assetUrl(getAssetById("serene-illuminated-courtyard-with-red-blossoms") ?? getAssetById("intimate-sushi-bar-dining-experience")),
       icon: iconAssets.flower,
       target: "atmosphere" as AppView,
     },
@@ -305,42 +304,42 @@ function getSourcingCards() {
       title: "Premium Fish",
       copy: "Sustainably sourced seafood, selected for peak freshness and flavor.",
       source: "Toyosu Market, Japan",
-      image: assetUrl(getAssetById("sourcing-bluefin-tuna-on-ice") ?? ingredientAssets.find((asset) => asset.id === "bluefin-tuna-whole")),
+      image: assetUrl(getAssetById("sashimi-slice-with-chopsticks-in-hand") ?? getAssetById("sourcing-bluefin-tuna-on-ice")),
       icon: iconAssets.sashimi,
     },
     {
       title: "Japanese Rice",
       copy: "Koshihikari rice, perfectly seasoned to enhance every bite.",
       source: "Niigata Prefecture, Japan",
-      image: assetUrl(getAssetById("premium-sushi-preparation-still-life")),
+      image: assetUrl(getAssetById("steaming-bowl-of-rice-on-rustic-surface") ?? getAssetById("premium-sushi-preparation-still-life")),
       icon: iconAssets.dining,
     },
     {
       title: "Wasabi",
       copy: "Authentic wasabi, freshly grated for clean heat and aroma.",
       source: "Shizuoka, Japan",
-      image: assetUrl(getAssetById("premium-ingredients-wasabi-herbs")),
+      image: assetUrl(getAssetById("wasabi-root-on-wooden-tray") ?? getAssetById("premium-ingredients-wasabi-herbs")),
       icon: iconAssets.flower,
     },
     {
       title: "Nori Seaweed",
       copy: "Crisp, umami-rich nori sourced from pristine coastal waters.",
       source: "Ariake Sea, Japan",
-      image: assetUrl(getAssetById("premium-sushi-preparation-still-life")),
+      image: assetUrl(getAssetById("stack-of-nori-on-dark-plate") ?? getAssetById("premium-sushi-preparation-still-life")),
       icon: iconAssets.star,
     },
     {
       title: "Soy Sauce",
       copy: "Artisanal soy sauce brewed with tradition for depth and balance.",
       source: "Yamakawa, Japan",
-      image: assetUrl(getAssetById("sake-vase-set-rounded-ceramic")),
+      image: assetUrl(getAssetById("minimalist-ceramic-still-life-with-sake-carafe") ?? getAssetById("sake-vase-set-rounded-ceramic")),
       icon: iconAssets.gift,
     },
     {
       title: "Sustainability",
       copy: "Responsible suppliers who share our commitment to the planet.",
       source: "Responsible sourcing",
-      image: assetUrl(ingredientAssets.find((asset) => asset.id === "vegetable-medley")),
+      image: assetUrl(getAssetById("nurturing-new-life-from-soil")),
       icon: iconAssets.check,
     },
   ];
@@ -357,7 +356,7 @@ export function SourcingIngredientsView({ onNavigate }: AboutScreenProps) {
         title="Premium Ingredients."
         accent="Trusted Sourcing."
         copy="Exceptional dining begins with exceptional ingredients. We source the world's finest while honoring sustainability and integrity."
-        image={assetUrl(getAssetById("premium-sushi-preparation-still-life"))}
+        image={assetUrl(getAssetById("luxury-sushi-platter-on-marble-surface") ?? getAssetById("premium-sushi-preparation-still-life"))}
         actions={[{ label: "Meet Our Chef", onClick: () => onNavigate("chefsTeam"), variant: "secondary" }]}
       />
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
@@ -410,31 +409,31 @@ function getAtmosphereCards() {
     {
       title: "Sushi Bar",
       copy: "Front Row Excellence",
-      image: assetUrl(getAssetById("elegant-sushi-bar-ambience-at-night")),
+      image: assetUrl(getAssetById("elegant-sushi-bar-with-amber-lighting") ?? getAssetById("elegant-sushi-bar-ambience-at-night")),
       icon: iconAssets.flower,
     },
     {
       title: "Private Dining",
       copy: "Intimate & Exclusive",
-      image: assetUrl(getAssetById("moody-japanese-inspired-dining-ambiance-at-night")),
+      image: assetUrl(getAssetById("intimate-upscale-dining-room-setting") ?? getAssetById("moody-japanese-inspired-dining-ambiance-at-night")),
       icon: iconAssets.dining,
     },
     {
       title: "Ambience",
       copy: "Timeless Atmosphere",
-      image: assetUrl(getAssetById("rooftop-dining-in-a-japanese-haven")),
+      image: assetUrl(getAssetById("serene-illuminated-courtyard-with-red-blossoms") ?? getAssetById("rooftop-dining-in-a-japanese-haven")),
       icon: iconAssets.flower,
     },
     {
       title: "Chef's Counter",
       copy: "Crafted with Passion",
-      image: assetUrl(getAssetById("sushi-bliss-master-chef-team")),
+      image: assetUrl(getAssetById("precision-in-sushi-preparation") ?? getAssetById("sushi-bliss-master-chef-team")),
       icon: iconAssets.chef,
     },
     {
       title: "Dining Room",
       copy: "Elegant & Comfortable",
-      image: assetUrl(getAssetById("intimate-sushi-bar-dining-experience")),
+      image: assetUrl(getAssetById("elegant-japanese-inspired-dining-room-interior") ?? getAssetById("intimate-sushi-bar-dining-experience")),
       icon: iconAssets.profile,
     },
   ];
@@ -449,7 +448,7 @@ export function AtmosphereGalleryView({ onNavigate }: AboutScreenProps) {
         title="Our"
         accent="Atmosphere"
         copy="Step into a world where timeless Japanese tradition meets modern elegance. Every detail is designed to create unforgettable moments."
-        image={assetUrl(getAssetById("intimate-sushi-bar-dining-experience") ?? ambienceAssets[0])}
+        image={assetUrl(getAssetById("luxurious-japanese-teppanyaki-dining-room") ?? ambienceAssets[0])}
       />
       <section className="grid gap-4 xl:grid-cols-[1fr_1fr_1.9fr]">
         {getAtmosphereCards().map((card, index) => (

@@ -60,12 +60,18 @@ const editorialAssets = getAssetsByFolder("editorial");
 const appetizerAssets = getAssetsByFolder("omakase/appetizers");
 const dessertAssets = getAssetsByFolder("omakase/desserts");
 const specialtyAssets = getAssetsByFolder("omakase/specialties");
+const giftHeroImage = getAssetById("luxury-sushi-with-gift-box-elegance")?.publicUrl ?? featuredAssets.heroSushi.publicUrl;
+const giftCardImage = getAssetById("elegant-gift-card-with-red-ribbon")?.publicUrl ?? giftHeroImage;
+const giftPackageImage = getAssetById("premium-gift-box-with-red-ribbon")?.publicUrl ?? giftHeroImage;
+const locationMapImage =
+  getAssetById("tokyo-city-map-with-sushi-markers")?.publicUrl ??
+  getAssetById("sushi-bliss-tokyo-map-transparent")?.publicUrl;
 
 const locations = [
-  { name: "Sushi Bliss - Downtown", address: "123 Sakura Way", city: "San Francisco, CA 94107", distance: "0.8 mi", hours: "Mon-Sun: 11:00 AM - 10:00 PM", image: ambienceAssets[0]?.publicUrl },
-  { name: "Sushi Bliss - Marina", address: "215 Coastal Dr", city: "San Francisco, CA 94123", distance: "2.3 mi", hours: "Mon-Sun: 11:00 AM - 10:30 PM", image: ambienceAssets[1]?.publicUrl },
-  { name: "Sushi Bliss - Japantown", address: "567 Nihonmachi St", city: "San Francisco, CA 94115", distance: "3.1 mi", hours: "Mon-Sun: 11:00 AM - 10:00 PM", image: ambienceAssets[2]?.publicUrl },
-  { name: "Sushi Bliss - Sunset", address: "789 Sunset Blvd", city: "San Francisco, CA 94122", distance: "4.7 mi", hours: "Mon-Sun: 11:30 AM - 10:30 PM", image: ambienceAssets[3]?.publicUrl },
+  { name: "Sushi Bliss Downtown", address: "123 Kai Street", city: "Tokyo, 100-0001 Japan", distance: "0.8 mi", hours: "Mon-Sun: 11:30 AM - 11:00 PM", image: getAssetById("warm-glow-at-the-japanese-entrance")?.publicUrl },
+  { name: "Sushi Bliss Midtown", address: "456 Sakura Avenue", city: "Tokyo, 150-0002 Japan", distance: "2.3 mi", hours: "Mon-Sun: 11:00 AM - 10:30 PM", image: getAssetById("sleek-nighttime-entrance-with-glowing-emblem")?.publicUrl },
+  { name: "Sushi Bliss Shibuya", address: "789 Shibuya Crossing", city: "Tokyo, 150-0043 Japan", distance: "3.1 mi", hours: "Mon-Sun: 11:30 AM - 11:00 PM", image: getAssetById("warm-glow-of-a-japanese-entrance")?.publicUrl },
+  { name: "Sushi Bliss Ginza", address: "321 Ginza Street", city: "Tokyo, 104-0061 Japan", distance: "4.7 mi", hours: "Mon-Sun: 11:00 AM - 10:30 PM", image: getAssetById("cozy-night-at-sushi-bliss")?.publicUrl },
 ];
 
 const offers: OfferItem[] = [
@@ -269,7 +275,7 @@ export function ReferralView({ showNotice }: Pick<ExperienceViewProps, "showNoti
         <p className="mx-auto mt-5 max-w-2xl text-xl leading-8 text-[var(--sb-muted)]">Share the bliss. You and your friend will each receive $20 when they place their first order.</p>
       </header>
       <section className="relative mx-auto min-h-[260px] w-full max-w-4xl overflow-hidden rounded-[18px] border border-[var(--sb-border)] bg-black/50 p-6">
-        <Image src={getItemById("otoro-nigiri")?.image.publicUrl ?? featuredAssets.heroSushi.publicUrl} alt="" fill sizes="900px" className="object-cover opacity-54" />
+        <Image src={giftCardImage} alt="" fill sizes="900px" className="object-cover opacity-64" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/44 to-transparent" />
         <div className="relative z-10">
           <p className="editorial-title text-2xl tracking-[0.28em] text-white">Sushi Bliss</p>
@@ -319,7 +325,7 @@ export function GiftExperienceView({ onNavigate }: Pick<ExperienceViewProps, "on
         <p className="mt-2 text-lg text-[var(--sb-muted)]">A refined experience they&apos;ll never forget.</p>
       </header>
       <section className="relative min-h-[360px] overflow-hidden rounded-[28px] p-6 text-center">
-        <Image src={ambienceAssets[2]?.publicUrl ?? featuredAssets.heroSushi.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-58" />
+        <Image src={giftHeroImage} alt="" fill sizes="100vw" className="object-cover opacity-72" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/28 to-transparent" />
         <div className="relative z-10 mx-auto mt-16 max-w-lg rounded-[22px] border border-[var(--sb-border)] bg-black/70 p-8 shadow-[0_30px_80px_rgba(0,0,0,0.5)]">
           <p className="editorial-title text-4xl text-[var(--sb-gold)]">Omakase Experience</p>
@@ -369,7 +375,7 @@ export function GiftCheckoutView({ onNavigate, profile }: Pick<ExperienceViewPro
       <section className="luxury-panel p-5">
         <ExperienceSectionHeading title="Gift Experience Summary" />
         <div className="mt-4 grid gap-5 md:grid-cols-[260px_1fr]">
-          <div className="relative min-h-[160px] overflow-hidden rounded-[16px] border border-[var(--sb-border)]"><Image src={getItemById("otoro-nigiri")?.image.publicUrl ?? featuredAssets.heroSushi.publicUrl} alt="" fill sizes="260px" className="object-cover" /></div>
+          <div className="relative min-h-[160px] overflow-hidden rounded-[16px] border border-[var(--sb-border)]"><Image src={getAssetById("sushi-rolls-with-warm-cinematic-glow")?.publicUrl ?? giftHeroImage} alt="" fill sizes="260px" className="object-cover" /></div>
           <div>
             <span className="rounded-full bg-[var(--sb-red)] px-3 py-1 text-xs uppercase text-white">Most Loved</span>
             <h2 className="editorial-title mt-4 text-3xl text-white">Harmony</h2>
@@ -425,7 +431,7 @@ export function GiftConfirmationView({ onNavigate }: Pick<ExperienceViewProps, "
         </div>
         <div className="gold-divider my-6" />
         <div className="grid gap-4 md:grid-cols-[220px_1fr]">
-          <div className="relative min-h-[130px] overflow-hidden rounded-[14px]"><Image src={featuredAssets.heroSushi.publicUrl} alt="" fill sizes="220px" className="object-cover" /></div>
+          <div className="relative min-h-[130px] overflow-hidden rounded-[14px]"><Image src={giftPackageImage} alt="" fill sizes="220px" className="object-cover" /></div>
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-[var(--sb-gold)]">Gift Package</p>
             <h3 className="editorial-title mt-2 text-3xl text-white">Bliss Harmony</h3>
@@ -543,7 +549,7 @@ export function LocationsView({ onNavigate }: Pick<ExperienceViewProps, "onNavig
 
 /** Renders one location's map, hours, access, and loyalty detail. */
 export function LocationDetailsView({ onNavigate }: Pick<ExperienceViewProps, "onNavigate">) {
-  const mapAsset = getAssetById("sushi-bliss-tokyo-map-transparent")?.publicUrl;
+  const mapAsset = getAssetById("stylised-navigation-map-of-tokyo")?.publicUrl ?? locationMapImage;
 
   return (
     <ExperienceFrame onBack={() => onNavigate("locations")}>
@@ -559,10 +565,10 @@ export function LocationDetailsView({ onNavigate }: Pick<ExperienceViewProps, "o
       </section>
       <section className="luxury-panel overflow-hidden p-0">
         <div className="relative min-h-[220px] p-6">
-          <Image src={featuredAssets.heroSushi.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-40" />
+          <Image src={getAssetById("warm-glow-at-the-japanese-entrance")?.publicUrl ?? featuredAssets.heroSushi.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-40" />
           <div className="relative z-10 max-w-lg">
             <h2 className="editorial-title text-4xl uppercase text-[var(--sb-gold)]">Sushi Bliss Downtown</h2>
-            <p className="mt-5 flex gap-3 text-lg text-white/82">{iconAssets.mapPin ? <AssetIcon src={iconAssets.mapPin} size={26} /> : null}<span>1234 Robson Street<br />Vancouver, BC V6E 1C5<br />Canada</span></p>
+            <p className="mt-5 flex gap-3 text-lg text-white/82">{iconAssets.mapPin ? <AssetIcon src={iconAssets.mapPin} size={26} /> : null}<span>123 Kai Street<br />Tokyo, 100-0001<br />Japan</span></p>
           </div>
         </div>
         <div className="divide-y divide-[var(--sb-border)] p-5">
