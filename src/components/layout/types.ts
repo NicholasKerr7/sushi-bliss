@@ -13,6 +13,7 @@ export const appViews = [
   "cancelReservation",
   "orders",
   "orderTracking",
+  "orderConfirmation",
   "profile",
   "personalInformation",
   "accountSettings",

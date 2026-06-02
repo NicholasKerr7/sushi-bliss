@@ -48,7 +48,9 @@ try {
   const { sushiMenuData } = await importFromOutdir("data/menu.js");
   const { getAppContent, getMasterChefsOmakaseExperience, getReservationExperiences } = await importFromOutdir("data/selectors.js");
   const {
+    APP_PANEL_QUERY_PARAM,
     APP_VIEW_QUERY_PARAM,
+    ITEM_MODE_QUERY_PARAM,
     MENU_ITEM_QUERY_PARAM,
     createAppStateHref,
     getAppUrlState,
@@ -125,32 +127,42 @@ try {
 
   // app-url-state tests
   test("getAppUrlState reads valid app views and selected item ids", () => {
-    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri`);
+    const state = getAppUrlState(
+      `?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri&${ITEM_MODE_QUERY_PARAM}=customize&${APP_PANEL_QUERY_PARAM}=cart`
+    );
 
     assert.strictEqual(state.view, "giftExperience");
     assert.strictEqual(state.itemId, "otoro-nigiri");
+    assert.strictEqual(state.itemMode, "customize");
+    assert.strictEqual(state.panel, "cart");
   });
 
   test("getAppUrlState falls back to home for unsupported views", () => {
-    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=legacy-page`);
+    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=legacy-page&${APP_PANEL_QUERY_PARAM}=legacy-panel&${ITEM_MODE_QUERY_PARAM}=bad-mode`);
 
     assert.strictEqual(state.view, "home");
     assert.strictEqual(state.itemId, null);
+    assert.strictEqual(state.itemMode, null);
+    assert.strictEqual(state.panel, null);
   });
 
   test("createAppStateHref writes view and item query state without dropping existing params", () => {
     const href = createAppStateHref("/?campaign=sakura", {
       view: "giftCheckout",
       itemId: "dragon-roll",
+      itemMode: "customize",
+      panel: "checkout",
     });
 
-    assert.strictEqual(href, "/?campaign=sakura&view=giftCheckout&item=dragon-roll");
+    assert.strictEqual(href, "/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=checkout&mode=customize");
   });
 
   test("createAppStateHref removes default view and closed item state", () => {
-    const href = createAppStateHref("/?campaign=sakura&view=giftCheckout&item=dragon-roll#order", {
+    const href = createAppStateHref("/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=cart&mode=customize#order", {
       view: "home",
       itemId: null,
+      panel: null,
+      itemMode: null,
     });
 
     assert.strictEqual(href, "/?campaign=sakura#order");

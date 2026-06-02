@@ -72,6 +72,7 @@ export function AppShell({
         floating={
           activeView !== "home" &&
           activeView !== "orderTracking" &&
+          activeView !== "orderConfirmation" &&
           activeView !== "reservationReview" &&
           activeView !== "reservationConfirmation" &&
           activeView !== "omakasePackageReview" &&

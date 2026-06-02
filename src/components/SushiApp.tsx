@@ -65,6 +65,7 @@ import { SectionHeader } from "./layout/SectionHeader";
 import { MemberPassRewardsView } from "./loyalty/MemberPassRewardsView";
 import { NotificationDetailView, NotificationsCenterView } from "./notifications/NotificationScreens";
 import { LiveOrderTrackingView } from "./orders/LiveOrderTrackingView";
+import { OrderConfirmationView } from "./orders/OrderConfirmationView";
 import { ProfileView } from "./profile/ProfileView";
 import type { GuestProfile } from "./profile/types";
 import { ReservationConfirmationView } from "./reservations/ReservationConfirmationView";
@@ -119,7 +120,9 @@ import {
   createAppStateHref,
   getAppUrlState,
   getRelativeHrefFromLocation,
+  type AppPanel,
   type AppUrlStatePatch,
+  type ItemMode,
 } from "../lib/app-url-state";
 import type { AssetRef, Reward, SakePairing } from "../data/types";
 
@@ -180,7 +183,7 @@ function getDesktopNavItems(activeView: AppView): NavItem[] {
   if (activeView === "loyalty" || activeView === "memberPass") {
     return [...baseDesktopNav.slice(0, 4), loyaltyDesktopNavItem, ...baseDesktopNav.slice(4)];
   }
-  if (activeView === "orders" || activeView === "orderTracking") {
+  if (activeView === "orders" || activeView === "orderTracking" || activeView === "orderConfirmation") {
     return [...baseDesktopNav, ordersDesktopNavItem];
   }
   return baseDesktopNav;
@@ -300,6 +303,7 @@ export default function SushiApp() {
   const [cart, setCart] = useState<SushiMenuItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<SushiMenuItem | null>(null);
+  const [itemDetailMode, setItemDetailMode] = useState<ItemMode>("detail");
   const [showCart, setShowCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState("Visa **** 4242");
@@ -363,8 +367,8 @@ export default function SushiApp() {
     const nextHref = createAppStateHref(window.location.href, patch);
     if (nextHref === getRelativeHrefFromLocation(window.location)) return;
 
-    if (mode === "replace") window.history.replaceState({ view: patch.view, itemId: patch.itemId }, "", nextHref);
-    else window.history.pushState({ view: patch.view, itemId: patch.itemId }, "", nextHref);
+    if (mode === "replace") window.history.replaceState({ view: patch.view, itemId: patch.itemId, panel: patch.panel, itemMode: patch.itemMode }, "", nextHref);
+    else window.history.pushState({ view: patch.view, itemId: patch.itemId, panel: patch.panel, itemMode: patch.itemMode }, "", nextHref);
   }, []);
 
   /** Syncs the React screen state from the current URL and removes invalid query values. */
@@ -376,7 +380,18 @@ export default function SushiApp() {
 
     setActiveView(urlState.view);
     setSelectedItem(nextSelectedItem);
-    writeUrlState({ view: urlState.view, itemId: nextSelectedItem?.id ?? null }, "replace");
+    setItemDetailMode(nextSelectedItem ? urlState.itemMode ?? "detail" : "detail");
+    setShowCart(urlState.panel === "cart");
+    setShowCheckout(urlState.panel === "checkout");
+    writeUrlState(
+      {
+        view: urlState.view,
+        itemId: nextSelectedItem?.id ?? null,
+        itemMode: nextSelectedItem ? urlState.itemMode ?? "detail" : null,
+        panel: urlState.panel,
+      },
+      "replace"
+    );
 
     if (scrollToTop) window.scrollTo({ top: 0, behavior: "auto" });
   }, [writeUrlState]);
@@ -385,20 +400,45 @@ export default function SushiApp() {
   const navigate = useCallback((view: AppView, mode: BrowserHistoryMode = "push") => {
     setActiveView(view);
     setSelectedItem(null);
-    writeUrlState({ view, itemId: null }, mode);
+    setItemDetailMode("detail");
+    setShowCart(false);
+    setShowCheckout(false);
+    writeUrlState({ view, itemId: null, itemMode: null, panel: null }, mode);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
   }, [writeUrlState]);
 
   /** Opens the menu detail sheet and gives that sheet a shareable item query state. */
-  const selectItem = useCallback((item: SushiMenuItem) => {
+  const selectItem = useCallback((item: SushiMenuItem, mode: ItemMode = "detail") => {
     setSelectedItem(item);
-    writeUrlState({ itemId: item.id }, "push");
+    setItemDetailMode(mode);
+    writeUrlState({ itemId: item.id, itemMode: mode }, "push");
   }, [writeUrlState]);
 
   /** Closes the menu detail sheet and removes only the item query state. */
   const closeSelectedItem = useCallback(() => {
     setSelectedItem(null);
-    writeUrlState({ itemId: null }, "replace");
+    setItemDetailMode("detail");
+    writeUrlState({ itemId: null, itemMode: null }, "replace");
+  }, [writeUrlState]);
+
+  /** Switches between story and add-on states inside the item detail sheet. */
+  const changeItemDetailMode = useCallback((mode: ItemMode) => {
+    setItemDetailMode(mode);
+    writeUrlState({ itemMode: mode }, "push");
+  }, [writeUrlState]);
+
+  /** Opens either transient commerce panel and records it in URL state. */
+  const openPanel = useCallback((panel: AppPanel, mode: BrowserHistoryMode = "push") => {
+    setShowCart(panel === "cart");
+    setShowCheckout(panel === "checkout");
+    writeUrlState({ panel }, mode);
+  }, [writeUrlState]);
+
+  /** Closes commerce overlays without disturbing the active app screen. */
+  const closePanel = useCallback(() => {
+    setShowCart(false);
+    setShowCheckout(false);
+    writeUrlState({ panel: null }, "replace");
   }, [writeUrlState]);
 
   /** Adds one or more menu items to the cart and awards lightweight mock points. */
@@ -558,7 +598,7 @@ export default function SushiApp() {
     setAppliedPromo(null);
     setPromoCode("");
     showNotice(`Order ${order.confirmationCode} confirmed.`, "success");
-    navigate("orders");
+    navigate("orderConfirmation");
   };
 
   useEffect(() => {
@@ -651,7 +691,7 @@ export default function SushiApp() {
       profileName={profile.name}
       profileImage={profileImage}
       onNavigate={navigate}
-      onCartClick={() => setShowCart(true)}
+      onCartClick={() => openPanel("cart")}
     >
       <PageContainer variant={activeView === "home" ? "home" : "default"}>
         <AnimatePresence mode="wait">
@@ -696,7 +736,7 @@ export default function SushiApp() {
                 onIncreaseCartItem={increaseCartItem}
                 onRemoveCartItem={removeCartItem}
                 onSelectItem={selectItem}
-                onShowCart={() => setShowCart(true)}
+                onShowCart={() => openPanel("cart")}
                 onToggleFavorite={toggleFavorite}
               />
             ) : null}
@@ -708,15 +748,12 @@ export default function SushiApp() {
                 subtotal={subtotal}
                 total={grandTotal}
                 onAddToCart={addToCart}
-                onCheckout={() => {
-                  setShowCheckout(true);
-                  setShowCart(false);
-                }}
+                onCheckout={() => openPanel("checkout")}
                 onFulfillmentChange={setFulfillment}
                 onNavigate={navigate}
                 onRemove={removeCartItem}
                 onSelectItem={selectItem}
-                onShowCart={() => setShowCart(true)}
+                onShowCart={() => openPanel("cart")}
               />
             ) : null}
             {activeView === "pairings" ? <PairingsView items={menuItems} onSelectItem={selectItem} /> : null}
@@ -783,7 +820,7 @@ export default function SushiApp() {
                 onNavigate={navigate}
                 onReorder={(items) => {
                   setCart((current) => [...current, ...items]);
-                  setShowCart(true);
+                  openPanel("cart");
                 }}
               />
             ) : null}
@@ -794,7 +831,17 @@ export default function SushiApp() {
                 onNavigate={navigate}
                 onReorder={(items) => {
                   setCart((current) => [...current, ...items]);
-                  setShowCart(true);
+                  openPanel("cart");
+                }}
+              />
+            ) : null}
+            {activeView === "orderConfirmation" ? (
+              <OrderConfirmationView
+                order={latestOrder ?? orderHistory[0] ?? null}
+                onNavigate={navigate}
+                onReorder={(items) => {
+                  setCart((current) => [...current, ...items]);
+                  openPanel("cart");
                 }}
               />
             ) : null}
@@ -935,11 +982,13 @@ export default function SushiApp() {
           <ProductDetailModal
             item={selectedItem}
             isFavorite={favorites.includes(selectedItem.id)}
+            mode={itemDetailMode}
             onClose={closeSelectedItem}
             onAddToCart={(item, quantity) => {
               addToCart(item, quantity);
               closeSelectedItem();
             }}
+            onModeChange={changeItemDetailMode}
             onToggleFavorite={toggleFavorite}
             onSelectItem={selectItem}
           />
@@ -969,13 +1018,9 @@ export default function SushiApp() {
             onIncrease={increaseCartItem}
             onDecrease={decreaseCartItem}
             onRemove={removeCartItem}
-            onClose={() => setShowCart(false)}
-            onCheckout={() => {
-              setShowCart(false);
-              setShowCheckout(true);
-            }}
+            onClose={closePanel}
+            onCheckout={() => openPanel("checkout")}
             onNavigateMenu={() => {
-              setShowCart(false);
               navigate("menu");
             }}
           />
@@ -997,7 +1042,7 @@ export default function SushiApp() {
             deliveryFee={deliveryFee}
             serviceFee={serviceFee}
             total={checkoutTotal}
-            onClose={() => setShowCheckout(false)}
+            onClose={closePanel}
             onFulfillmentChange={setFulfillment}
             onProfileChange={setProfile}
             onPaymentChange={setSelectedPayment}
@@ -3262,11 +3307,53 @@ function MenuMiniCard({ item, onAddToCart, onSelectItem }: { item: SushiMenuItem
   );
 }
 
-/** Renders the item detail story modal with pairing, texture, and recommendations. */
-function ProductDetailModal({ item, isFavorite, onClose, onAddToCart, onToggleFavorite, onSelectItem }: { item: SushiMenuItem; isFavorite: boolean; onClose: () => void; onAddToCart: (item: SushiMenuItem, quantity: number) => void; onToggleFavorite: (id: string) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+interface ProductDetailModalProps {
+  item: SushiMenuItem;
+  isFavorite: boolean;
+  mode: ItemMode;
+  onClose: () => void;
+  onAddToCart: (item: SushiMenuItem, quantity: number) => void;
+  onModeChange: (mode: ItemMode) => void;
+  onToggleFavorite: (id: string) => void;
+  onSelectItem: (item: SushiMenuItem) => void;
+}
+
+interface ItemAddOnOption {
+  id: string;
+  label: string;
+  copy: string;
+  priceLabel: string;
+}
+
+const itemAddOnOptions: ItemAddOnOption[] = [
+  { id: "extra-wasabi", label: "Fresh Wasabi", copy: "Grated wasabi served separately.", priceLabel: "Included" },
+  { id: "ginger", label: "Gari Ginger", copy: "Extra pickled ginger for the table.", priceLabel: "Included" },
+  { id: "tamari", label: "Gluten-Free Tamari", copy: "Swap soy sauce for tamari.", priceLabel: "Included" },
+  { id: "gold", label: "Gold Finish", copy: "Chef-selected gold garnish when appropriate.", priceLabel: "+ $4" },
+];
+const itemDetailModes: ItemMode[] = ["detail", "customize"];
+const preparationOptions = ["Chef Recommended", "Less Soy", "No Wasabi", "Extra Crisp Nori"];
+
+/** Renders the item detail story modal with pairing, texture, recommendations, and add-ons. */
+function ProductDetailModal({
+  item,
+  isFavorite,
+  mode,
+  onClose,
+  onAddToCart,
+  onModeChange,
+  onToggleFavorite,
+  onSelectItem,
+}: ProductDetailModalProps) {
   const [quantity, setQuantity] = useState(1);
+  const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
   const related = getRelatedItems(item.id, 4);
   const textureEntries = Object.entries(item.textureProfile).filter(([, value]) => typeof value === "number");
+
+  /** Adds or removes one customization option in the local item request state. */
+  const toggleAddOn = (id: string) => {
+    setSelectedAddOns((current) => (current.includes(id) ? current.filter((itemId) => itemId !== id) : [...current, id]));
+  };
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[80] flex items-end bg-black/75 backdrop-blur-sm lg:items-center lg:justify-center" role="dialog" aria-modal="true">
@@ -3301,31 +3388,53 @@ function ProductDetailModal({ item, isFavorite, onClose, onAddToCart, onToggleFa
                 {isFavorite ? "Saved" : "Favorite"}
               </Button>
             </div>
-            <div className="mt-5 grid gap-4">
-              <InfoPanel title="Ingredients">{item.ingredients.map((ingredient) => <span key={ingredient} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-[var(--sb-muted)]">{ingredient}</span>)}</InfoPanel>
-              <div className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
-                <div className="relative h-36">
-                  <Image src={item.sakePairing.image.publicUrl} alt="" fill sizes="480px" className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-transparent" />
-                  <div className="absolute bottom-3 left-3 right-3">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-gold)]">Pairing</p>
-                    <p className="font-semibold text-white">{item.sakePairing.sakeName}</p>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <p className="text-sm leading-6 text-[var(--sb-muted)]">{item.sakePairing.whyItWorks}</p>
-                  <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">Serve {item.sakePairing.serveTemperature}</p>
-                </div>
-              </div>
-              <InfoPanel title="Texture Profile">
-                {textureEntries.map(([label, value]) => (
-                  <div key={label} className="w-full">
-                    <div className="mb-1 flex justify-between text-xs uppercase tracking-[0.16em] text-[var(--sb-muted)]"><span>{label}</span><span>{value}</span></div>
-                    <progress className="h-2 w-full accent-[var(--sb-gold)]" value={value} max={100} />
-                  </div>
-                ))}
-              </InfoPanel>
+            <div className="mt-5 grid grid-cols-2 rounded-[14px] border border-[var(--sb-border)] bg-black/42 p-1">
+              {itemDetailModes.map((nextMode) => (
+                <button
+                  key={nextMode}
+                  type="button"
+                  onClick={() => onModeChange(nextMode)}
+                  className={`h-11 rounded-[12px] text-xs uppercase tracking-[0.16em] transition ${
+                    mode === nextMode ? "bg-[var(--sb-red)]/28 text-[var(--sb-red-bright)] shadow-[0_0_18px_var(--sb-red-glow)]" : "text-[var(--sb-muted)] hover:text-[var(--sb-gold)]"
+                  }`}
+                >
+                  {nextMode === "detail" ? "Details" : "Customize"}
+                </button>
+              ))}
             </div>
+            {mode === "customize" ? (
+              <ItemCustomizationPanel
+                item={item}
+                selectedAddOns={selectedAddOns}
+                onToggleAddOn={toggleAddOn}
+              />
+            ) : (
+              <div className="mt-5 grid gap-4">
+                <InfoPanel title="Ingredients">{item.ingredients.map((ingredient) => <span key={ingredient} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-[var(--sb-muted)]">{ingredient}</span>)}</InfoPanel>
+                <div className="overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-white/[0.03]">
+                  <div className="relative h-36">
+                    <Image src={item.sakePairing.image.publicUrl} alt="" fill sizes="480px" className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/88 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-gold)]">Pairing</p>
+                      <p className="font-semibold text-white">{item.sakePairing.sakeName}</p>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm leading-6 text-[var(--sb-muted)]">{item.sakePairing.whyItWorks}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">Serve {item.sakePairing.serveTemperature}</p>
+                  </div>
+                </div>
+                <InfoPanel title="Texture Profile">
+                  {textureEntries.map(([label, value]) => (
+                    <div key={label} className="w-full">
+                      <div className="mb-1 flex justify-between text-xs uppercase tracking-[0.16em] text-[var(--sb-muted)]"><span>{label}</span><span>{value}</span></div>
+                      <progress className="h-2 w-full accent-[var(--sb-gold)]" value={value} max={100} />
+                    </div>
+                  ))}
+                </InfoPanel>
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-5">
@@ -3341,6 +3450,65 @@ function ProductDetailModal({ item, isFavorite, onClose, onAddToCart, onToggleFa
         </div>
       </motion.section>
     </motion.div>
+  );
+}
+
+/** Renders add-on and preparation controls for the URL-addressable customization state. */
+function ItemCustomizationPanel({
+  item,
+  selectedAddOns,
+  onToggleAddOn,
+}: {
+  item: SushiMenuItem;
+  selectedAddOns: string[];
+  onToggleAddOn: (id: string) => void;
+}) {
+  return (
+    <div className="mt-5 grid gap-4">
+      <InfoPanel title="Preparation">
+        {preparationOptions.map((option, index) => (
+          <button
+            key={option}
+            type="button"
+            className={`rounded-full border px-3 py-2 text-xs uppercase tracking-[0.12em] ${
+              index === 0 ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/22 text-white" : "border-white/10 bg-white/[0.03] text-[var(--sb-muted)]"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </InfoPanel>
+      <section className="rounded-2xl border border-[var(--sb-border)] bg-white/[0.03] p-4">
+        <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-gold)]">Add-Ons</p>
+        <div className="mt-4 grid gap-3">
+          {itemAddOnOptions.map((option) => {
+            const active = selectedAddOns.includes(option.id);
+            return (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => onToggleAddOn(option.id)}
+                className={`grid grid-cols-[1fr_auto] items-center gap-3 rounded-[14px] border p-3 text-left transition ${
+                  active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/18" : "border-[var(--sb-border)] bg-black/28 hover:border-[var(--sb-gold)]"
+                }`}
+              >
+                <span>
+                  <span className="block text-base text-white">{option.label}</span>
+                  <span className="mt-1 block text-sm text-[var(--sb-muted)]">{option.copy}</span>
+                </span>
+                <span className="text-sm text-[var(--sb-gold)]">{option.priceLabel}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+      <section className="rounded-2xl border border-[var(--sb-border)] bg-black/34 p-4">
+        <p className="text-xs uppercase tracking-[0.2em] text-[var(--sb-gold)]">Chef Note</p>
+        <p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">
+          {item.name} will be prepared with the selected preferences and reviewed before handoff.
+        </p>
+      </section>
+    </div>
   );
 }
 

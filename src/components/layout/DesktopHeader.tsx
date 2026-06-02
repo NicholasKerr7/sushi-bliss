@@ -32,7 +32,7 @@ const reservationSubViews: AppView[] = [
   "omakasePackageReview",
 ];
 const notificationSubViews: AppView[] = ["notifications", "notificationDetail"];
-const orderSubViews: AppView[] = ["orders", "orderTracking"];
+const orderSubViews: AppView[] = ["orders", "orderTracking", "orderConfirmation"];
 
 /** Keeps top-nav active states aligned when a detail route belongs to a primary section. */
 function isDesktopNavActive(item: NavItem, activeView: AppView): boolean {

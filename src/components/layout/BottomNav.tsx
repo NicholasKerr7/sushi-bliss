@@ -54,7 +54,7 @@ const reservationSubViews: AppView[] = [
   "omakase",
   "omakasePackageReview",
 ];
-const orderSubViews: AppView[] = ["orders", "orderOnline", "orderTracking"];
+const orderSubViews: AppView[] = ["orders", "orderOnline", "orderTracking", "orderConfirmation"];
 
 /** Determines whether a nav item should be active for a nested app view. */
 function isNavItemActive(key: AppView, activeView: AppView, hasDedicatedLoyaltyItem: boolean): boolean {
