@@ -158,6 +158,15 @@ const mobileNav: NavItem[] = [
   { key: "profile", label: "Profile", icon: User, assetIcon: iconAssets.profile },
 ];
 
+const tabletNav: NavItem[] = [
+  { key: "home", label: "Home", icon: Home, assetIcon: iconAssets.home },
+  { key: "menu", label: "Menu", icon: Utensils, assetIcon: iconAssets.menu },
+  { key: "reservations", label: "Reservations", icon: Calendar, assetIcon: iconAssets.reservations },
+  { key: "orderOnline", id: "tablet-order-online", label: "Order Online", icon: ShoppingBag, assetIcon: iconAssets.orders },
+  { key: "loyalty", label: "Loyalty", icon: Award, assetIcon: iconAssets.loyalty },
+  { key: "profile", label: "Account", icon: User, assetIcon: iconAssets.profile },
+];
+
 /** Builds the contextual desktop nav used by screenshot groups with section-specific tabs. */
 function getDesktopNavItems(activeView: AppView): NavItem[] {
   if (activeView === "loyalty" || activeView === "memberPass") {
@@ -581,6 +590,7 @@ export default function SushiApp() {
       iconUrls={{ bell: iconAssets.bell, cart: iconAssets.cart }}
       navItems={getDesktopNavItems(activeView)}
       mobileNavItems={mobileNav}
+      tabletNavItems={tabletNav}
       profileName={profile.name}
       profileImage={profileImage}
       onNavigate={navigate}

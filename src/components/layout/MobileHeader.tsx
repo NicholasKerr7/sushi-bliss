@@ -17,7 +17,7 @@ interface MobileHeaderProps {
 /** Renders the compact mobile header for secondary app screens. */
 export function MobileHeader({ brand, cartCount, iconUrls, onCartClick, onNotificationsClick }: MobileHeaderProps) {
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-3 lg:hidden">
+    <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-3 xl:hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Image src={brand.assets.icon.publicUrl} alt="" width={48} height={48} className="h-12 w-12 rounded-full" />

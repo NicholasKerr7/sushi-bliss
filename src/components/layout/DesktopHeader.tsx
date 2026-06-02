@@ -59,7 +59,7 @@ export function DesktopHeader({
   onCartClick,
 }: DesktopHeaderProps) {
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 hidden px-6 pt-5 lg:block">
+    <header className="fixed left-0 right-0 top-0 z-50 hidden px-6 pt-5 xl:block">
       <div className="luxury-panel mx-auto flex h-[76px] w-full max-w-[1680px] items-center gap-4 rounded-[26px] px-4 xl:gap-8 xl:px-6">
         <button
           type="button"

@@ -433,7 +433,7 @@ interface DesktopHomeViewProps {
 /** Provides the tablet-only header used by the dashboard-style home screen. */
 function TabletHomeTopBar({ onNavigate }: { onNavigate: (view: AppView) => void }) {
   return (
-    <header className="mb-4 hidden items-center justify-between gap-5 rounded-[18px] border border-[var(--sb-border)] bg-black/44 px-5 py-4 backdrop-blur-xl md:flex lg:hidden">
+    <header className="mb-4 hidden items-center justify-between gap-5 rounded-[18px] border border-[var(--sb-border)] bg-black/44 px-5 py-4 backdrop-blur-xl md:flex xl:hidden">
       <div className="flex items-center gap-4">
         <Image src={brand.assets.icon.publicUrl} alt="Sushi Bliss" width={64} height={64} className="h-16 w-16 rounded-full" />
         <span className="editorial-title text-xl leading-[0.95] tracking-[0.34em] text-white">
@@ -469,10 +469,10 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
     <section className="desktop-home-surface hidden space-y-3 md:block">
       <TabletHomeTopBar onNavigate={onNavigate} />
       <div className="overflow-hidden rounded-[20px] border border-[var(--sb-border)] bg-black/68 shadow-[0_30px_110px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
-        <section className="relative min-h-[343px] overflow-hidden border-b border-[var(--sb-border)] px-8 py-8 lg:px-20">
+        <section className="relative min-h-[343px] overflow-hidden border-b border-[var(--sb-border)] px-8 py-8 xl:px-20">
           <Image src={featuredAssets.heroSushi.publicUrl} alt={heroItem.name} fill priority sizes="1200px" className="object-cover" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.62)_34%,rgba(0,0,0,0.18)_72%,rgba(0,0,0,0.8)_100%)]" />
-          <div className="relative z-10 grid min-h-[280px] grid-cols-1 gap-8 lg:grid-cols-[1fr_280px]">
+          <div className="relative z-10 grid min-h-[280px] grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
             <div className="flex flex-col justify-center">
               <p className="text-sm uppercase tracking-[0.24em] text-[var(--sb-gold)]">Timeless Japanese Artistry.</p>
               <h1 className="editorial-title mt-3 text-[64px] leading-[0.9] text-white lg:text-[80px]">
@@ -496,7 +496,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
                 ))}
               </div>
             </div>
-            <div className="hidden lg:block">
+            <div className="hidden xl:block">
               <DesktopInfoCard onNavigate={onNavigate} />
             </div>
           </div>

@@ -15,6 +15,7 @@ interface AppShellProps {
   };
   navItems: NavItem[];
   mobileNavItems: NavItem[];
+  tabletNavItems: NavItem[];
   profileName: string;
   profileImage: string;
   children: ReactNode;
@@ -30,6 +31,7 @@ export function AppShell({
   iconUrls,
   navItems,
   mobileNavItems,
+  tabletNavItems,
   profileName,
   profileImage,
   children,
@@ -75,6 +77,7 @@ export function AppShell({
           activeView !== "omakasePackageReview" &&
           activeView !== "memberPass"
         }
+        tabletItems={tabletNavItems}
         onNavigate={onNavigate}
       />
     </div>
