@@ -68,6 +68,7 @@ import type { GuestProfile } from "./profile/types";
 import { ReservationConfirmationView } from "./reservations/ReservationConfirmationView";
 import { ReservationDetailsView } from "./reservations/ReservationDetailsView";
 import { CancelReservationView, ModifyReservationView } from "./reservations/ReservationManagementViews";
+import { ReservationReviewView } from "./reservations/ReservationReviewView";
 import type { AppView, NavItem } from "./layout/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -386,6 +387,22 @@ export default function SushiApp() {
     setReservationForm((current) => ({ ...current, ...patch }));
   };
 
+  /** Validates the draft reservation before showing the final review page. */
+  const reviewReservation = () => {
+    const formToReview = {
+      ...reservationForm,
+      name: reservationForm.name || profile.name,
+      phone: reservationForm.phone || profile.phone,
+    };
+    const validation = validateReservationForm(formToReview, reservations);
+    if (!validation.valid) {
+      showNotice(validation.message, "error");
+      return;
+    }
+    setReservationForm((current) => ({ ...current, name: formToReview.name, phone: formToReview.phone }));
+    navigate("reservationReview");
+  };
+
   /** Validates and saves a mock reservation into profile history. */
   const saveReservation = () => {
     const formToSave = {
@@ -629,8 +646,15 @@ export default function SushiApp() {
                 profile={profile}
                 onFormChange={updateReservationForm}
                 onNavigate={navigate}
-                onSave={saveReservation}
+                onSave={reviewReservation}
                 onProfileChange={setProfile}
+              />
+            ) : null}
+            {activeView === "reservationReview" ? (
+              <ReservationReviewView
+                form={reservationForm}
+                onConfirm={saveReservation}
+                onNavigate={navigate}
               />
             ) : null}
             {activeView === "reservationDetails" ? (

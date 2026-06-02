@@ -5,6 +5,7 @@ export type AppView =
   | "menu"
   | "orderOnline"
   | "reservations"
+  | "reservationReview"
   | "reservationDetails"
   | "reservationConfirmation"
   | "modifyReservation"
