@@ -10,6 +10,7 @@ Date: 2026-06-02
 - Tablet reference size: `1086x1448`.
 - Desktop reference size: mostly `1672x941`, with several editorial/detail views at `1586x992`.
 - Mobile reference sizes: `863x1822` and `941x1672`.
+- Semantic mobile map: `docs/mobile-screenshot-map.md`.
 
 ## Breakpoint Decision
 
@@ -66,7 +67,6 @@ The app has an implemented screen or modal surface for these tablet/desktop refe
 
 ## Follow-Up Gaps
 
-- `desktop-09-order-confirmation.png`: the current checkout flow creates an order and navigates to Orders, but there is no dedicated `orderConfirmation` app view wired into `AppView`. An older `OrderConfirmationSheet` component exists, but it is not connected to the current app flow and does not match the final screenshot system.
-- `tablet-07-item-customization-add-ons.png` and `desktop-05-item-customization-add-ons.png`: the current item detail modal includes quantity, pairing, texture, and related items, but add-ons/customization are not a dedicated state with URL state.
-- Cart and checkout are implemented as transient overlays. They match the screenshot concept, but they do not yet have URL state like `?cart=open` or `?checkout=review`.
-- Mobile references are numbered rather than role-named in `data.json`, so strict one-to-one mobile coverage should add a semantic mobile screenshot map before future precision work.
+- Item customization is now URL-addressable through `?item=...&mode=customize`, but customization choices are still lightweight item-request preferences rather than persisted cart-line metadata.
+- Cart and checkout are now URL-addressable through `?panel=cart` and `?panel=checkout`, but the checkout substeps are still one modal surface rather than separate `step=delivery|payment|review` states.
+- `mobile-01.png` is an onboarding / welcome state. The production app currently opens directly into the home experience instead of a separate onboarding flow.
