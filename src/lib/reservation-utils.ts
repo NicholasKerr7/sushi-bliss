@@ -106,6 +106,23 @@ function getNumberValue(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+/** Parses local date and time input values into a Date. */
+function parseLocalDateTime(dateValue: string, timeValue: string): Date | null {
+  const [year, month, day] = dateValue.split("-").map(Number);
+  const [hour, minute] = timeValue.split(":").map(Number);
+  if (!year || !month || !day || Number.isNaN(hour) || Number.isNaN(minute)) return null;
+
+  const parsedDate = new Date(year, month - 1, day, hour, minute);
+  const dateMatches =
+    parsedDate.getFullYear() === year &&
+    parsedDate.getMonth() === month - 1 &&
+    parsedDate.getDate() === day &&
+    parsedDate.getHours() === hour &&
+    parsedDate.getMinutes() === minute;
+
+  return dateMatches ? parsedDate : null;
+}
+
 /** Formats a local Date into the YYYY-MM-DD value used by date inputs. */
 export function formatDateValue(date: Date): string {
   const year = date.getFullYear();
@@ -168,11 +185,9 @@ export function parseReservationDateTime(datetime: string): { date: string; time
 /** Formats a stored reservation datetime for customer-facing display. */
 export function formatReservationDateTime(datetime: string): string {
   const { date, time } = parseReservationDateTime(datetime);
-  const [year, month, day] = date.split("-").map(Number);
-  const [hour, minute] = time.split(":").map(Number);
-  if (!year || !month || !day || Number.isNaN(hour) || Number.isNaN(minute)) return datetime;
+  const parsedDate = parseLocalDateTime(date, time);
+  if (!parsedDate) return datetime;
 
-  const parsedDate = new Date(year, month - 1, day, hour, minute);
   const formattedDate = parsedDate.toLocaleDateString(undefined, {
     year: "numeric",
     month: "short",
@@ -214,9 +229,17 @@ export function getReservationSlots(
 export function validateReservationForm(
   form: ReservationFormState,
   reservations: Reservation[],
-  editingReservationId: number | null = null
+  editingReservationId: number | null = null,
+  now = new Date()
 ): { valid: boolean; message: string } {
   if (!form.date || !form.time) return { valid: false, message: "Choose an available date and time." };
+
+  const selectedDateTime = parseLocalDateTime(form.date, form.time);
+  if (!selectedDateTime) return { valid: false, message: "Choose a valid reservation date and time." };
+  if (selectedDateTime.getTime() <= now.getTime()) {
+    return { valid: false, message: "Choose a future reservation time." };
+  }
+
   if (form.guests < 1) return { valid: false, message: "Guests must be at least 1." };
   if (form.guests > 8) return { valid: false, message: "For parties over 8, please call the restaurant." };
   if (!form.name.trim()) return { valid: false, message: "Add a guest name for the reservation." };
