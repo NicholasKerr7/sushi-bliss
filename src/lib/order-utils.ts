@@ -80,6 +80,11 @@ function getNumberValue(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+/** Reads a finite non-negative currency value from unknown persisted data with a fallback. */
+function getMoneyValue(value: unknown, fallback = 0): number {
+  return Math.max(0, getNumberValue(value, fallback));
+}
+
 /** Normalizes unknown persisted fulfillment values into supported options. */
 function getFulfillmentType(value: unknown): FulfillmentType {
   return value === "Delivery" ? "Delivery" : "Pickup";
@@ -94,7 +99,7 @@ function isSushiMenuItem(value: unknown): value is SushiMenuItem {
 
 /** Recalculates an order subtotal from item rows when old entries lack one. */
 function getOrderSubtotal(items: SushiMenuItem[]): number {
-  return items.reduce((sum, item) => sum + (item.price ?? 0), 0);
+  return items.reduce((sum, item) => sum + Math.max(0, item.price ?? 0), 0);
 }
 
 /** Returns true when two currency values can be treated as equivalent after rounding. */
@@ -104,11 +109,12 @@ function moneyEquals(left: number, right: number): boolean {
 
 /** Separates tax from fees when an older caller still passes all checkout fees through the tax field. */
 function resolveCheckoutCharges(input: BuildOrderSummaryInput): Pick<OrderHistoryEntry, "tax" | "serviceFee" | "deliveryFee"> {
-  const explicitServiceFee = input.serviceFee;
-  const explicitDeliveryFee = input.deliveryFee;
+  const tax = getMoneyValue(input.tax);
+  const explicitServiceFee = input.serviceFee === undefined ? undefined : getMoneyValue(input.serviceFee);
+  const explicitDeliveryFee = input.deliveryFee === undefined ? undefined : getMoneyValue(input.deliveryFee);
   if (explicitServiceFee !== undefined || explicitDeliveryFee !== undefined) {
     return {
-      tax: input.tax,
+      tax,
       serviceFee: explicitServiceFee ?? 0,
       deliveryFee: explicitDeliveryFee ?? 0,
     };
@@ -117,19 +123,23 @@ function resolveCheckoutCharges(input: BuildOrderSummaryInput): Pick<OrderHistor
   const expectedServiceFee = input.items.length > 0 ? DEFAULT_SERVICE_FEE : 0;
   const expectedDeliveryFee = input.type === "Delivery" && input.items.length > 0 ? DEFAULT_DELIVERY_FEE : 0;
   const expectedFees = expectedServiceFee + expectedDeliveryFee;
-  if (expectedFees <= 0 || input.tax < expectedFees) {
-    return { tax: input.tax, serviceFee: 0, deliveryFee: 0 };
+  if (expectedFees <= 0 || tax < expectedFees) {
+    return { tax, serviceFee: 0, deliveryFee: 0 };
   }
 
-  const taxableSubtotal = Math.max(0, input.subtotal - input.promoDiscount);
-  const chargesFromTotal = input.total - taxableSubtotal - input.tip;
-  const appearsFoldedIntoTax = moneyEquals(chargesFromTotal, input.tax);
+  const subtotal = getMoneyValue(input.subtotal);
+  const promoDiscount = Math.min(getMoneyValue(input.promoDiscount), subtotal);
+  const tip = getMoneyValue(input.tip);
+  const total = getMoneyValue(input.total);
+  const taxableSubtotal = Math.max(0, subtotal - promoDiscount);
+  const chargesFromTotal = total - taxableSubtotal - tip;
+  const appearsFoldedIntoTax = moneyEquals(chargesFromTotal, tax);
   if (!appearsFoldedIntoTax) {
-    return { tax: input.tax, serviceFee: 0, deliveryFee: 0 };
+    return { tax, serviceFee: 0, deliveryFee: 0 };
   }
 
   return {
-    tax: Math.max(0, input.tax - expectedFees),
+    tax: Math.max(0, tax - expectedFees),
     serviceFee: expectedServiceFee,
     deliveryFee: expectedDeliveryFee,
   };
@@ -143,25 +153,26 @@ export function createOrderCode(id: number): string {
 /** Estimates fulfillment time from order type and item count. */
 export function getOrderEtaMinutes(type: FulfillmentType, itemCount: number): number {
   const baseMinutes = type === "Delivery" ? 32 : 18;
-  return baseMinutes + Math.min(itemCount, 8) * 2;
+  return baseMinutes + Math.min(Math.max(0, itemCount), 8) * 2;
 }
 
 /** Builds the persisted order summary after checkout succeeds. */
 export function buildOrderSummary(input: BuildOrderSummaryInput): OrderHistoryEntry {
   const etaMinutes = getOrderEtaMinutes(input.type, input.items.length);
   const charges = resolveCheckoutCharges(input);
+  const subtotal = getMoneyValue(input.subtotal);
 
   return {
     id: input.id,
     confirmationCode: createOrderCode(input.id),
     items: input.items,
-    subtotal: input.subtotal,
-    promoDiscount: input.promoDiscount,
+    subtotal,
+    promoDiscount: Math.min(getMoneyValue(input.promoDiscount), subtotal),
     tax: charges.tax,
-    tip: input.tip,
+    tip: getMoneyValue(input.tip),
     serviceFee: charges.serviceFee,
     deliveryFee: charges.deliveryFee,
-    total: input.total,
+    total: getMoneyValue(input.total, subtotal),
     method: input.method,
     type: input.type,
     ts: input.placedAt,
@@ -184,7 +195,7 @@ export function hydrateOrders(rawOrders: unknown): OrderHistoryEntry[] {
       const type = getFulfillmentType(rawOrder.type);
       const items = Array.isArray(rawOrder.items) ? rawOrder.items.filter(isSushiMenuItem) : [];
       const placedAt = getNumberValue(rawOrder.placedAt, getNumberValue(rawOrder.ts, id));
-      const subtotal = getNumberValue(rawOrder.subtotal, getOrderSubtotal(items));
+      const subtotal = getMoneyValue(rawOrder.subtotal, getOrderSubtotal(items));
       const etaMinutes = getNumberValue(rawOrder.etaMinutes, getOrderEtaMinutes(type, items.length));
 
       return {
@@ -192,12 +203,12 @@ export function hydrateOrders(rawOrders: unknown): OrderHistoryEntry[] {
         confirmationCode: getStringValue(rawOrder.confirmationCode, createOrderCode(id)),
         items,
         subtotal,
-        promoDiscount: getNumberValue(rawOrder.promoDiscount, 0),
-        tax: getNumberValue(rawOrder.tax, 0),
-        tip: getNumberValue(rawOrder.tip, 0),
-        serviceFee: getNumberValue(rawOrder.serviceFee, 0),
-        deliveryFee: getNumberValue(rawOrder.deliveryFee, 0),
-        total: getNumberValue(rawOrder.total, subtotal),
+        promoDiscount: Math.min(getMoneyValue(rawOrder.promoDiscount), subtotal),
+        tax: getMoneyValue(rawOrder.tax),
+        tip: getMoneyValue(rawOrder.tip),
+        serviceFee: getMoneyValue(rawOrder.serviceFee),
+        deliveryFee: getMoneyValue(rawOrder.deliveryFee),
+        total: getMoneyValue(rawOrder.total, subtotal),
         method: getStringValue(rawOrder.method, "Card"),
         type,
         ts: placedAt,
