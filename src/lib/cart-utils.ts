@@ -30,6 +30,11 @@ export function normalizePromoCode(promo: string | null | undefined): string {
   return promo?.trim().toLowerCase() ?? "";
 }
 
+/** Converts unsafe or negative numeric inputs into safe non-negative money values. */
+function getSafeNumber(value: number | undefined, fallback = 0): number {
+  return typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : fallback;
+}
+
 /** Checks whether a promo code is supported by checkout pricing. */
 export function isSupportedPromoCode(promo: string | null | undefined): promo is SupportedPromoCode {
   return SUPPORTED_PROMO_CODES.includes(normalizePromoCode(promo) as SupportedPromoCode);
@@ -37,12 +42,13 @@ export function isSupportedPromoCode(promo: string | null | undefined): promo is
 
 /** Applies supported promo codes to a cart subtotal. */
 export function getPromoDiscount(subtotal: number, promo: string | null): number {
+  const safeSubtotal = getSafeNumber(subtotal);
   const code = normalizePromoCode(promo);
   if (code === "welcome10") {
-    return Math.min(subtotal * 0.1, 10);
+    return Math.min(safeSubtotal * 0.1, 10);
   }
   if (code === "freeroll") {
-    return Math.min(6, subtotal);
+    return Math.min(6, safeSubtotal);
   }
   return 0;
 }
@@ -54,11 +60,11 @@ export function calculateCartTotals({
   tipPercent,
   taxRate = DEFAULT_TAX_RATE,
 }: CartTotalsInput): CartTotals {
-  const subtotal = cart.reduce((sum, item) => sum + (item?.price ?? 0), 0);
-  const promoDiscount = getPromoDiscount(subtotal, appliedPromo);
+  const subtotal = cart.reduce((sum, item) => sum + getSafeNumber(item?.price), 0);
+  const promoDiscount = Math.min(getPromoDiscount(subtotal, appliedPromo), subtotal);
   const taxable = Math.max(0, subtotal - promoDiscount);
-  const tax = taxable * taxRate;
-  const tip = taxable * (tipPercent / 100);
+  const tax = taxable * getSafeNumber(taxRate, DEFAULT_TAX_RATE);
+  const tip = taxable * (getSafeNumber(tipPercent) / 100);
   const grandTotal = taxable + tax + tip;
   return {
     subtotal,
