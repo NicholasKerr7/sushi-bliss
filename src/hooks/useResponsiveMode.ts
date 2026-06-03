@@ -6,6 +6,7 @@ export type ResponsiveMode = "mobile" | "tablet" | "desktop";
 
 const tabletQuery = "(min-width: 768px)";
 const desktopQuery = "(min-width: 1280px)";
+const homeExpandedQuery = "(min-width: 740px)";
 
 /** Reads the current viewport band using the same breakpoints as Tailwind. */
 function getResponsiveModeFromViewport(): ResponsiveMode {
@@ -40,4 +41,23 @@ export function useResponsiveMode(): ResponsiveMode {
 /** Returns true when the active viewport should use tablet-or-desktop screen layouts. */
 export function useIsExpandedLayout(): boolean {
   return useResponsiveMode() !== "mobile";
+}
+
+/** Uses the screenshot-specific home breakpoint so narrow tablet windows do not render the phone home. */
+export function useIsHomeExpandedLayout(): boolean {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const homeExpandedMedia = window.matchMedia(homeExpandedQuery);
+    const updateMode = () => setIsExpanded(homeExpandedMedia.matches);
+
+    updateMode();
+    homeExpandedMedia.addEventListener("change", updateMode);
+
+    return () => {
+      homeExpandedMedia.removeEventListener("change", updateMode);
+    };
+  }, []);
+
+  return isExpanded;
 }
