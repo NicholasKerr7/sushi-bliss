@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Bell, ShoppingCart } from "lucide-react";
 import type { BrandData } from "../../data/types";
 import { AssetIcon } from "../icons/AssetIcon";
@@ -20,7 +19,7 @@ export function MobileHeader({ brand, cartCount, iconUrls, onCartClick, onNotifi
     <header className="fixed left-0 right-0 top-0 z-50 px-4 pt-3 xl:hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Image src={brand.assets.icon.publicUrl} alt="" width={48} height={48} className="h-12 w-12 rounded-full" />
+          <AssetIcon src={brand.assets.icon.publicUrl} size={48} className="rounded-full" />
           <span className="editorial-title text-[17px] leading-[0.95] tracking-[0.32em] text-white">
             Sushi
             <br />

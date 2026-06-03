@@ -79,7 +79,7 @@ export function ProfileView({
 
           <div className="self-center">
             <p className="text-sm uppercase tracking-[0.22em] text-[var(--sb-gold)]">Welcome Back</p>
-            <h1 className="editorial-title mt-2 text-5xl leading-[0.95] text-white md:text-7xl">
+            <h1 className="editorial-title mt-2 text-[40px] leading-[0.95] text-white sm:text-5xl xl:text-7xl">
               {profile.name.split(" ")[0]}
               <span className="block text-[var(--sb-red-bright)]">{profile.name.split(" ").slice(1).join(" ") || "Member"}</span>
             </h1>
@@ -168,7 +168,7 @@ export function ProfileView({
             <div className="flex flex-col justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-[var(--sb-gold)]">Saturday</p>
-                <p className="editorial-title mt-1 text-5xl text-white">24 <span className="text-lg">May</span></p>
+                <p className="editorial-title mt-1 text-4xl text-white sm:text-5xl">24 <span className="text-lg">May</span></p>
                 <p className="mt-3 text-2xl text-white">{nextReservation ? formatReservationDateTime(nextReservation.datetime) : "7:00 PM"}</p>
                 <p className="mt-2 text-sm leading-6 text-[var(--sb-muted)]">
                   {nextReservation ? `${nextReservation.seating} · ${nextReservation.guests} Guests` : `${appContent.reservation.table} · ${appContent.reservation.guests} Guests`}

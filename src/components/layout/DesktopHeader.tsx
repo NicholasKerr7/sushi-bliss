@@ -66,7 +66,7 @@ export function DesktopHeader({
           onClick={() => onNavigate("home")}
           className="flex min-w-[150px] items-center gap-3 text-left text-white transition hover:text-[var(--sb-gold)] xl:min-w-[180px]"
         >
-          <Image src={brand.assets.icon.publicUrl} alt="" width={44} height={44} className="rounded-full" />
+          <AssetIcon src={brand.assets.icon.publicUrl} size={44} className="rounded-full" />
           <span className="editorial-title text-lg leading-[0.95] tracking-[0.34em]">
             Sushi
             <br />

@@ -1416,8 +1416,8 @@ function MobileCategoryMenu({
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0.78)_45%,rgba(0,0,0,0.18)_100%)]" />
         <div className="relative z-10 max-w-[360px] px-1 py-8">
           <p className="text-lg text-[var(--sb-gold)]">Menu <ChevronRight className="inline h-4 w-4 text-white/62" /> <span className="text-[var(--sb-red-bright)]">{label}</span></p>
-          <h1 className="editorial-title mt-6 text-[62px] leading-none text-white">{label}</h1>
-          <p className="mt-5 text-xl leading-8 text-[var(--sb-gold)]">Hand-pressed perfection. The purest form of sushi, crafted with balance and precision.</p>
+          <h1 className="editorial-title mt-6 text-[44px] leading-none text-white sm:text-[62px]">{label}</h1>
+          <p className="mt-4 text-base leading-7 text-[var(--sb-gold)] sm:mt-5 sm:text-xl sm:leading-8">Hand-pressed perfection. The purest form of sushi, crafted with balance and precision.</p>
         </div>
       </section>
       <MobileMenuCategories activeCategory={activeCategory} onCategoryChange={onCategoryChange} />
@@ -1521,7 +1521,7 @@ function MobileMenuTile({ badge, item, onAddToCart, onSelectItem }: { badge?: st
       </button>
       <div className="flex min-w-0 flex-col justify-center px-3 py-2">
         <button type="button" onClick={() => onSelectItem(item)} className="text-left">
-          <h3 className="line-clamp-1 text-base font-semibold text-white">{item.name}</h3>
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-5 text-white sm:text-base">{item.name}</h3>
           <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--sb-muted)]">{item.description}</p>
           <p className="mt-2 text-base text-[var(--sb-gold)]">{formatCurrency(item.price)}</p>
         </button>
@@ -2252,8 +2252,8 @@ function MobileReservationsFlow({
         <Image src={assetUrl(ambienceAssets[2], heroAsset.publicUrl)} alt="" fill sizes="430px" className="object-cover opacity-50" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.42),rgba(0,0,0,0.95))]" />
         <div className="relative z-10">
-          <h1 className="editorial-title text-[58px] leading-none text-white">Reservations</h1>
-          <p className="mt-4 text-xl text-[var(--sb-gold)]">Thoughtfully prepared. Unforgettable moments.</p>
+          <h1 className="editorial-title text-[42px] leading-none text-white sm:text-[58px]">Reservations</h1>
+          <p className="mt-3 text-base leading-7 text-[var(--sb-gold)] sm:mt-4 sm:text-xl">Thoughtfully prepared. Unforgettable moments.</p>
         </div>
       </section>
       <section>
@@ -2412,8 +2412,8 @@ function ReservationStepHeader({ activeStep, copy, eyebrow, title }: { activeSte
   return (
     <div>
       <p className="editorial-title text-xl text-[var(--sb-gold)]">{eyebrow}</p>
-      <h2 className="editorial-title mt-2 text-[50px] leading-none text-white">{title}</h2>
-      <p className="mt-3 text-xl text-[var(--sb-gold)]">{copy}</p>
+      <h2 className="editorial-title mt-2 text-[34px] leading-none text-white sm:text-[50px]">{title}</h2>
+      <p className="mt-3 text-base leading-7 text-[var(--sb-gold)] sm:text-xl">{copy}</p>
       <div className="mt-6 grid grid-cols-3 gap-3">
         {steps.map((step, index) => {
           const active = activeStep === index + 1;
@@ -2819,7 +2819,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
         <div className="relative z-10 grid gap-5 lg:grid-cols-[1fr_320px]">
           <div className="max-w-xl">
             <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">Welcome back, Hiroshi.</p>
-            <h1 className="editorial-title mt-3 text-5xl leading-[0.94] text-white md:text-7xl">
+            <h1 className="editorial-title mt-3 text-[40px] leading-[0.94] text-white sm:text-5xl xl:text-7xl">
               Loyalty
               <span className="block text-[var(--sb-red-bright)]">Rewards</span>
             </h1>
@@ -3449,7 +3449,7 @@ function ProductDetailModal({
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.24em] text-[var(--sb-gold)]">{item.categoryLabel}</p>
-                <h2 className="editorial-title mt-2 text-5xl leading-[0.95] text-white">{item.name}</h2>
+                <h2 className="editorial-title mt-2 text-[38px] leading-[0.95] text-white sm:text-5xl">{item.name}</h2>
                 <p className="mt-3 text-sm leading-6 text-[var(--sb-muted)]">{item.chefNote}</p>
               </div>
               <button type="button" onClick={onClose} aria-label="Close details" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
@@ -3816,17 +3816,11 @@ function CheckoutModal({
         initial={{ y: 36, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 36, opacity: 0 }}
-        className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] px-5 pb-8 pt-5 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-6xl lg:rounded-[34px] lg:p-7"
+        className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] px-4 pb-8 pt-5 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] sm:px-5 lg:max-w-6xl lg:rounded-[34px] lg:p-7"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image
-              src={brand.assets.icon.publicUrl}
-              alt=""
-              width={48}
-              height={48}
-              className="h-12 w-12 rounded-full"
-            />
+            <AssetIcon src={brand.assets.icon.publicUrl} size={48} className="rounded-full" />
             <span className="editorial-title text-[17px] leading-[0.95] tracking-[0.32em] text-white">
               Sushi<br />Bliss
             </span>
@@ -3842,8 +3836,8 @@ function CheckoutModal({
         </div>
         <CheckoutProgress activeStep={getCheckoutProgressStep(checkoutStep)} />
         <div className="mt-7">
-          <h2 className="editorial-title text-[42px] leading-none text-white">{stepCopy.title}</h2>
-          <p className="mt-2 text-xl text-[var(--sb-gold)]">{stepCopy.copy}</p>
+          <h2 className="editorial-title text-[34px] leading-[0.94] text-white sm:text-[42px] sm:leading-none">{stepCopy.title}</h2>
+          <p className="mt-2 text-base leading-7 text-[var(--sb-gold)] sm:text-xl">{stepCopy.copy}</p>
         </div>
         <CheckoutStepTabs activeStep={checkoutStep} onChange={onCheckoutStepChange} />
         <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_380px]">
@@ -4220,10 +4214,23 @@ function CheckoutProgress({ activeStep }: { activeStep: number }) {
 /** Displays a checkout fulfillment option with icon, copy, and radio indicator. */
 function CheckoutChoiceCard({ active, copy, icon, title, onClick }: { active: boolean; copy: string; icon?: string; title: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className={`grid min-h-[150px] grid-cols-[88px_1fr_38px] items-center gap-5 rounded-[18px] border p-5 text-left ${active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/12 shadow-[0_0_24px_rgba(239,47,37,0.18)]" : "border-[var(--sb-border)] bg-white/[0.03]"}`}>
-      <span className="grid h-20 w-20 place-items-center rounded-full border border-[var(--sb-border)] bg-black/35">{icon ? <AssetIcon src={icon} size={46} /> : null}</span>
-      <span><span className="editorial-title block text-2xl text-white">{title}</span><span className="mt-2 block text-lg leading-7 text-[var(--sb-muted)]">{copy}</span></span>
-      <span className={`grid h-8 w-8 place-items-center rounded-full border ${active ? "border-[var(--sb-red-bright)]" : "border-[var(--sb-border)]"}`}><span className={`h-4 w-4 rounded-full ${active ? "bg-[var(--sb-red-bright)]" : "bg-transparent"}`} /></span>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`grid min-h-[118px] grid-cols-[62px_1fr_30px] items-center gap-3 rounded-[18px] border p-3 text-left sm:min-h-[150px] sm:grid-cols-[88px_1fr_38px] sm:gap-5 sm:p-5 ${
+        active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/12 shadow-[0_0_24px_rgba(239,47,37,0.18)]" : "border-[var(--sb-border)] bg-white/[0.03]"
+      }`}
+    >
+      <span className="grid h-14 w-14 place-items-center rounded-full border border-[var(--sb-border)] bg-black/35 sm:h-20 sm:w-20">
+        {icon ? <AssetIcon src={icon} size={34} /> : null}
+      </span>
+      <span className="min-w-0">
+        <span className="editorial-title block text-[19px] leading-none text-white sm:text-2xl">{title}</span>
+        <span className="mt-2 block text-[15px] leading-6 text-[var(--sb-muted)] sm:text-lg sm:leading-7">{copy}</span>
+      </span>
+      <span className={`grid h-7 w-7 place-items-center rounded-full border sm:h-8 sm:w-8 ${active ? "border-[var(--sb-red-bright)]" : "border-[var(--sb-border)]"}`}>
+        <span className={`h-3.5 w-3.5 rounded-full sm:h-4 sm:w-4 ${active ? "bg-[var(--sb-red-bright)]" : "bg-transparent"}`} />
+      </span>
     </button>
   );
 }

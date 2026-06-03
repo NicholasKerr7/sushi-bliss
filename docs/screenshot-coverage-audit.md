@@ -14,10 +14,10 @@ Date: 2026-06-02
 
 ## Breakpoint Decision
 
-The reference tablet width is 1086px, so the app should not switch into tablet dashboard behavior at the old 768px boundary. The corrected device bands are:
+The screenshot package uses high-resolution exports, but real tablet CSS viewports start around 768px. The corrected device bands are:
 
-- Mobile: below `900px`.
-- Tablet: `900px` through `1279px`.
+- Mobile: below `768px`.
+- Tablet: `768px` through `1279px`.
 - Desktop: `1280px` and above.
 
 ## Covered Named Screens

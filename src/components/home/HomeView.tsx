@@ -156,7 +156,7 @@ function MobileHomeHeader() {
   return (
     <header className="mt-2 flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <Image src={brand.assets.icon.publicUrl} alt="Sushi Bliss" width={48} height={48} className="h-12 w-12 rounded-full object-cover" />
+        <AssetIcon src={brand.assets.icon.publicUrl} alt="Sushi Bliss" size={48} className="rounded-full" />
         <span className="editorial-title text-[18px] leading-[0.95] tracking-[0.34em] text-white">
           Sushi
           <br />
@@ -333,7 +333,7 @@ function HomeMenuCard({ badge, className = "", item, onAddToCart, onSelectItem }
           <Image src={item.image.publicUrl} alt={item.name} fill sizes="130px" className="pointer-events-none object-cover" />
         </div>
         <div className="p-3">
-          <h3 className="editorial-title truncate text-[14px] text-white md:text-lg">{item.name}</h3>
+          <h3 className="editorial-title line-clamp-2 min-h-[34px] text-[13px] leading-[17px] text-white md:min-h-[48px] md:text-base md:leading-6 xl:text-lg">{item.name}</h3>
           <p className="mt-1 line-clamp-2 min-h-9 text-[11px] leading-[17px] text-white/68 md:text-sm md:leading-6">{item.ingredients.slice(0, 3).join(", ")}</p>
           <p className="mt-3 text-[17px] text-[var(--sb-gold)] md:text-xl">{formatCurrency(item.price)}</p>
         </div>
@@ -435,7 +435,7 @@ function TabletHomeTopBar({ onNavigate }: { onNavigate: (view: AppView) => void 
   return (
     <header className="mb-4 hidden items-center justify-between gap-5 rounded-[18px] border border-[var(--sb-border)] bg-black/44 px-5 py-4 backdrop-blur-xl md:flex xl:hidden">
       <div className="flex items-center gap-4">
-        <Image src={brand.assets.icon.publicUrl} alt="Sushi Bliss" width={64} height={64} className="h-16 w-16 rounded-full" />
+        <AssetIcon src={brand.assets.icon.publicUrl} alt="Sushi Bliss" size={64} className="rounded-full" />
         <span className="editorial-title text-xl leading-[0.95] tracking-[0.34em] text-white">
           Sushi
           <br />
@@ -475,7 +475,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
           <div className="relative z-10 grid min-h-[280px] grid-cols-1 gap-8 xl:grid-cols-[1fr_280px]">
             <div className="flex flex-col justify-center">
               <p className="text-sm uppercase tracking-[0.24em] text-[var(--sb-gold)]">Timeless Japanese Artistry.</p>
-              <h1 className="editorial-title mt-3 text-[64px] leading-[0.9] text-white lg:text-[80px]">
+              <h1 className="editorial-title mt-3 text-[64px] leading-[0.9] text-white xl:text-[80px]">
                 Sushi
                 <span className="block text-[var(--sb-red-bright)]">Bliss</span>
               </h1>
