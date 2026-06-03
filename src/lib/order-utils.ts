@@ -10,6 +10,8 @@ export interface OrderHistoryEntry {
   promoDiscount: number;
   tax: number;
   tip: number;
+  serviceFee?: number;
+  deliveryFee?: number;
   total: number;
   method: string;
   type: FulfillmentType;
@@ -28,6 +30,8 @@ export interface BuildOrderSummaryInput {
   promoDiscount: number;
   tax: number;
   tip: number;
+  serviceFee?: number;
+  deliveryFee?: number;
   total: number;
   method: string;
   type: FulfillmentType;
@@ -44,6 +48,8 @@ interface RawOrder {
   promoDiscount?: unknown;
   tax?: unknown;
   tip?: unknown;
+  serviceFee?: unknown;
+  deliveryFee?: unknown;
   total?: unknown;
   method?: unknown;
   type?: unknown;
@@ -109,6 +115,8 @@ export function buildOrderSummary(input: BuildOrderSummaryInput): OrderHistoryEn
     promoDiscount: input.promoDiscount,
     tax: input.tax,
     tip: input.tip,
+    serviceFee: input.serviceFee ?? 0,
+    deliveryFee: input.deliveryFee ?? 0,
     total: input.total,
     method: input.method,
     type: input.type,
@@ -143,6 +151,8 @@ export function hydrateOrders(rawOrders: unknown): OrderHistoryEntry[] {
         promoDiscount: getNumberValue(rawOrder.promoDiscount, 0),
         tax: getNumberValue(rawOrder.tax, 0),
         tip: getNumberValue(rawOrder.tip, 0),
+        serviceFee: getNumberValue(rawOrder.serviceFee, 0),
+        deliveryFee: getNumberValue(rawOrder.deliveryFee, 0),
         total: getNumberValue(rawOrder.total, subtotal),
         method: getStringValue(rawOrder.method, "Card"),
         type,

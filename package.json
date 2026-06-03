@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "echo \"no lint configured\"",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit --incremental false",
     "test": "node scripts/run-unit-tests.mjs",
     "test:watch": "node --watch scripts/run-unit-tests.mjs",
