@@ -2,6 +2,11 @@ import type { FilterCategory, MenuCategory, SushiMenuItem } from "../data/menu";
 
 export const defaultHighlightCategories: MenuCategory[] = ["Premium", "Chef Specials"];
 
+/** Normalizes list limits so callers cannot request negative or fractional item counts. */
+function normalizeLimit(limit: number): number {
+  return Number.isFinite(limit) ? Math.max(0, Math.floor(limit)) : 0;
+}
+
 /** Filters menu items by free-text search and the active category tab. */
 export function filterMenuItems(
   items: SushiMenuItem[],
@@ -33,7 +38,11 @@ export function getHighlightDrops(
   highlightCategories: MenuCategory[] = defaultHighlightCategories,
   limit = 6
 ): SushiMenuItem[] {
+  const safeLimit = normalizeLimit(limit);
+  if (safeLimit === 0) return [];
+
+  const categories = highlightCategories.length ? highlightCategories : defaultHighlightCategories;
   return items
-    .filter((item) => item.categories.some((category) => highlightCategories.includes(category)))
-    .slice(0, limit);
+    .filter((item) => item.categories.some((category) => categories.includes(category)))
+    .slice(0, safeLimit);
 }
