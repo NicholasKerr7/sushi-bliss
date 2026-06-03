@@ -1,6 +1,9 @@
 import type { SushiMenuItem } from "../data/menu";
 
 export const DEFAULT_TAX_RATE = 0.08875;
+export const SUPPORTED_PROMO_CODES = ["welcome10", "freeroll"] as const;
+
+export type SupportedPromoCode = (typeof SUPPORTED_PROMO_CODES)[number];
 
 export interface CartTotalsInput {
   cart: SushiMenuItem[];
@@ -22,10 +25,19 @@ export interface GroupedCartItem {
   qty: number;
 }
 
+/** Normalizes user-entered promo codes before validation or totals are calculated. */
+export function normalizePromoCode(promo: string | null | undefined): string {
+  return promo?.trim().toLowerCase() ?? "";
+}
+
+/** Checks whether a promo code is supported by checkout pricing. */
+export function isSupportedPromoCode(promo: string | null | undefined): promo is SupportedPromoCode {
+  return SUPPORTED_PROMO_CODES.includes(normalizePromoCode(promo) as SupportedPromoCode);
+}
+
 /** Applies supported promo codes to a cart subtotal. */
-function getPromoDiscount(subtotal: number, promo: string | null): number {
-  if (!promo) return 0;
-  const code = promo.toLowerCase();
+export function getPromoDiscount(subtotal: number, promo: string | null): number {
+  const code = normalizePromoCode(promo);
   if (code === "welcome10") {
     return Math.min(subtotal * 0.1, 10);
   }
