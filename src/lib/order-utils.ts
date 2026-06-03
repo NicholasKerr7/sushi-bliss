@@ -2,6 +2,10 @@ import type { SushiMenuItem } from "../data/menu";
 
 export type FulfillmentType = "Pickup" | "Delivery";
 
+const DEFAULT_SERVICE_FEE = 2.5;
+const DEFAULT_DELIVERY_FEE = 4;
+const MONEY_EPSILON = 0.01;
+
 export interface OrderHistoryEntry {
   id: number;
   confirmationCode: string;
@@ -93,6 +97,44 @@ function getOrderSubtotal(items: SushiMenuItem[]): number {
   return items.reduce((sum, item) => sum + (item.price ?? 0), 0);
 }
 
+/** Returns true when two currency values can be treated as equivalent after rounding. */
+function moneyEquals(left: number, right: number): boolean {
+  return Math.abs(left - right) <= MONEY_EPSILON;
+}
+
+/** Separates tax from fees when an older caller still passes all checkout fees through the tax field. */
+function resolveCheckoutCharges(input: BuildOrderSummaryInput): Pick<OrderHistoryEntry, "tax" | "serviceFee" | "deliveryFee"> {
+  const explicitServiceFee = input.serviceFee;
+  const explicitDeliveryFee = input.deliveryFee;
+  if (explicitServiceFee !== undefined || explicitDeliveryFee !== undefined) {
+    return {
+      tax: input.tax,
+      serviceFee: explicitServiceFee ?? 0,
+      deliveryFee: explicitDeliveryFee ?? 0,
+    };
+  }
+
+  const expectedServiceFee = input.items.length > 0 ? DEFAULT_SERVICE_FEE : 0;
+  const expectedDeliveryFee = input.type === "Delivery" && input.items.length > 0 ? DEFAULT_DELIVERY_FEE : 0;
+  const expectedFees = expectedServiceFee + expectedDeliveryFee;
+  if (expectedFees <= 0 || input.tax < expectedFees) {
+    return { tax: input.tax, serviceFee: 0, deliveryFee: 0 };
+  }
+
+  const taxableSubtotal = Math.max(0, input.subtotal - input.promoDiscount);
+  const chargesFromTotal = input.total - taxableSubtotal - input.tip;
+  const appearsFoldedIntoTax = moneyEquals(chargesFromTotal, input.tax);
+  if (!appearsFoldedIntoTax) {
+    return { tax: input.tax, serviceFee: 0, deliveryFee: 0 };
+  }
+
+  return {
+    tax: Math.max(0, input.tax - expectedFees),
+    serviceFee: expectedServiceFee,
+    deliveryFee: expectedDeliveryFee,
+  };
+}
+
 /** Creates a short customer-facing order confirmation code. */
 export function createOrderCode(id: number): string {
   return `SB-${String(id).slice(-6).padStart(6, "0")}`;
@@ -107,16 +149,18 @@ export function getOrderEtaMinutes(type: FulfillmentType, itemCount: number): nu
 /** Builds the persisted order summary after checkout succeeds. */
 export function buildOrderSummary(input: BuildOrderSummaryInput): OrderHistoryEntry {
   const etaMinutes = getOrderEtaMinutes(input.type, input.items.length);
+  const charges = resolveCheckoutCharges(input);
+
   return {
     id: input.id,
     confirmationCode: createOrderCode(input.id),
     items: input.items,
     subtotal: input.subtotal,
     promoDiscount: input.promoDiscount,
-    tax: input.tax,
+    tax: charges.tax,
     tip: input.tip,
-    serviceFee: input.serviceFee ?? 0,
-    deliveryFee: input.deliveryFee ?? 0,
+    serviceFee: charges.serviceFee,
+    deliveryFee: charges.deliveryFee,
     total: input.total,
     method: input.method,
     type: input.type,
