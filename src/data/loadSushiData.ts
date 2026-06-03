@@ -73,7 +73,14 @@ interface RawSushiData {
 const data = rawData as RawSushiData;
 
 const categoryLabels: Record<string, MenuCategory> = {
+  appetizer: "Appetizers",
+  appetizers: "Appetizers",
+  dessert: "Desserts",
+  desserts: "Desserts",
+  drink: "Drinks",
+  drinks: "Drinks",
   gunkan: "Gunkan",
+  maki: "Maki",
   nigiri: "Nigiri",
   oshizushi: "Maki",
   rolls: "Rolls",
@@ -84,9 +91,15 @@ const categoryLabels: Record<string, MenuCategory> = {
 };
 
 const tagLabels: Record<string, MenuCategory> = {
+  appetizer: "Appetizers",
+  appetizers: "Appetizers",
   classic: "Classic",
   colorful: "Premium",
   crispy: "Hot",
+  dessert: "Desserts",
+  desserts: "Desserts",
+  drink: "Drinks",
+  drinks: "Drinks",
   "chef-special": "Chef Specials",
   hot: "Hot",
   popular: "Popular",
