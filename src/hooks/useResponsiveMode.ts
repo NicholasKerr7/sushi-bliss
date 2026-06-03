@@ -18,7 +18,7 @@ function getResponsiveModeFromViewport(): ResponsiveMode {
 
 /** Tracks the active responsive band so image-heavy duplicate layouts do not both mount. */
 export function useResponsiveMode(): ResponsiveMode {
-  const [mode, setMode] = useState<ResponsiveMode>("mobile");
+  const [mode, setMode] = useState<ResponsiveMode>(() => getResponsiveModeFromViewport());
 
   useEffect(() => {
     const tabletMedia = window.matchMedia(tabletQuery);
