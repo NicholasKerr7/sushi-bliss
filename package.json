@@ -30,6 +30,7 @@
     "@types/react": "18.2.45",
     "@types/react-dom": "18.2.18",
     "autoprefixer": "10.4.17",
+    "esbuild": "^0.25.11",
     "jiti": "^2.6.1",
     "jsdom": "^27.0.1",
     "playwright": "^1.56.1",
