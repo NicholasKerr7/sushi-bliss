@@ -75,6 +75,7 @@ import { ReservationReviewView } from "./reservations/ReservationReviewView";
 import type { AppView, NavItem } from "./layout/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { useIsExpandedLayout } from "../hooks/useResponsiveMode";
 import {
   filterCategories,
   type FilterCategory,
@@ -1188,10 +1189,12 @@ function MenuView({
   const isCategoryDetail = !isSearchMode && activeCategory !== "All";
   const mobileItems = items.length ? items : menuItems;
   const overviewItems = getMenuOverviewItems();
+  const isExpandedLayout = useIsExpandedLayout();
 
   return (
     <div className="space-y-6">
-      <section className="md:hidden">
+      {!isExpandedLayout ? (
+        <section className="md:hidden">
         {isSearchMode ? (
           <MobileSearchFilterMenu
             query={query}
@@ -1221,9 +1224,11 @@ function MenuView({
             onShowCart={onShowCart}
           />
         )}
-      </section>
+        </section>
+      ) : null}
 
-      <section className="hidden md:block">
+      {isExpandedLayout ? (
+        <section className="hidden md:block">
         <DesktopMenuDashboard
           activeCategory={activeCategory}
           deliveryFee={deliveryFee}
@@ -1245,7 +1250,8 @@ function MenuView({
           onShowCart={onShowCart}
           onToggleFavorite={onToggleFavorite}
         />
-      </section>
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -1671,7 +1677,7 @@ function DesktopMenuDashboard({
           <h2 className="mb-4 text-sm uppercase tracking-[0.16em] text-white">All Menu Items</h2>
           <div className="grid gap-3 md:grid-cols-3">
             {allItems.slice(0, 9).map((item, index) => (
-              <DesktopMenuCompactRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} priority={index < 3} />
+              <DesktopMenuCompactRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} priority={index < 3 || item.id === "otoro-nigiri"} />
             ))}
           </div>
         </section>
@@ -1725,9 +1731,9 @@ function DesktopMenuCart({ deliveryFee, groupedCart, serviceFee, subtotal, tax, 
         {groupedCart.length === 0 ? (
           <p className="rounded-[12px] border border-[var(--sb-border)] bg-black/36 p-4 text-sm text-[var(--sb-muted)]">Your order is waiting for a chef selection.</p>
         ) : (
-          groupedCart.map(({ item, qty }) => (
+          groupedCart.map(({ item, qty }, index) => (
             <div key={item.id} className="grid grid-cols-[78px_1fr_auto] gap-3 border-b border-[var(--sb-border)] pb-4 last:border-b-0">
-              <div className="relative h-[58px] overflow-hidden rounded-[8px]"><Image src={item.image.publicUrl} alt="" fill sizes="78px" className="object-cover" /></div>
+              <div className="relative h-[58px] overflow-hidden rounded-[8px]"><Image src={item.image.publicUrl} alt="" fill priority={index === 0} sizes="78px" className="object-cover" /></div>
               <div className="min-w-0">
                 <p className="truncate text-sm text-white">{item.name}</p>
                 <p className="truncate text-xs text-[var(--sb-muted)]">{item.description}</p>
@@ -1967,9 +1973,9 @@ function OrderOnlineView({
             {groupedCart.length === 0 ? (
               <p className="rounded-xl border border-[var(--sb-border)] p-4 text-sm text-[var(--sb-muted)]">Your order is waiting for a chef selection.</p>
             ) : (
-              groupedCart.map(({ item, qty }) => (
+              groupedCart.map(({ item, qty }, index) => (
                 <div key={item.id} className="grid grid-cols-[72px_1fr_auto] gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-2">
-                  <div className="relative h-16 overflow-hidden rounded-lg"><Image src={item.image.publicUrl} alt="" fill sizes="72px" className="object-cover" /></div>
+                  <div className="relative h-16 overflow-hidden rounded-lg"><Image src={item.image.publicUrl} alt="" fill priority={index === 0} sizes="72px" className="object-cover" /></div>
                   <div>
                     <p className="text-sm text-white">{item.name}</p>
                     <p className="text-xs text-[var(--sb-muted)]">Qty {qty}</p>
@@ -2073,10 +2079,12 @@ function ReservationsView({ form, reservations, profile, onFormChange, onNavigat
     masterChefsOmakaseExperience.courses.find((course) => course.chefId === "ren-mori") ??
     masterChefsOmakaseExperience.courses[0];
   const summaryImage = assetUrl(featuredOmakaseCourse?.specialty.image, heroAsset.publicUrl);
+  const isExpandedLayout = useIsExpandedLayout();
 
   return (
     <>
-      <MobileReservationsFlow
+      {!isExpandedLayout ? (
+        <MobileReservationsFlow
         experiences={experiences}
         form={form}
         reservations={reservations}
@@ -2088,12 +2096,15 @@ function ReservationsView({ form, reservations, profile, onFormChange, onNavigat
         onNavigate={onNavigate}
         onSave={onSave}
       />
-      <div className="hidden space-y-5 md:block">
+      ) : null}
+      {isExpandedLayout ? (
+        <div className="hidden space-y-5 md:block">
       <PageHero
         eyebrow="Reserve your experience."
         title="Reservations"
         copy="An unforgettable dining experience awaits. Choose your date, time, and dining room."
         image={heroAsset.publicUrl}
+        priority
       />
       <div className="grid gap-5 xl:grid-cols-[1fr_360px]">
         <section className="grid gap-5 lg:grid-cols-[320px_1fr]">
@@ -2211,6 +2222,7 @@ function ReservationsView({ form, reservations, profile, onFormChange, onNavigat
         />
       </div>
       </div>
+      ) : null}
     </>
   );
 }
@@ -2241,6 +2253,7 @@ function MobileReservationsFlow({
 }) {
   const upcomingReservations = reservations.length > 0 ? reservations : [];
   const previewExperience = experiences[0];
+  const reservationHeroImage = assetUrl(ambienceAssets[2], heroAsset.publicUrl);
   const fallbackReservations = [
     { day: "Saturday", date: "May 25, 2024", time: "8:00 PM", guests: "4 Guests", place: "Sushi Bliss Midtown", image: assetUrl(ambienceAssets[0], heroAsset.publicUrl) },
     { day: "Sunday", date: "May 26, 2024", time: "6:30 PM", guests: "2 Guests", place: "Sushi Bliss Uptown", image: assetUrl(ambienceAssets[1], heroAsset.publicUrl) },
@@ -2250,7 +2263,7 @@ function MobileReservationsFlow({
   return (
     <div className="space-y-7 md:hidden">
       <section className="relative -mx-4 min-h-[290px] overflow-hidden px-4 pb-6 pt-16">
-        <Image src={assetUrl(ambienceAssets[2], heroAsset.publicUrl)} alt="" fill priority sizes="430px" className="object-cover opacity-50" />
+        <Image src={reservationHeroImage} alt="" fill priority sizes="430px" className="object-cover opacity-50" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.42),rgba(0,0,0,0.95))]" />
         <div className="relative z-10">
           <h1 className="editorial-title text-[42px] leading-none text-white sm:text-[58px]">Reservations</h1>
@@ -2333,12 +2346,12 @@ function MobileReservationsFlow({
       <section className="space-y-5">
         <ReservationStepHeader activeStep={2} eyebrow="New Reservation" title="Choose Your Experience" copy="Select the dining experience that best suits your occasion." />
         <div className="space-y-3">
-          {experiences.slice(0, 4).map((experience) => {
+          {experiences.slice(0, 4).map((experience, index) => {
             const seating = getSeatingForExperience(experience.id);
             const active = form.seating === seating;
             return (
               <button key={experience.id} type="button" onClick={() => onFormChange({ seating })} className={`grid min-h-[132px] grid-cols-[37%_1fr_44px] items-center gap-4 rounded-[16px] border bg-black/46 p-3 text-left ${active ? "border-[var(--sb-red-bright)] shadow-[0_0_24px_rgba(239,47,37,0.24)]" : "border-[var(--sb-border)]"}`}>
-                <span className="relative h-full min-h-[108px] overflow-hidden rounded-[10px]"><Image src={experience.image.publicUrl} alt="" fill sizes="160px" className="object-cover" /></span>
+                <span className="relative h-full min-h-[108px] overflow-hidden rounded-[10px]"><Image src={experience.image.publicUrl} alt="" fill priority={index === 0 || experience.image.publicUrl === reservationHeroImage} sizes="160px" className="object-cover" /></span>
                 <span><span className="editorial-title block text-xl text-white">{experience.title}</span><span className="mt-2 block text-sm leading-5 text-[var(--sb-muted)]">{experience.description}</span></span>
                 <span className={`grid h-9 w-9 place-items-center rounded-full border ${active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)] text-white" : "border-[var(--sb-border)]"}`}>{active ? <Check className="h-5 w-5" /> : null}</span>
               </button>
@@ -2517,16 +2530,19 @@ function ReservationSummaryRow({ icon, label, value }: { icon?: string; label: s
 /** Renders active order tracking, receipts, and reorder actions. */
 function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { latestOrder: OrderHistoryEntry | null; orderHistory: OrderHistoryEntry[]; onNavigate: (view: AppView) => void; onReorder: (items: SushiMenuItem[]) => void }) {
   const pastOrders = latestOrder ? orderHistory.filter((order) => order.id !== latestOrder.id) : orderHistory;
+  const isExpandedLayout = useIsExpandedLayout();
 
   return (
     <>
-      <MobileOrdersView latestOrder={latestOrder} orderHistory={pastOrders} onNavigate={onNavigate} onReorder={onReorder} />
-      <div className="hidden space-y-5 md:block">
+      {!isExpandedLayout ? <MobileOrdersView latestOrder={latestOrder} orderHistory={pastOrders} onNavigate={onNavigate} onReorder={onReorder} /> : null}
+      {isExpandedLayout ? (
+        <div className="hidden space-y-5 md:block">
         <PageHero
           eyebrow="Your orders, delivered with care."
           title="Orders"
           copy="Track your current orders and view your delicious history."
           image={heroAsset.publicUrl}
+          priority
         />
         {!latestOrder ? (
           <EmptyState title="No orders yet" copy="Your confirmed orders and receipts will appear here." actionLabel="Order now" onAction={() => onNavigate("orderOnline")} />
@@ -2546,6 +2562,7 @@ function OrdersView({ latestOrder, orderHistory, onNavigate, onReorder }: { late
           </div>
         </section>
       </div>
+      ) : null}
     </>
   );
 }
@@ -2808,11 +2825,15 @@ function PastOrderRow({ order, onReorder }: { order: OrderHistoryEntry; onReorde
 function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyaltyPoints: number; rewards: Reward[]; onNavigate: (view: AppView) => void; onRedeem: (reward: Reward) => void }) {
   const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
   const featuredRewards = rewards.slice(0, 4);
+  const isExpandedLayout = useIsExpandedLayout();
 
   return (
     <>
-      <MobileLoyaltyView featuredRewards={featuredRewards} loyaltyPoints={loyaltyPoints} progressValue={progressValue} onNavigate={onNavigate} onRedeem={onRedeem} />
-      <div className="hidden space-y-5 md:block">
+      {!isExpandedLayout ? (
+        <MobileLoyaltyView featuredRewards={featuredRewards} loyaltyPoints={loyaltyPoints} progressValue={progressValue} onNavigate={onNavigate} onRedeem={onRedeem} />
+      ) : null}
+      {isExpandedLayout ? (
+        <div className="hidden space-y-5 md:block">
       <section className="luxury-panel relative overflow-hidden p-5 sm:p-7">
         <Image src={heroAsset.publicUrl} alt="" fill priority sizes="100vw" className="object-cover opacity-70" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.72)_42%,rgba(0,0,0,0.34)_78%,rgba(0,0,0,0.84)_100%)]" />
@@ -2838,8 +2859,8 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
             <button type="button" onClick={() => onNavigate("memberPass")} className="text-xs uppercase tracking-[0.16em] text-[var(--sb-red-bright)]">View all rewards</button>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
-            {featuredRewards.map((reward) => (
-              <RewardCard key={reward.id} reward={reward} onRedeem={onRedeem} />
+            {featuredRewards.map((reward, index) => (
+              <RewardCard key={reward.id} reward={reward} priority={index < 4} onRedeem={onRedeem} />
             ))}
           </div>
         </div>
@@ -2903,6 +2924,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
         </div>
       </section>
       </div>
+      ) : null}
     </>
   );
 }
@@ -2975,8 +2997,8 @@ function MobileLoyaltyView({
       <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/48 p-4">
         <MenuSectionHeading title="Redeemable Rewards" action="View All" />
         <div className="mt-4 grid grid-cols-2 gap-3">
-          {featuredRewards.map((reward) => (
-            <RewardCard key={reward.id} reward={reward} onRedeem={onRedeem} />
+          {featuredRewards.map((reward, index) => (
+            <RewardCard key={reward.id} reward={reward} priority={index < 2} onRedeem={onRedeem} />
           ))}
         </div>
       </section>
@@ -3052,11 +3074,11 @@ function MemberPassCard({ onNavigate }: { onNavigate: (view: AppView) => void })
 }
 
 /** Renders one reward redemption card with image, points, and value. */
-function RewardCard({ reward, onRedeem }: { reward: Reward; onRedeem: (reward: Reward) => void }) {
+function RewardCard({ reward, onRedeem, priority = false }: { reward: Reward; onRedeem: (reward: Reward) => void; priority?: boolean }) {
   return (
     <button type="button" onClick={() => onRedeem(reward)} className="group overflow-hidden rounded-2xl border border-[var(--sb-border)] bg-black/34 text-left transition hover:border-[var(--sb-gold)]">
       <div className="relative h-32">
-        <Image src={reward.image.publicUrl} alt="" fill sizes="220px" className="object-cover transition group-hover:scale-105" />
+        <Image src={reward.image.publicUrl} alt="" fill priority={priority} sizes="220px" className="object-cover transition group-hover:scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/16 to-transparent" />
       </div>
       <div className="p-3">
@@ -3092,11 +3114,15 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
     { label: "Facebook", icon: iconAssets.facebook },
     { label: "X", icon: iconAssets.x },
   ];
+  const isExpandedLayout = useIsExpandedLayout();
 
   return (
     <>
-      <MobileContactView location={location} hours={hours} socialLinks={socialLinks} onNavigate={onNavigate} showNotice={showNotice} />
-      <div className="hidden space-y-5 md:block">
+      {!isExpandedLayout ? (
+        <MobileContactView location={location} hours={hours} socialLinks={socialLinks} onNavigate={onNavigate} showNotice={showNotice} />
+      ) : null}
+      {isExpandedLayout ? (
+        <div className="hidden space-y-5 md:block">
       <PageHero
         eyebrow="We'd love to hear from you"
         title="Contact Sushi Bliss"
@@ -3131,7 +3157,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
       <section className="grid gap-5 xl:grid-cols-[0.78fr_1.22fr]">
         <FAQPanel onNavigate={onNavigate} />
         <div className="luxury-panel relative overflow-hidden p-5">
-          <Image src={heroAsset.publicUrl} alt="" fill sizes="760px" className="object-cover opacity-30" />
+          <Image src={heroAsset.publicUrl} alt="" fill priority sizes="760px" className="object-cover opacity-30" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/74 to-black/30" />
           <div className="relative z-10">
             <SectionHeader eyebrow="Message" title="Send Us A Message" />
@@ -3152,6 +3178,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
       </section>
       <DesktopBenefitsBar />
       </div>
+      ) : null}
     </>
   );
 }

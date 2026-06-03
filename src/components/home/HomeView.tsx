@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { AssetIcon } from "../icons/AssetIcon";
@@ -6,6 +8,7 @@ import { Button } from "../ui/button";
 import type { FilterCategory, SushiMenuItem } from "../../data/menu";
 import { getSushiIconAssets } from "../../data/icon-assets";
 import { getAppContent, getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
+import { useIsExpandedLayout } from "../../hooks/useResponsiveMode";
 import { formatCurrency } from "../../lib/format-utils";
 import type { Reservation } from "../../lib/reservation-utils";
 
@@ -65,9 +68,20 @@ export function HomeView({
   const memberItem = getHomeItem("ikura-gunkan", featuredItems, 5);
   const upcoming = reservations[0];
   const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
+  const isExpandedLayout = useIsExpandedLayout();
 
-  return (
-    <>
+  return isExpandedLayout ? (
+    <DesktopHomeView
+      desktopCards={desktopCards}
+      heroItem={heroItem}
+      memberItem={memberItem}
+      specialItem={specialItem}
+      upcoming={upcoming}
+      onAddToCart={onAddToCart}
+      onNavigate={onNavigate}
+      onSelectItem={onSelectItem}
+    />
+  ) : (
       <MobileHomeView
         activeCategory={activeCategory}
         featuredCards={featuredCards}
@@ -82,17 +96,6 @@ export function HomeView({
         onQueryChange={onQueryChange}
         onSelectItem={onSelectItem}
       />
-      <DesktopHomeView
-        desktopCards={desktopCards}
-        heroItem={heroItem}
-        memberItem={memberItem}
-        specialItem={specialItem}
-        upcoming={upcoming}
-        onAddToCart={onAddToCart}
-        onNavigate={onNavigate}
-        onSelectItem={onSelectItem}
-      />
-    </>
   );
 }
 
@@ -308,6 +311,7 @@ function FeaturedMenuRail({ items, onAddToCart, onNavigate, onSelectItem }: Feat
             item={item}
             onAddToCart={onAddToCart}
             onSelectItem={onSelectItem}
+            priority={index < 3}
           />
         ))}
       </div>
@@ -321,16 +325,17 @@ interface HomeMenuCardProps {
   item: SushiMenuItem;
   onAddToCart: (item: SushiMenuItem) => void;
   onSelectItem: (item: SushiMenuItem) => void;
+  priority?: boolean;
 }
 
 /** Renders a compact product card with a separate add-to-cart control. */
-function HomeMenuCard({ badge, className = "", item, onAddToCart, onSelectItem }: HomeMenuCardProps) {
+function HomeMenuCard({ badge, className = "", item, onAddToCart, onSelectItem, priority = false }: HomeMenuCardProps) {
   return (
     <article className={`relative min-w-0 overflow-hidden rounded-[14px] border border-[var(--sb-border)] bg-black/62 ${className}`}>
       <span className="absolute left-0 top-0 z-10 rounded-br-[12px] bg-[var(--sb-red)]/86 px-2 py-1 text-[10px] uppercase text-white">{badge}</span>
       <button type="button" onClick={() => onSelectItem(item)} className="block w-full text-left">
         <div className="relative h-[86px] md:h-[160px]">
-          <Image src={item.image.publicUrl} alt={item.name} fill sizes="130px" className="pointer-events-none object-cover" />
+          <Image src={item.image.publicUrl} alt={item.name} fill priority={priority} sizes="130px" className="pointer-events-none object-cover" />
         </div>
         <div className="p-3">
           <h3 className="editorial-title line-clamp-2 min-h-[34px] text-[13px] leading-[17px] text-white md:min-h-[48px] md:text-base md:leading-6 xl:text-lg">{item.name}</h3>
@@ -516,7 +521,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
             </div>
             <div className="mt-5 grid grid-cols-4 gap-6">
               {desktopCards.map((item, index) => (
-                <HomeMenuCard key={item.id} badge={index === 0 ? "Nigiri" : index === 1 ? "Hot" : index === 2 ? "Special" : "Sashimi"} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+                <HomeMenuCard key={item.id} badge={index === 0 ? "Nigiri" : index === 1 ? "Hot" : index === 2 ? "Special" : "Sashimi"} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} priority />
               ))}
             </div>
           </section>
