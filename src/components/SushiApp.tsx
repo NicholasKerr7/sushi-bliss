@@ -64,6 +64,7 @@ import { PageContainer } from "./layout/PageContainer";
 import { SectionHeader } from "./layout/SectionHeader";
 import { MemberPassRewardsView } from "./loyalty/MemberPassRewardsView";
 import { NotificationDetailView, NotificationsCenterView } from "./notifications/NotificationScreens";
+import { WelcomeView } from "./onboarding/WelcomeView";
 import { LiveOrderTrackingView } from "./orders/LiveOrderTrackingView";
 import { OrderConfirmationView } from "./orders/OrderConfirmationView";
 import { ProfileView } from "./profile/ProfileView";
@@ -189,6 +190,13 @@ function getDesktopNavItems(activeView: AppView): NavItem[] {
     return [...baseDesktopNav, ordersDesktopNavItem];
   }
   return baseDesktopNav;
+}
+
+/** Chooses the page gutter mode for standard, home, and immersive entry views. */
+function getPageContainerVariant(activeView: AppView): "default" | "home" | "immersive" {
+  if (activeView === "welcome") return "immersive";
+  if (activeView === "home") return "home";
+  return "default";
 }
 
 const categoryIcons: Partial<Record<MenuCategory, typeof Sparkles>> = {
@@ -773,7 +781,7 @@ export default function SushiApp() {
       onNavigate={navigate}
       onCartClick={() => openPanel("cart")}
     >
-      <PageContainer variant={activeView === "home" ? "home" : "default"}>
+      <PageContainer variant={getPageContainerVariant(activeView)}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeView}
@@ -782,6 +790,7 @@ export default function SushiApp() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.35 }}
           >
+            {activeView === "welcome" ? <WelcomeView onNavigate={navigate} /> : null}
             {activeView === "home" ? (
               <HomeView
                 featuredItems={featuredItems}

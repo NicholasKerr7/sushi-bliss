@@ -38,6 +38,8 @@ export function AppShell({
   onNavigate,
   onCartClick,
 }: AppShellProps) {
+  const isImmersiveView = activeView === "welcome";
+
   return (
     <div className="stone-gradient relative isolate min-h-screen overflow-x-hidden text-[var(--sb-text)]">
       <div className="pointer-events-none fixed inset-0 -z-10">
@@ -45,18 +47,20 @@ export function AppShell({
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(202,164,93,0.1)_1px,transparent_0)] bg-[length:96px_96px] opacity-24" />
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[rgba(184,20,20,0.16)] to-transparent" />
       </div>
-      <DesktopHeader
-        brand={brand}
-        navItems={navItems}
-        activeView={activeView}
-        cartCount={cartCount}
-        iconUrls={iconUrls}
-        profileName={profileName}
-        profileImage={profileImage}
-        onNavigate={onNavigate}
-        onCartClick={onCartClick}
-      />
-      {activeView === "home" ? null : (
+      {isImmersiveView ? null : (
+        <DesktopHeader
+          brand={brand}
+          navItems={navItems}
+          activeView={activeView}
+          cartCount={cartCount}
+          iconUrls={iconUrls}
+          profileName={profileName}
+          profileImage={profileImage}
+          onNavigate={onNavigate}
+          onCartClick={onCartClick}
+        />
+      )}
+      {activeView === "home" || isImmersiveView ? null : (
         <MobileHeader
           brand={brand}
           cartCount={cartCount}
@@ -66,21 +70,23 @@ export function AppShell({
         />
       )}
       {children}
-      <BottomNav
-        items={mobileNavItems}
-        activeView={activeView}
-        floating={
-          activeView !== "home" &&
-          activeView !== "orderTracking" &&
-          activeView !== "orderConfirmation" &&
-          activeView !== "reservationReview" &&
-          activeView !== "reservationConfirmation" &&
-          activeView !== "omakasePackageReview" &&
-          activeView !== "memberPass"
-        }
-        tabletItems={tabletNavItems}
-        onNavigate={onNavigate}
-      />
+      {isImmersiveView ? null : (
+        <BottomNav
+          items={mobileNavItems}
+          activeView={activeView}
+          floating={
+            activeView !== "home" &&
+            activeView !== "orderTracking" &&
+            activeView !== "orderConfirmation" &&
+            activeView !== "reservationReview" &&
+            activeView !== "reservationConfirmation" &&
+            activeView !== "omakasePackageReview" &&
+            activeView !== "memberPass"
+          }
+          tabletItems={tabletNavItems}
+          onNavigate={onNavigate}
+        />
+      )}
     </div>
   );
 }

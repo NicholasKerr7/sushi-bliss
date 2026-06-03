@@ -64,9 +64,13 @@ The app has an implemented screen or modal surface for these tablet/desktop refe
 - Master chefs team.
 - Sourcing ingredients.
 - Restaurant atmosphere gallery.
+- Welcome / entry splash.
 
 ## Follow-Up Gaps
 
 - Item customization is now URL-addressable through `?item=...&mode=customize`, but customization choices are still lightweight item-request preferences rather than persisted cart-line metadata.
 - Cart and checkout are now URL-addressable through `?panel=cart` and `?panel=checkout&step=delivery|payment|review`. The checkout substeps remain in one modal shell so they stay visually aligned with the screenshot references.
-- `mobile-01.png` is an onboarding / welcome state. The production app currently opens directly into the home experience instead of a separate onboarding flow.
+
+## Implementation Notes
+
+- The default app still opens directly into home, while the screenshot welcome state is available for QA at `?view=welcome`.

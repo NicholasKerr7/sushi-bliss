@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 
 /** Enumerates every routable app screen so URL state and navigation stay in sync. */
 export const appViews = [
+  "welcome",
   "home",
   "menu",
   "orderOnline",

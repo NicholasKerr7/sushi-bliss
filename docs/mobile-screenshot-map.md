@@ -6,7 +6,7 @@ The final mobile references are numbered only in `public/assets/screenshots/mobi
 
 | Screenshot | Semantic role | App state target |
 |---|---|---|
-| `mobile-01.png` | Welcome / entry splash | Reference-only onboarding state |
+| `mobile-01.png` | Welcome / entry splash | `?view=welcome` |
 | `mobile-02.png` | Home dashboard | `?view=home` |
 | `mobile-03.png` | Search and filter | `?view=menu` with active search |
 | `mobile-04.png` | Menu overview | `?view=menu` |

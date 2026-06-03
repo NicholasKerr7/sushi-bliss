@@ -129,10 +129,10 @@ try {
   // app-url-state tests
   test("getAppUrlState reads valid app views and selected item ids", () => {
     const state = getAppUrlState(
-      `?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri&${ITEM_MODE_QUERY_PARAM}=customize&${APP_PANEL_QUERY_PARAM}=checkout&${CHECKOUT_STEP_QUERY_PARAM}=payment`
+      `?${APP_VIEW_QUERY_PARAM}=welcome&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri&${ITEM_MODE_QUERY_PARAM}=customize&${APP_PANEL_QUERY_PARAM}=checkout&${CHECKOUT_STEP_QUERY_PARAM}=payment`
     );
 
-    assert.strictEqual(state.view, "giftExperience");
+    assert.strictEqual(state.view, "welcome");
     assert.strictEqual(state.itemId, "otoro-nigiri");
     assert.strictEqual(state.itemMode, "customize");
     assert.strictEqual(state.panel, "checkout");
