@@ -59,20 +59,6 @@
   text-transform: uppercase;
 }
 
-@media (min-width: 740px) {
-  .mobile-home-surface {
-    display: none !important;
-    pointer-events: none;
-  }
-}
-
-@media (max-width: 739px) {
-  .desktop-home-surface {
-    display: none !important;
-    pointer-events: none;
-  }
-}
-
 .sb-wave-pattern {
   background-image:
     radial-gradient(60% 52% at 50% 100%, transparent 56%, rgba(202, 164, 93, 0.2) 57%, transparent 59%),

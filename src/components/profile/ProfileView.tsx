@@ -65,7 +65,7 @@ export function ProfileView({
   return (
     <div className="space-y-5">
       <section className="luxury-panel relative overflow-hidden p-5 sm:p-7">
-        <Image src={assetUrl(ambienceAssets[0])} alt="" fill sizes="100vw" className="object-cover opacity-18" />
+        <Image src={assetUrl(ambienceAssets[0])} alt="" fill priority sizes="100vw" className="object-cover opacity-18" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/86 via-black/54 to-black/68" />
         <div className="relative z-10 grid gap-6 xl:grid-cols-[300px_1fr_520px]">
           <div className="flex flex-col items-center text-center xl:items-start xl:text-left">

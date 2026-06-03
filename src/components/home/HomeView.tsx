@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import type { FilterCategory, SushiMenuItem } from "../../data/menu";
 import { getSushiIconAssets } from "../../data/icon-assets";
 import { getAppContent, getBrand, getFeaturedAssets, getItemById, getReservationExperiences } from "../../data/selectors";
-import { useIsHomeExpandedLayout } from "../../hooks/useResponsiveMode";
+import { useIsExpandedLayout } from "../../hooks/useResponsiveMode";
 import { formatCurrency } from "../../lib/format-utils";
 import type { Reservation } from "../../lib/reservation-utils";
 
@@ -68,7 +68,7 @@ export function HomeView({
   const memberItem = getHomeItem("ikura-gunkan", featuredItems, 5);
   const upcoming = reservations[0];
   const progressValue = Math.min(loyaltyPoints, appContent.member.maxTierPoints);
-  const isExpandedLayout = useIsHomeExpandedLayout();
+  const isExpandedLayout = useIsExpandedLayout();
 
   return isExpandedLayout ? (
     <DesktopHomeView
@@ -130,7 +130,7 @@ function MobileHomeView({
   onSelectItem,
 }: MobileHomeViewProps) {
   return (
-    <section className="mobile-home-surface relative min-h-screen overflow-hidden bg-black px-5 pb-8 pt-3 min-[740px]:hidden">
+    <section className="mobile-home-surface relative min-h-screen overflow-hidden bg-black px-5 pb-8 pt-3 md:hidden">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_5%,rgba(184,20,20,0.28),transparent_26%),radial-gradient(circle_at_92%_18%,rgba(202,164,93,0.1),transparent_26%),linear-gradient(180deg,#080504_0%,#050505_42%,#050505_100%)]" />
         <div className="sb-wave-pattern absolute left-0 top-[42%] h-36 w-full opacity-18" />
@@ -438,7 +438,7 @@ interface DesktopHomeViewProps {
 /** Provides the tablet-only header used by the dashboard-style home screen. */
 function TabletHomeTopBar({ onNavigate }: { onNavigate: (view: AppView) => void }) {
   return (
-    <header className="mb-4 hidden items-center justify-between gap-5 rounded-[18px] border border-[var(--sb-border)] bg-black/44 px-5 py-4 backdrop-blur-xl min-[740px]:flex xl:hidden">
+    <header className="mb-4 hidden items-center justify-between gap-5 rounded-[18px] border border-[var(--sb-border)] bg-black/44 px-5 py-4 backdrop-blur-xl md:flex xl:hidden">
       <div className="flex items-center gap-4">
         <AssetIcon src={brand.assets.icon.publicUrl} alt="Sushi Bliss" size={64} className="rounded-full" />
         <span className="editorial-title text-xl leading-[0.95] tracking-[0.34em] text-white">
@@ -471,7 +471,7 @@ function DesktopHomeView({ desktopCards, heroItem, memberItem, specialItem, upco
   const reservationExperience = reservationExperiences[0];
 
   return (
-    <section className="desktop-home-surface hidden space-y-3 min-[740px]:block">
+    <section className="desktop-home-surface hidden space-y-3 md:block">
       <TabletHomeTopBar onNavigate={onNavigate} />
       <div className="overflow-hidden rounded-[20px] border border-[var(--sb-border)] bg-black/68 shadow-[0_30px_110px_rgba(0,0,0,0.55)] backdrop-blur-2xl">
         <section className="relative min-h-[343px] overflow-hidden border-b border-[var(--sb-border)] px-8 py-8 xl:px-20">

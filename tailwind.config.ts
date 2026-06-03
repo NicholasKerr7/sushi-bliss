@@ -1,16 +1,11 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
+import { responsiveBreakpoints } from "./src/lib/responsive-breakpoints";
 
 const config = {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-      "2xl": "1536px",
-    },
+    screens: { ...responsiveBreakpoints },
     extend: {
       fontFamily: {
         sans: ["var(--font-body)", ...defaultTheme.fontFamily.sans],
