@@ -50,6 +50,7 @@ try {
   const {
     APP_PANEL_QUERY_PARAM,
     APP_VIEW_QUERY_PARAM,
+    CHECKOUT_STEP_QUERY_PARAM,
     ITEM_MODE_QUERY_PARAM,
     MENU_ITEM_QUERY_PARAM,
     createAppStateHref,
@@ -128,22 +129,24 @@ try {
   // app-url-state tests
   test("getAppUrlState reads valid app views and selected item ids", () => {
     const state = getAppUrlState(
-      `?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri&${ITEM_MODE_QUERY_PARAM}=customize&${APP_PANEL_QUERY_PARAM}=cart`
+      `?${APP_VIEW_QUERY_PARAM}=giftExperience&${MENU_ITEM_QUERY_PARAM}=otoro-nigiri&${ITEM_MODE_QUERY_PARAM}=customize&${APP_PANEL_QUERY_PARAM}=checkout&${CHECKOUT_STEP_QUERY_PARAM}=payment`
     );
 
     assert.strictEqual(state.view, "giftExperience");
     assert.strictEqual(state.itemId, "otoro-nigiri");
     assert.strictEqual(state.itemMode, "customize");
-    assert.strictEqual(state.panel, "cart");
+    assert.strictEqual(state.panel, "checkout");
+    assert.strictEqual(state.checkoutStep, "payment");
   });
 
   test("getAppUrlState falls back to home for unsupported views", () => {
-    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=legacy-page&${APP_PANEL_QUERY_PARAM}=legacy-panel&${ITEM_MODE_QUERY_PARAM}=bad-mode`);
+    const state = getAppUrlState(`?${APP_VIEW_QUERY_PARAM}=legacy-page&${APP_PANEL_QUERY_PARAM}=legacy-panel&${ITEM_MODE_QUERY_PARAM}=bad-mode&${CHECKOUT_STEP_QUERY_PARAM}=bad-step`);
 
     assert.strictEqual(state.view, "home");
     assert.strictEqual(state.itemId, null);
     assert.strictEqual(state.itemMode, null);
     assert.strictEqual(state.panel, null);
+    assert.strictEqual(state.checkoutStep, null);
   });
 
   test("createAppStateHref writes view and item query state without dropping existing params", () => {
@@ -152,13 +155,14 @@ try {
       itemId: "dragon-roll",
       itemMode: "customize",
       panel: "checkout",
+      checkoutStep: "review",
     });
 
-    assert.strictEqual(href, "/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=checkout&mode=customize");
+    assert.strictEqual(href, "/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=checkout&mode=customize&step=review");
   });
 
   test("createAppStateHref removes default view and closed item state", () => {
-    const href = createAppStateHref("/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=cart&mode=customize#order", {
+    const href = createAppStateHref("/?campaign=sakura&view=giftCheckout&item=dragon-roll&panel=checkout&mode=customize&step=payment#order", {
       view: "home",
       itemId: null,
       panel: null,
@@ -166,6 +170,14 @@ try {
     });
 
     assert.strictEqual(href, "/?campaign=sakura#order");
+  });
+
+  test("createAppStateHref clears checkout substeps when switching back to the cart panel", () => {
+    const href = createAppStateHref("/?panel=checkout&step=payment", {
+      panel: "cart",
+    });
+
+    assert.strictEqual(href, "/?panel=cart");
   });
 
   test("getRelativeHrefFromLocation normalizes browser locations for history comparisons", () => {

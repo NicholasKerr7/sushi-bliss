@@ -68,5 +68,5 @@ The app has an implemented screen or modal surface for these tablet/desktop refe
 ## Follow-Up Gaps
 
 - Item customization is now URL-addressable through `?item=...&mode=customize`, but customization choices are still lightweight item-request preferences rather than persisted cart-line metadata.
-- Cart and checkout are now URL-addressable through `?panel=cart` and `?panel=checkout`, but the checkout substeps are still one modal surface rather than separate `step=delivery|payment|review` states.
+- Cart and checkout are now URL-addressable through `?panel=cart` and `?panel=checkout&step=delivery|payment|review`. The checkout substeps remain in one modal shell so they stay visually aligned with the screenshot references.
 - `mobile-01.png` is an onboarding / welcome state. The production app currently opens directly into the home experience instead of a separate onboarding flow.

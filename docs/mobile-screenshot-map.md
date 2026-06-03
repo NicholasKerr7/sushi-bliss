@@ -14,10 +14,10 @@ The final mobile references are numbered only in `public/assets/screenshots/mobi
 | `mobile-06.png` | Item detail | `?view=menu&item=otoro-nigiri` |
 | `mobile-07.png` | Item detail expanded | `?view=menu&item=otoro-nigiri` |
 | `mobile-08.png` | Cart | `?panel=cart` |
-| `mobile-09.png` | Checkout fulfillment | `?panel=checkout` |
-| `mobile-10.png` | Checkout details | `?panel=checkout` |
-| `mobile-11.png` | Checkout payment | `?panel=checkout` |
-| `mobile-12.png` | Checkout review | `?panel=checkout` |
+| `mobile-09.png` | Checkout fulfillment | `?panel=checkout&step=delivery` |
+| `mobile-10.png` | Checkout details | `?panel=checkout&step=delivery` |
+| `mobile-11.png` | Checkout payment | `?panel=checkout&step=payment` |
+| `mobile-12.png` | Checkout review | `?panel=checkout&step=review` |
 | `mobile-13.png` | Order confirmed | `?view=orderConfirmation` |
 | `mobile-14.png` | Orders dashboard | `?view=orders` |
 | `mobile-15.png` | Order detail / receipt | `?view=orders` |

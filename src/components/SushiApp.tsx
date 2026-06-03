@@ -122,6 +122,7 @@ import {
   getRelativeHrefFromLocation,
   type AppPanel,
   type AppUrlStatePatch,
+  type CheckoutStep as CheckoutStepKey,
   type ItemMode,
 } from "../lib/app-url-state";
 import type { AssetRef, Reward, SakePairing } from "../data/types";
@@ -203,6 +204,40 @@ const categoryIcons: Partial<Record<MenuCategory, typeof Sparkles>> = {
   Vegetarian: Leaf,
 };
 
+const checkoutFulfillmentOptions = ["Delivery", "Pickup"] as const satisfies readonly FulfillmentType[];
+const checkoutPaymentMethods = ["Visa **** 4242", "Apple Pay", "PayPal"] as const;
+const checkoutTipOptions = [0, 10, 15, 20] as const;
+const checkoutProgressLabels = ["Cart", "Delivery", "Payment", "Review"] as const;
+const checkoutStepTabs: { key: CheckoutStepKey; label: string }[] = [
+  { key: "delivery", label: "Delivery" },
+  { key: "payment", label: "Payment" },
+  { key: "review", label: "Review" },
+];
+const checkoutStepCopy: Record<CheckoutStepKey, { title: string; copy: string }> = {
+  delivery: {
+    title: "Delivery Details",
+    copy: "Choose fulfillment and confirm where the order should be prepared for.",
+  },
+  payment: {
+    title: "Payment Method",
+    copy: "Select a saved payment method and gratuity before final review.",
+  },
+  review: {
+    title: "Review Your Order",
+    copy: "Confirm every detail before the kitchen begins your order.",
+  },
+};
+const checkoutProgressStepByKey: Record<CheckoutStepKey, number> = {
+  delivery: 2,
+  payment: 3,
+  review: 4,
+};
+const nextCheckoutStepByKey: Record<CheckoutStepKey, CheckoutStepKey | null> = {
+  delivery: "payment",
+  payment: "review",
+  review: null,
+};
+
 /** Returns the human-readable label for a menu filter category. */
 function categoryLabel(category: FilterCategory): string {
   return category === "All" ? "All" : category;
@@ -217,6 +252,24 @@ function assetUrl(asset: AssetRef | undefined, fallback = heroAsset.publicUrl): 
 function compactDate(dateValue: string): string {
   const date = new Date(`${dateValue}T12:00`);
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+/** Maps URL-addressable checkout substeps to the four-dot visual progress rail. */
+function getCheckoutProgressStep(step: CheckoutStepKey): number {
+  return checkoutProgressStepByKey[step];
+}
+
+/** Returns the next checkout substep or null when the order is ready to place. */
+function getNextCheckoutStep(step: CheckoutStepKey): CheckoutStepKey | null {
+  return nextCheckoutStepByKey[step];
+}
+
+/** Creates the checkout footer CTA label from the current substep and total. */
+function getCheckoutPrimaryActionLabel(step: CheckoutStepKey, total: number): string {
+  const nextStep = getNextCheckoutStep(step);
+  if (nextStep === "payment") return "Continue To Payment";
+  if (nextStep === "review") return "Review Order";
+  return `Place Order • ${formatCurrency(total)}`;
 }
 
 /** Builds a deterministic demo order so fresh sessions match the active-order references. */
@@ -306,6 +359,7 @@ export default function SushiApp() {
   const [itemDetailMode, setItemDetailMode] = useState<ItemMode>("detail");
   const [showCart, setShowCart] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutStepKey>("delivery");
   const [selectedPayment, setSelectedPayment] = useState("Visa **** 4242");
   const [fulfillment, setFulfillment] = useState<FulfillmentType>("Delivery");
   const [tipPercent, setTipPercent] = useState(15);
@@ -367,8 +421,16 @@ export default function SushiApp() {
     const nextHref = createAppStateHref(window.location.href, patch);
     if (nextHref === getRelativeHrefFromLocation(window.location)) return;
 
-    if (mode === "replace") window.history.replaceState({ view: patch.view, itemId: patch.itemId, panel: patch.panel, itemMode: patch.itemMode }, "", nextHref);
-    else window.history.pushState({ view: patch.view, itemId: patch.itemId, panel: patch.panel, itemMode: patch.itemMode }, "", nextHref);
+    const historyState = {
+      view: patch.view,
+      itemId: patch.itemId,
+      panel: patch.panel,
+      itemMode: patch.itemMode,
+      checkoutStep: patch.checkoutStep,
+    };
+
+    if (mode === "replace") window.history.replaceState(historyState, "", nextHref);
+    else window.history.pushState(historyState, "", nextHref);
   }, []);
 
   /** Syncs the React screen state from the current URL and removes invalid query values. */
@@ -377,18 +439,21 @@ export default function SushiApp() {
 
     const urlState = getAppUrlState(window.location.search);
     const nextSelectedItem = urlState.itemId ? getItemById(urlState.itemId) ?? null : null;
+    const nextCheckoutStep = urlState.panel === "checkout" ? urlState.checkoutStep ?? "delivery" : "delivery";
 
     setActiveView(urlState.view);
     setSelectedItem(nextSelectedItem);
     setItemDetailMode(nextSelectedItem ? urlState.itemMode ?? "detail" : "detail");
     setShowCart(urlState.panel === "cart");
     setShowCheckout(urlState.panel === "checkout");
+    setCheckoutStep(nextCheckoutStep);
     writeUrlState(
       {
         view: urlState.view,
         itemId: nextSelectedItem?.id ?? null,
         itemMode: nextSelectedItem ? urlState.itemMode ?? "detail" : null,
         panel: urlState.panel,
+        checkoutStep: urlState.panel === "checkout" ? nextCheckoutStep : null,
       },
       "replace"
     );
@@ -403,7 +468,8 @@ export default function SushiApp() {
     setItemDetailMode("detail");
     setShowCart(false);
     setShowCheckout(false);
-    writeUrlState({ view, itemId: null, itemMode: null, panel: null }, mode);
+    setCheckoutStep("delivery");
+    writeUrlState({ view, itemId: null, itemMode: null, panel: null, checkoutStep: null }, mode);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
   }, [writeUrlState]);
 
@@ -428,17 +494,29 @@ export default function SushiApp() {
   }, [writeUrlState]);
 
   /** Opens either transient commerce panel and records it in URL state. */
-  const openPanel = useCallback((panel: AppPanel, mode: BrowserHistoryMode = "push") => {
+  const openPanel = useCallback((panel: AppPanel, mode: BrowserHistoryMode = "push", step: CheckoutStepKey = "delivery") => {
+    const nextCheckoutStep = panel === "checkout" ? step : "delivery";
+
     setShowCart(panel === "cart");
     setShowCheckout(panel === "checkout");
-    writeUrlState({ panel }, mode);
+    setCheckoutStep(nextCheckoutStep);
+    writeUrlState({ panel, checkoutStep: panel === "checkout" ? nextCheckoutStep : null }, mode);
   }, [writeUrlState]);
 
   /** Closes commerce overlays without disturbing the active app screen. */
   const closePanel = useCallback(() => {
     setShowCart(false);
     setShowCheckout(false);
-    writeUrlState({ panel: null }, "replace");
+    setCheckoutStep("delivery");
+    writeUrlState({ panel: null, checkoutStep: null }, "replace");
+  }, [writeUrlState]);
+
+  /** Advances or rewinds checkout while keeping the modal state shareable in the URL. */
+  const changeCheckoutStep = useCallback((step: CheckoutStepKey) => {
+    setCheckoutStep(step);
+    setShowCart(false);
+    setShowCheckout(true);
+    writeUrlState({ panel: "checkout", checkoutStep: step }, "push");
   }, [writeUrlState]);
 
   /** Adds one or more menu items to the cart and awards lightweight mock points. */
@@ -595,6 +673,7 @@ export default function SushiApp() {
     setCart([]);
     setShowCart(false);
     setShowCheckout(false);
+    setCheckoutStep("delivery");
     setAppliedPromo(null);
     setPromoCode("");
     showNotice(`Order ${order.confirmationCode} confirmed.`, "success");
@@ -1033,6 +1112,7 @@ export default function SushiApp() {
             groupedCart={groupedCart}
             profile={profile}
             fulfillment={fulfillment}
+            checkoutStep={checkoutStep}
             selectedPayment={selectedPayment}
             tipPercent={tipPercent}
             subtotal={subtotal}
@@ -1044,6 +1124,7 @@ export default function SushiApp() {
             total={checkoutTotal}
             onClose={closePanel}
             onFulfillmentChange={setFulfillment}
+            onCheckoutStepChange={changeCheckoutStep}
             onProfileChange={setProfile}
             onPaymentChange={setSelectedPayment}
             onTipChange={setTipPercent}
@@ -3620,115 +3701,515 @@ function CartDrawer({ groupedCart, subtotal, promoDiscount, tax, tip, grandTotal
   );
 }
 
-/** Renders the multi-section checkout modal with fulfillment and payment fields. */
-function CheckoutModal({ groupedCart, profile, fulfillment, selectedPayment, tipPercent, subtotal, promoDiscount, tax, tip, deliveryFee, serviceFee, total, onClose, onFulfillmentChange, onProfileChange, onPaymentChange, onTipChange, onPlaceOrder }: { groupedCart: { item: SushiMenuItem; qty: number }[]; profile: GuestProfile; fulfillment: FulfillmentType; selectedPayment: string; tipPercent: number; subtotal: number; promoDiscount: number; tax: number; tip: number; deliveryFee: number; serviceFee: number; total: number; onClose: () => void; onFulfillmentChange: (value: FulfillmentType) => void; onProfileChange: (profile: GuestProfile) => void; onPaymentChange: (value: string) => void; onTipChange: (value: number) => void; onPlaceOrder: () => void }) {
+interface CheckoutModalProps {
+  groupedCart: { item: SushiMenuItem; qty: number }[];
+  profile: GuestProfile;
+  fulfillment: FulfillmentType;
+  checkoutStep: CheckoutStepKey;
+  selectedPayment: string;
+  tipPercent: number;
+  subtotal: number;
+  promoDiscount: number;
+  tax: number;
+  tip: number;
+  deliveryFee: number;
+  serviceFee: number;
+  total: number;
+  onClose: () => void;
+  onFulfillmentChange: (value: FulfillmentType) => void;
+  onCheckoutStepChange: (step: CheckoutStepKey) => void;
+  onProfileChange: (profile: GuestProfile) => void;
+  onPaymentChange: (value: string) => void;
+  onTipChange: (value: number) => void;
+  onPlaceOrder: () => void;
+}
+
+interface CheckoutStepTabsProps {
+  activeStep: CheckoutStepKey;
+  onChange: (step: CheckoutStepKey) => void;
+}
+
+interface CheckoutDeliveryStepProps {
+  fulfillment: FulfillmentType;
+  profile: GuestProfile;
+  onFulfillmentChange: (value: FulfillmentType) => void;
+  onNext: () => void;
+  onProfileChange: (profile: GuestProfile) => void;
+}
+
+interface CheckoutPaymentStepProps {
+  selectedPayment: string;
+  tipPercent: number;
+  onNext: () => void;
+  onPaymentChange: (value: string) => void;
+  onTipChange: (value: number) => void;
+}
+
+interface CheckoutReviewStepProps {
+  groupedCart: { item: SushiMenuItem; qty: number }[];
+  profile: GuestProfile;
+  fulfillment: FulfillmentType;
+  selectedPayment: string;
+  total: number;
+  onBack: () => void;
+}
+
+interface CheckoutSummaryAsideProps {
+  groupedCart: { item: SushiMenuItem; qty: number }[];
+  itemCount: number;
+  profile: GuestProfile;
+  fulfillment: FulfillmentType;
+  selectedPayment: string;
+  subtotal: number;
+  promoDiscount: number;
+  tax: number;
+  tip: number;
+  deliveryFee: number;
+  serviceFee: number;
+  total: number;
+  primaryActionLabel: string;
+  onPrimaryAction: () => void;
+}
+
+/** Renders the URL-addressable checkout flow with delivery, payment, and review states. */
+function CheckoutModal({
+  groupedCart,
+  profile,
+  fulfillment,
+  checkoutStep,
+  selectedPayment,
+  tipPercent,
+  subtotal,
+  promoDiscount,
+  tax,
+  tip,
+  deliveryFee,
+  serviceFee,
+  total,
+  onClose,
+  onFulfillmentChange,
+  onCheckoutStepChange,
+  onProfileChange,
+  onPaymentChange,
+  onTipChange,
+  onPlaceOrder,
+}: CheckoutModalProps) {
   const itemCount = groupedCart.reduce((sum, row) => sum + row.qty, 0);
+  const nextStep = getNextCheckoutStep(checkoutStep);
+  const stepCopy = checkoutStepCopy[checkoutStep];
+  const primaryActionLabel = getCheckoutPrimaryActionLabel(checkoutStep, total);
+
+  /** Routes the footer CTA to the next step or to final order placement. */
+  const handlePrimaryAction = () => {
+    if (nextStep) onCheckoutStepChange(nextStep);
+    else onPlaceOrder();
+  };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[90] flex items-end bg-black/75 backdrop-blur-sm lg:items-center lg:justify-center">
-      <motion.section initial={{ y: 36, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 36, opacity: 0 }} className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] px-5 pb-8 pt-5 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-6xl lg:rounded-[34px] lg:p-7">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[90] flex items-end bg-black/75 backdrop-blur-sm lg:items-center lg:justify-center"
+    >
+      <motion.section
+        initial={{ y: 36, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 36, opacity: 0 }}
+        className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] px-5 pb-8 pt-5 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-6xl lg:rounded-[34px] lg:p-7"
+      >
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image src={brand.assets.icon.publicUrl} alt="" width={48} height={48} className="h-12 w-12 rounded-full" />
-            <span className="editorial-title text-[17px] leading-[0.95] tracking-[0.32em] text-white">Sushi<br />Bliss</span>
+            <Image
+              src={brand.assets.icon.publicUrl}
+              alt=""
+              width={48}
+              height={48}
+              className="h-12 w-12 rounded-full"
+            />
+            <span className="editorial-title text-[17px] leading-[0.95] tracking-[0.32em] text-white">
+              Sushi<br />Bliss
+            </span>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close checkout" className="grid h-12 w-12 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"><X className="h-5 w-5" /></button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close checkout"
+            className="grid h-12 w-12 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-        <CheckoutProgress activeStep={4} />
+        <CheckoutProgress activeStep={getCheckoutProgressStep(checkoutStep)} />
         <div className="mt-7">
-          <h2 className="editorial-title text-[42px] leading-none text-white">Review Your Order</h2>
-          <p className="mt-2 text-xl text-[var(--sb-gold)]">Almost there. Please review your order details.</p>
+          <h2 className="editorial-title text-[42px] leading-none text-white">{stepCopy.title}</h2>
+          <p className="mt-2 text-xl text-[var(--sb-gold)]">{stepCopy.copy}</p>
         </div>
+        <CheckoutStepTabs activeStep={checkoutStep} onChange={onCheckoutStepChange} />
         <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_380px]">
           <div className="space-y-5">
-            <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
-              <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Delivery / Pickup</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {(["Delivery", "Pickup"] as FulfillmentType[]).map((option) => (
-                  <CheckoutChoiceCard
-                    key={option}
-                    active={fulfillment === option}
-                    copy={option === "Delivery" ? "We'll bring your sushi straight to your door." : "Pick up your order from Sushi Bliss Downtown."}
-                    icon={option === "Delivery" ? iconAssets.delivery : iconAssets.bag}
-                    title={option}
-                    onClick={() => onFulfillmentChange(option)}
-                  />
-                ))}
-              </div>
-            </section>
-            <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
-              <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Delivery Address</h3>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Input value={profile.name} onChange={(event) => onProfileChange({ ...profile, name: event.target.value })} placeholder="Name" className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white" />
-                <Input value={profile.phone} onChange={(event) => onProfileChange({ ...profile, phone: event.target.value })} placeholder="Phone" className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white" />
-                <Input value={profile.deliveryAddress} onChange={(event) => onProfileChange({ ...profile, deliveryAddress: event.target.value, address: profile.address || event.target.value })} placeholder="Delivery address" className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white sm:col-span-2" />
-                <textarea placeholder="Delivery instructions" className="min-h-24 rounded-[14px] border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-[var(--sb-muted)] sm:col-span-2" />
-              </div>
-            </section>
-            <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
-              <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Payment Method</h3>
-              <div className="mt-4 space-y-3">
-                {["Visa **** 4242", "Apple Pay", "PayPal"].map((method) => (
-                  <CheckoutPaymentRow key={method} active={selectedPayment === method} method={method} onClick={() => onPaymentChange(method)} />
-                ))}
-              </div>
-            </section>
-            <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
-              <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Tip</h3>
-              <div className="mt-4 grid grid-cols-4 gap-2">
-                {[0, 10, 15, 20].map((tipOption) => (
-                  <button key={tipOption} type="button" onClick={() => onTipChange(tipOption)} className={`h-11 rounded-xl border px-3 text-sm ${tipPercent === tipOption ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24 text-white" : "border-[var(--sb-border)] text-[var(--sb-muted)]"}`}>
-                    {tipOption === 0 ? "None" : `${tipOption}%`}
-                  </button>
-                ))}
-              </div>
-            </section>
+            {checkoutStep === "delivery" ? (
+              <CheckoutDeliveryStep
+                fulfillment={fulfillment}
+                profile={profile}
+                onFulfillmentChange={onFulfillmentChange}
+                onNext={() => onCheckoutStepChange("payment")}
+                onProfileChange={onProfileChange}
+              />
+            ) : null}
+            {checkoutStep === "payment" ? (
+              <CheckoutPaymentStep
+                selectedPayment={selectedPayment}
+                tipPercent={tipPercent}
+                onNext={() => onCheckoutStepChange("review")}
+                onPaymentChange={onPaymentChange}
+                onTipChange={onTipChange}
+              />
+            ) : null}
+            {checkoutStep === "review" ? (
+              <CheckoutReviewStep
+                groupedCart={groupedCart}
+                profile={profile}
+                fulfillment={fulfillment}
+                selectedPayment={selectedPayment}
+                total={total}
+                onBack={() => onCheckoutStepChange("payment")}
+              />
+            ) : null}
           </div>
-          <aside className="h-max rounded-[18px] border border-[var(--sb-border)] bg-black/54 p-5 xl:sticky xl:top-8">
-            <div className="flex items-center justify-between">
-              <p className="editorial-title text-xl text-[var(--sb-gold)]">Order Summary</p>
-              <span className="text-sm text-[var(--sb-muted)]">{itemCount} items</span>
-            </div>
-            <CheckoutInfoRow icon={iconAssets.mapPin} label="Delivery Address" value={`${profile.name}\n${profile.deliveryAddress || appContent.member.deliveryAddress}`} />
-            <CheckoutInfoRow icon={iconAssets.clock} label="Scheduled Time" value={`Today • ${fulfillment === "Delivery" ? "ASAP (45-60 min)" : "ASAP (20-25 min)"}`} />
-            <CheckoutInfoRow icon={iconAssets.creditCard} label="Payment Method" value={selectedPayment} />
-            <div className="mt-4 divide-y divide-[var(--sb-border)] rounded-[14px] border border-[var(--sb-border)] bg-black/36">
-              {groupedCart.map(({ item, qty }) => (
-                <div key={item.id} className="grid grid-cols-[72px_42px_1fr_auto] items-center gap-3 p-3">
-                  <div className="relative h-16 overflow-hidden rounded-[10px]"><Image src={item.image.publicUrl} alt="" fill sizes="72px" className="object-cover" /></div>
-                  <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]">{qty}</span>
-                  <span><span className="block text-sm text-white">{item.name}</span><span className="text-xs text-[var(--sb-muted)]">{item.description}</span></span>
-                  <span className="text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</span>
-                </div>
-              ))}
-            </div>
-            <TotalsPanel subtotal={subtotal} promoDiscount={promoDiscount} tax={tax} tip={tip} grandTotal={subtotal + tax + tip - promoDiscount} deliveryFee={deliveryFee} serviceFee={serviceFee} total={total} />
-            <div className="mt-4 rounded-[14px] border border-[var(--sb-border)] bg-black/34 p-4 text-sm text-[var(--sb-muted)]">
-              You&apos;ll earn <span className="text-[var(--sb-gold)]">{Math.round(total * 10)} pts</span> with this order.
-            </div>
-            <Button className="red-glow-button mt-5 h-16 w-full rounded-[16px] py-4 text-base uppercase tracking-[0.18em]" onClick={onPlaceOrder}>Place Order • {formatCurrency(total)}</Button>
-            <p className="mt-4 text-center text-sm text-[var(--sb-muted)]">Secure checkout • Your information is always protected.</p>
-          </aside>
+          <CheckoutSummaryAside
+            groupedCart={groupedCart}
+            itemCount={itemCount}
+            profile={profile}
+            fulfillment={fulfillment}
+            selectedPayment={selectedPayment}
+            subtotal={subtotal}
+            promoDiscount={promoDiscount}
+            tax={tax}
+            tip={tip}
+            deliveryFee={deliveryFee}
+            serviceFee={serviceFee}
+            total={total}
+            primaryActionLabel={primaryActionLabel}
+            onPrimaryAction={handlePrimaryAction}
+          />
         </div>
       </motion.section>
     </motion.div>
   );
 }
 
+/** Renders the checkout substep selector used by screenshot-specific URL states. */
+function CheckoutStepTabs({
+  activeStep,
+  onChange,
+}: CheckoutStepTabsProps) {
+  return (
+    <div className="mt-5 grid grid-cols-3 gap-2 rounded-2xl border border-[var(--sb-border)] bg-black/34 p-1">
+      {checkoutStepTabs.map((step) => (
+        <button
+          key={step.key}
+          type="button"
+          aria-pressed={activeStep === step.key}
+          onClick={() => onChange(step.key)}
+          className={`h-12 rounded-xl text-xs font-semibold uppercase tracking-[0.16em] transition ${
+            activeStep === step.key
+              ? "bg-[var(--sb-red)] text-white shadow-[0_0_20px_var(--sb-red-glow)]"
+              : "text-[var(--sb-muted)] hover:text-white"
+          } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sb-gold)]`}
+        >
+          {step.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** Renders fulfillment and guest-contact controls for the first checkout URL state. */
+function CheckoutDeliveryStep({
+  fulfillment,
+  profile,
+  onFulfillmentChange,
+  onNext,
+  onProfileChange,
+}: CheckoutDeliveryStepProps) {
+  return (
+    <>
+      <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
+        <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Delivery / Pickup</h3>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {checkoutFulfillmentOptions.map((option) => (
+            <CheckoutChoiceCard
+              key={option}
+              active={fulfillment === option}
+              copy={
+                option === "Delivery"
+                  ? "We'll bring your sushi straight to your door."
+                  : "Pick up your order from Sushi Bliss Downtown."
+              }
+              icon={option === "Delivery" ? iconAssets.delivery : iconAssets.bag}
+              title={option}
+              onClick={() => onFulfillmentChange(option)}
+            />
+          ))}
+        </div>
+      </section>
+      <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
+        <h3 className="editorial-title text-xl text-[var(--sb-gold)]">
+          {fulfillment === "Delivery" ? "Delivery Address" : "Pickup Contact"}
+        </h3>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label htmlFor="checkout-guest-name" className="sr-only">
+            Name
+          </label>
+          <Input
+            id="checkout-guest-name"
+            value={profile.name}
+            onChange={(event) => onProfileChange({ ...profile, name: event.target.value })}
+            placeholder="Name"
+            className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white"
+          />
+          <label htmlFor="checkout-guest-phone" className="sr-only">
+            Phone
+          </label>
+          <Input
+            id="checkout-guest-phone"
+            value={profile.phone}
+            onChange={(event) => onProfileChange({ ...profile, phone: event.target.value })}
+            placeholder="Phone"
+            className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white"
+          />
+          <label htmlFor="checkout-delivery-address" className="sr-only">
+            Delivery address
+          </label>
+          <Input
+            id="checkout-delivery-address"
+            value={profile.deliveryAddress}
+            onChange={(event) =>
+              onProfileChange({
+                ...profile,
+                deliveryAddress: event.target.value,
+                address: profile.address || event.target.value,
+              })
+            }
+            placeholder="Delivery address"
+            className="h-14 rounded-[14px] border-[var(--sb-border)] bg-black/30 text-white sm:col-span-2"
+          />
+          <label htmlFor="checkout-delivery-instructions" className="sr-only">
+            Delivery instructions
+          </label>
+          <textarea
+            id="checkout-delivery-instructions"
+            placeholder="Delivery instructions"
+            className="min-h-24 rounded-[14px] border border-[var(--sb-border)] bg-black/30 px-3 py-3 text-sm text-white outline-none placeholder:text-[var(--sb-muted)] focus-visible:ring-2 focus-visible:ring-[var(--sb-gold)] sm:col-span-2"
+          />
+        </div>
+      </section>
+      <Button className="red-glow-button h-14 w-full rounded-[16px] uppercase tracking-[0.18em]" onClick={onNext}>
+        Continue To Payment
+      </Button>
+    </>
+  );
+}
+
+/** Renders payment and gratuity controls for the second checkout URL state. */
+function CheckoutPaymentStep({
+  selectedPayment,
+  tipPercent,
+  onNext,
+  onPaymentChange,
+  onTipChange,
+}: CheckoutPaymentStepProps) {
+  return (
+    <>
+      <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
+        <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Payment Method</h3>
+        <div className="mt-4 space-y-3">
+          {checkoutPaymentMethods.map((method) => (
+            <CheckoutPaymentRow
+              key={method}
+              active={selectedPayment === method}
+              method={method}
+              onClick={() => onPaymentChange(method)}
+            />
+          ))}
+        </div>
+      </section>
+      <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
+        <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Tip</h3>
+        <div className="mt-4 grid grid-cols-4 gap-2">
+          {checkoutTipOptions.map((tipOption) => (
+            <button
+              key={tipOption}
+              type="button"
+              onClick={() => onTipChange(tipOption)}
+              className={`h-11 rounded-xl border px-3 text-sm ${
+                tipPercent === tipOption
+                  ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/24 text-white"
+                  : "border-[var(--sb-border)] text-[var(--sb-muted)]"
+              }`}
+            >
+              {tipOption === 0 ? "None" : `${tipOption}%`}
+            </button>
+          ))}
+        </div>
+      </section>
+      <Button className="red-glow-button h-14 w-full rounded-[16px] uppercase tracking-[0.18em]" onClick={onNext}>
+        Review Order
+      </Button>
+    </>
+  );
+}
+
+/** Renders final human-readable order details before the order placement action. */
+function CheckoutReviewStep({
+  groupedCart,
+  profile,
+  fulfillment,
+  selectedPayment,
+  total,
+  onBack,
+}: CheckoutReviewStepProps) {
+  return (
+    <section className="rounded-[18px] border border-[var(--sb-border)] bg-black/44 p-5">
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="editorial-title text-xl text-[var(--sb-gold)]">Final Review</h3>
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-full px-2 py-1 text-sm uppercase tracking-[0.16em] text-[var(--sb-red-bright)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sb-gold)]"
+        >
+          Edit Payment
+        </button>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <CheckoutInfoRow
+          icon={iconAssets.mapPin}
+          label={fulfillment === "Delivery" ? "Delivery Address" : "Pickup Name"}
+          value={`${profile.name}\n${profile.deliveryAddress || appContent.member.deliveryAddress}`}
+        />
+        <CheckoutInfoRow
+          icon={iconAssets.clock}
+          label="Scheduled Time"
+          value={`Today • ${fulfillment === "Delivery" ? "ASAP (45-60 min)" : "ASAP (20-25 min)"}`}
+        />
+        <CheckoutInfoRow icon={iconAssets.creditCard} label="Payment Method" value={selectedPayment} />
+        <CheckoutInfoRow
+          icon={iconAssets.loyalty}
+          label="Rewards Earned"
+          value={`${Math.round(total * 10)} pts after completion`}
+        />
+      </div>
+      <div className="mt-5 divide-y divide-[var(--sb-border)] rounded-[14px] border border-[var(--sb-border)] bg-black/36">
+        {groupedCart.map(({ item, qty }) => (
+          <div key={item.id} className="grid grid-cols-[64px_1fr_auto] items-center gap-3 p-3">
+            <div className="relative h-16 overflow-hidden rounded-[10px]">
+              <Image src={item.image.publicUrl} alt="" fill sizes="64px" className="object-cover" />
+            </div>
+            <span className="min-w-0">
+              <span className="block text-sm text-white">{item.name}</span>
+              <span className="text-xs text-[var(--sb-muted)]">Qty {qty} • {item.category}</span>
+            </span>
+            <span className="text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/** Renders the persistent order summary and primary checkout action. */
+function CheckoutSummaryAside({
+  groupedCart,
+  itemCount,
+  profile,
+  fulfillment,
+  selectedPayment,
+  subtotal,
+  promoDiscount,
+  tax,
+  tip,
+  deliveryFee,
+  serviceFee,
+  total,
+  primaryActionLabel,
+  onPrimaryAction,
+}: CheckoutSummaryAsideProps) {
+  return (
+    <aside className="h-max rounded-[18px] border border-[var(--sb-border)] bg-black/54 p-5 xl:sticky xl:top-8">
+      <div className="flex items-center justify-between">
+        <p className="editorial-title text-xl text-[var(--sb-gold)]">Order Summary</p>
+        <span className="text-sm text-[var(--sb-muted)]">{itemCount} items</span>
+      </div>
+      <CheckoutInfoRow
+        icon={iconAssets.mapPin}
+        label={fulfillment === "Delivery" ? "Delivery Address" : "Pickup Guest"}
+        value={`${profile.name}\n${profile.deliveryAddress || appContent.member.deliveryAddress}`}
+      />
+      <CheckoutInfoRow
+        icon={iconAssets.clock}
+        label="Scheduled Time"
+        value={`Today • ${fulfillment === "Delivery" ? "ASAP (45-60 min)" : "ASAP (20-25 min)"}`}
+      />
+      <CheckoutInfoRow icon={iconAssets.creditCard} label="Payment Method" value={selectedPayment} />
+      <div className="mt-4 divide-y divide-[var(--sb-border)] rounded-[14px] border border-[var(--sb-border)] bg-black/36">
+        {groupedCart.map(({ item, qty }) => (
+          <div key={item.id} className="grid grid-cols-[72px_42px_1fr_auto] items-center gap-3 p-3">
+            <div className="relative h-16 overflow-hidden rounded-[10px]">
+              <Image src={item.image.publicUrl} alt="" fill sizes="72px" className="object-cover" />
+            </div>
+            <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--sb-border)] text-[var(--sb-gold)]">{qty}</span>
+            <span className="min-w-0">
+              <span className="block text-sm text-white">{item.name}</span>
+              <span className="text-xs text-[var(--sb-muted)]">{item.description}</span>
+            </span>
+            <span className="text-[var(--sb-gold)]">{formatCurrency(item.price * qty)}</span>
+          </div>
+        ))}
+      </div>
+      <TotalsPanel
+        subtotal={subtotal}
+        promoDiscount={promoDiscount}
+        tax={tax}
+        tip={tip}
+        grandTotal={subtotal + tax + tip - promoDiscount}
+        deliveryFee={deliveryFee}
+        serviceFee={serviceFee}
+        total={total}
+      />
+      <div className="mt-4 rounded-[14px] border border-[var(--sb-border)] bg-black/34 p-4 text-sm text-[var(--sb-muted)]">
+        You&apos;ll earn <span className="text-[var(--sb-gold)]">{Math.round(total * 10)} pts</span> with this order.
+      </div>
+      <Button className="red-glow-button mt-5 h-16 w-full rounded-[16px] py-4 text-base uppercase tracking-[0.18em]" onClick={onPrimaryAction}>
+        {primaryActionLabel}
+      </Button>
+      <p className="mt-4 text-center text-sm text-[var(--sb-muted)]">Secure checkout • Your information is always protected.</p>
+    </aside>
+  );
+}
+
 /** Renders the four-dot checkout progress rail used across the screenshot flow. */
 function CheckoutProgress({ activeStep }: { activeStep: number }) {
-  const steps = ["Cart", "Delivery", "Payment", "Review"];
-
   return (
     <div className="mt-7 grid grid-cols-4 gap-2">
-      {steps.map((label, index) => {
+      {checkoutProgressLabels.map((label, index) => {
         const step = index + 1;
         const active = step === activeStep;
         return (
           <div key={label} className="relative text-center">
             {index > 0 ? <span className="absolute right-1/2 top-6 h-px w-full bg-[var(--sb-border)]" /> : null}
-            <span className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-lg ${active ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/28 text-white shadow-[0_0_24px_var(--sb-red-glow)]" : "border-[var(--sb-border)] bg-black/45 text-[var(--sb-gold)]"}`}>{step}</span>
-            <span className={`mt-3 block text-sm ${active ? "text-[var(--sb-red-bright)]" : "text-[var(--sb-muted)]"}`}>{label}</span>
+            <span
+              className={`relative z-10 mx-auto grid h-12 w-12 place-items-center rounded-full border text-lg ${
+                active
+                  ? "border-[var(--sb-red-bright)] bg-[var(--sb-red)]/28 text-white shadow-[0_0_24px_var(--sb-red-glow)]"
+                  : "border-[var(--sb-border)] bg-black/45 text-[var(--sb-gold)]"
+              }`}
+            >
+              {step}
+            </span>
+            <span className={`mt-3 block text-sm ${active ? "text-[var(--sb-red-bright)]" : "text-[var(--sb-muted)]"}`}>
+              {label}
+            </span>
           </div>
         );
       })}
