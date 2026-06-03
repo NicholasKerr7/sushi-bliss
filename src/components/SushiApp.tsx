@@ -1306,11 +1306,11 @@ function MobileMenuOverview({
       </div>
       <MenuSearchRow query={query} onQueryChange={onQueryChange} onSubmit={() => undefined} />
       <MobileMenuCategories activeCategory="Nigiri" onCategoryChange={onCategoryChange} />
-      {heroItem ? <MobileMenuFeature item={heroItem} onSelectItem={onSelectItem} /> : null}
+      {heroItem ? <MobileMenuFeature item={heroItem} onSelectItem={onSelectItem} priority /> : null}
       <MenuSectionHeading title="Popular Picks" action="View All" />
       <div className="grid grid-cols-2 gap-3">
         {items.map((item, index) => (
-          <MobileMenuTile key={item.id} badge={index === 0 ? "Hot" : index === 1 ? "Popular" : undefined} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+          <MobileMenuTile key={item.id} badge={index === 0 ? "Hot" : index === 1 ? "Popular" : undefined} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} priority={index < 2} />
         ))}
       </div>
       <p className="text-center text-xs text-[var(--sb-muted)]">Prices do not include tax. Photos for illustration only.</p>
@@ -1412,7 +1412,7 @@ function MobileCategoryMenu({
   return (
     <div className="space-y-5">
       <section className="relative min-h-[260px] overflow-hidden rounded-[2px]">
-        {heroItem ? <Image src={heroItem.image.publicUrl} alt="" fill sizes="430px" className="object-cover object-[70%_42%] opacity-86" /> : null}
+        {heroItem ? <Image src={heroItem.image.publicUrl} alt="" fill priority sizes="430px" className="object-cover object-[70%_42%] opacity-86" /> : null}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0.78)_45%,rgba(0,0,0,0.18)_100%)]" />
         <div className="relative z-10 max-w-[360px] px-1 py-8">
           <p className="text-lg text-[var(--sb-gold)]">Menu <ChevronRight className="inline h-4 w-4 text-white/62" /> <span className="text-[var(--sb-red-bright)]">{label}</span></p>
@@ -1424,7 +1424,7 @@ function MobileCategoryMenu({
       <div className="gold-divider" />
       <div className="space-y-3">
         {items.map((item, index) => (
-          <MenuSearchResultRow key={item.id} badge={index === 0 ? "Hot" : index === 1 ? "Popular" : item.tag} item={item} compact onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+          <MenuSearchResultRow key={item.id} badge={index === 0 ? "Hot" : index === 1 ? "Popular" : item.tag} item={item} compact priority={index === 0} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
         ))}
       </div>
       <button type="button" className="grid w-full grid-cols-[54px_1fr_auto] items-center gap-4 rounded-[18px] border border-[var(--sb-border)] bg-black/42 p-4 text-left">
@@ -1485,10 +1485,10 @@ function MobileMenuCategories({ activeCategory, onCategoryChange }: { activeCate
 }
 
 /** Displays one large mobile menu promotion card. */
-function MobileMenuFeature({ item, onSelectItem }: { item: SushiMenuItem; onSelectItem: (item: SushiMenuItem) => void }) {
+function MobileMenuFeature({ item, onSelectItem, priority = false }: { item: SushiMenuItem; onSelectItem: (item: SushiMenuItem) => void; priority?: boolean }) {
   return (
     <button type="button" onClick={() => onSelectItem(item)} className="relative block min-h-[184px] w-full overflow-hidden rounded-[16px] border border-[var(--sb-border)] text-left">
-      <Image src={item.image.publicUrl} alt="" fill sizes="430px" className="object-cover object-[70%_50%]" />
+      <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="430px" className="object-cover object-[70%_50%]" />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.64)_45%,rgba(0,0,0,0.1)_100%)]" />
       <span className="absolute right-5 top-6 rounded-full bg-[var(--sb-red)] px-4 py-1.5 text-xs uppercase text-white">Hot</span>
       <div className="relative z-10 max-w-[255px] p-5">
@@ -1512,11 +1512,11 @@ function MenuSectionHeading({ action, title }: { action?: string; title: string 
 }
 
 /** Renders a two-column menu tile from the mobile overview screen. */
-function MobileMenuTile({ badge, item, onAddToCart, onSelectItem }: { badge?: string; item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+function MobileMenuTile({ badge, item, onAddToCart, onSelectItem, priority = false }: { badge?: string; item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; priority?: boolean }) {
   return (
     <article className="relative grid min-h-[136px] grid-cols-[44%_1fr] overflow-hidden rounded-[12px] border border-[var(--sb-border)] bg-black/54">
       <button type="button" onClick={() => onSelectItem(item)} className="relative block">
-        <Image src={item.image.publicUrl} alt="" fill sizes="190px" className="object-cover" />
+        <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="190px" className="object-cover" />
         {badge ? <span className="absolute left-0 top-0 rounded-br-[10px] bg-[var(--sb-red)] px-2 py-1 text-[10px] uppercase text-white">{badge}</span> : null}
       </button>
       <div className="flex min-w-0 flex-col justify-center px-3 py-2">
@@ -1534,11 +1534,11 @@ function MobileMenuTile({ badge, item, onAddToCart, onSelectItem }: { badge?: st
 }
 
 /** Renders a wide search result row shared by search and category mobile views. */
-function MenuSearchResultRow({ badge, compact = false, item, onAddToCart, onSelectItem }: { badge?: string; compact?: boolean; item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+function MenuSearchResultRow({ badge, compact = false, item, onAddToCart, onSelectItem, priority = false }: { badge?: string; compact?: boolean; item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; priority?: boolean }) {
   return (
     <article className={`relative grid overflow-hidden rounded-[16px] border border-[var(--sb-border)] bg-black/46 ${compact ? "grid-cols-[42%_1fr] min-h-[136px]" : "grid-cols-[34%_1fr] min-h-[118px]"}`}>
       <button type="button" onClick={() => onSelectItem(item)} className="relative block">
-        <Image src={item.image.publicUrl} alt="" fill sizes="220px" className="object-cover" />
+        <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="220px" className="object-cover" />
         {badge ? <span className="absolute left-3 top-3 rounded-full bg-[var(--sb-red)] px-3 py-1 text-[10px] uppercase text-white">{badge}</span> : null}
       </button>
       <div className="grid grid-cols-[1fr_auto] items-center gap-3 px-5 py-3">
@@ -1663,15 +1663,15 @@ function DesktopMenuDashboard({
           <MenuSectionHeading title="Chef's Specials" action="View Full Menu" />
           <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {featured.map((item, index) => (
-              <MenuCard key={item.id} item={item} isFavorite={favorites.includes(item.id)} onAddToCart={onAddToCart} onSelectItem={onSelectItem} onToggleFavorite={onToggleFavorite} />
+              <MenuCard key={item.id} item={item} isFavorite={favorites.includes(item.id)} onAddToCart={onAddToCart} onSelectItem={onSelectItem} onToggleFavorite={onToggleFavorite} priority={index < 4} />
             ))}
           </div>
         </section>
         <section className="rounded-[14px] border border-[var(--sb-border)] bg-black/46 p-4">
           <h2 className="mb-4 text-sm uppercase tracking-[0.16em] text-white">All Menu Items</h2>
           <div className="grid gap-3 md:grid-cols-3">
-            {allItems.slice(0, 9).map((item) => (
-              <DesktopMenuCompactRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} />
+            {allItems.slice(0, 9).map((item, index) => (
+              <DesktopMenuCompactRow key={item.id} item={item} onAddToCart={onAddToCart} onSelectItem={onSelectItem} priority={index < 3} />
             ))}
           </div>
         </section>
@@ -1693,11 +1693,11 @@ function DesktopMenuDashboard({
 }
 
 /** Renders a compact desktop list item for the all-menu grid. */
-function DesktopMenuCompactRow({ item, onAddToCart, onSelectItem }: { item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void }) {
+function DesktopMenuCompactRow({ item, onAddToCart, onSelectItem, priority = false }: { item: SushiMenuItem; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; priority?: boolean }) {
   return (
     <article className="grid min-h-[82px] grid-cols-[92px_1fr_auto] items-center gap-3 rounded-[10px] border border-[var(--sb-border)] bg-black/36 p-2">
       <button type="button" onClick={() => onSelectItem(item)} className="relative h-16 overflow-hidden rounded-[8px]">
-        <Image src={item.image.publicUrl} alt="" fill sizes="92px" className="object-cover" />
+        <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="92px" className="object-cover" />
       </button>
       <button type="button" onClick={() => onSelectItem(item)} className="min-w-0 text-left">
         <h3 className="truncate text-base text-white">{item.name}</h3>
@@ -2019,9 +2019,10 @@ function PairingsView({ items, onSelectItem }: { items: SushiMenuItem[]; onSelec
         title="A Signature Part Of The Experience"
         copy="Every pairing image is used as atmosphere while the pairing text is rendered from structured data."
         image={assetUrl(featuredAssets.sakeSets[1], heroAsset.publicUrl)}
+        priority
       />
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <button
             key={item.sakePairing.id}
             type="button"
@@ -2029,7 +2030,7 @@ function PairingsView({ items, onSelectItem }: { items: SushiMenuItem[]; onSelec
             className="luxury-panel group overflow-hidden text-left transition hover:-translate-y-1 hover:border-[var(--sb-gold)]"
           >
             <div className="relative h-56">
-              <Image src={item.sakePairing.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
+              <Image src={item.sakePairing.image.publicUrl} alt="" fill priority={index < 3} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/24 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <span className="rounded-full border border-[var(--sb-border)] bg-black/45 px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{item.categoryLabel}</span>
@@ -2249,7 +2250,7 @@ function MobileReservationsFlow({
   return (
     <div className="space-y-7 md:hidden">
       <section className="relative -mx-4 min-h-[290px] overflow-hidden px-4 pb-6 pt-16">
-        <Image src={assetUrl(ambienceAssets[2], heroAsset.publicUrl)} alt="" fill sizes="430px" className="object-cover opacity-50" />
+        <Image src={assetUrl(ambienceAssets[2], heroAsset.publicUrl)} alt="" fill priority sizes="430px" className="object-cover opacity-50" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.42),rgba(0,0,0,0.95))]" />
         <div className="relative z-10">
           <h1 className="editorial-title text-[42px] leading-none text-white sm:text-[58px]">Reservations</h1>
@@ -2260,7 +2261,7 @@ function MobileReservationsFlow({
         <h2 className="editorial-title text-2xl text-[var(--sb-gold)]">Upcoming Reservation</h2>
         <div className="mt-4 grid overflow-hidden rounded-[18px] border border-[var(--sb-border)] bg-black/48 sm:grid-cols-[42%_1fr]">
           <div className="relative min-h-[220px]">
-            <Image src={assetUrl(previewExperience?.image, heroAsset.publicUrl)} alt="" fill sizes="220px" className="object-cover" />
+            <Image src={assetUrl(previewExperience?.image, heroAsset.publicUrl)} alt="" fill priority sizes="220px" className="object-cover" />
           </div>
           <div className="space-y-4 p-5">
             <p className="editorial-title text-xl text-[var(--sb-gold)]">{appContent.reservation.weekday}</p>
@@ -2488,7 +2489,7 @@ function ReservationSummaryCard({
         ))}
       </div>
       <div className="relative mt-3 h-20 overflow-hidden rounded-2xl border border-[var(--sb-border)] sm:mt-5 sm:h-44">
-        <Image src={image} alt="" fill sizes="360px" className="object-cover" />
+        <Image src={image} alt="" fill priority sizes="360px" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/58 to-transparent" />
       </div>
       <Button className="red-glow-button mt-3 h-10 w-full rounded-2xl uppercase tracking-[0.18em] sm:mt-4 sm:h-12" onClick={onSave}>
@@ -2619,7 +2620,7 @@ function MobileActiveOrderCard({ order, onReorder, onViewTracking }: { order: Or
       <div className="gold-divider my-5" />
       <div className="grid grid-cols-[1fr_1fr_1fr_54px] gap-3">
         {visibleItems.map((item) => (
-          <MobileOrderPreview key={`${order.id}-${item.id}`} item={item} />
+          <MobileOrderPreview key={`${order.id}-${item.id}`} item={item} priority />
         ))}
         <div className="grid min-h-[148px] place-items-center rounded-[18px] border border-[var(--sb-border)] bg-white/[0.04] text-center text-sm text-[var(--sb-muted)]">
           <span>
@@ -2647,11 +2648,11 @@ function MobileActiveOrderCard({ order, onReorder, onViewTracking }: { order: Or
 }
 
 /** Displays a single image preview inside the active mobile order card. */
-function MobileOrderPreview({ item }: { item: SushiMenuItem }) {
+function MobileOrderPreview({ item, priority = false }: { item: SushiMenuItem; priority?: boolean }) {
   return (
     <div className="min-w-0 text-center">
       <div className="relative aspect-square overflow-hidden rounded-[14px] border border-[var(--sb-border)] bg-black/40">
-        <Image src={item.image.publicUrl} alt="" fill sizes="120px" className="object-cover" />
+        <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="120px" className="object-cover" />
       </div>
       <p className="mt-3 truncate text-sm text-white">{item.name}</p>
       <p className="mt-1 text-sm text-[var(--sb-gold)]">{formatCurrency(item.price)}</p>
@@ -2813,7 +2814,7 @@ function LoyaltyView({ loyaltyPoints, rewards, onNavigate, onRedeem }: { loyalty
       <MobileLoyaltyView featuredRewards={featuredRewards} loyaltyPoints={loyaltyPoints} progressValue={progressValue} onNavigate={onNavigate} onRedeem={onRedeem} />
       <div className="hidden space-y-5 md:block">
       <section className="luxury-panel relative overflow-hidden p-5 sm:p-7">
-        <Image src={heroAsset.publicUrl} alt="" fill sizes="100vw" className="object-cover opacity-70" />
+        <Image src={heroAsset.publicUrl} alt="" fill priority sizes="100vw" className="object-cover opacity-70" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.72)_42%,rgba(0,0,0,0.34)_78%,rgba(0,0,0,0.84)_100%)]" />
         <div className="sb-wave-pattern absolute bottom-4 left-4 h-32 w-72 opacity-20" />
         <div className="relative z-10 grid gap-5 lg:grid-cols-[1fr_320px]">
@@ -2935,7 +2936,7 @@ function MobileLoyaltyView({
         <div className="sb-wave-pattern absolute inset-y-0 left-0 w-72 opacity-20" />
         {memberImage ? (
           <div className="absolute bottom-0 right-0 h-40 w-44">
-            <Image src={memberImage.image.publicUrl} alt="" fill sizes="176px" className="object-cover object-left opacity-92" />
+            <Image src={memberImage.image.publicUrl} alt="" fill priority sizes="176px" className="object-cover object-left opacity-92" />
           </div>
         ) : null}
         <div className="relative z-10 grid grid-cols-[82px_1fr] gap-4">
@@ -3101,6 +3102,7 @@ function ContactView({ onNavigate, showNotice }: { onNavigate: (view: AppView) =
         title="Contact Sushi Bliss"
         copy="Have a question, special request, or want to book a private dining experience?"
         image={assetUrl(contactHero, heroAsset.publicUrl)}
+        priority
       />
       <section className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
         <div className="space-y-4">
@@ -3172,7 +3174,7 @@ function MobileContactView({
 
   return (
     <section className="relative space-y-5 overflow-hidden pb-4 md:hidden">
-      <Image src={assetUrl(contactHero, heroAsset.publicUrl)} alt="" fill sizes="100vw" className="-z-10 object-cover opacity-32" />
+      <Image src={assetUrl(contactHero, heroAsset.publicUrl)} alt="" fill priority sizes="100vw" className="-z-10 object-cover opacity-32" />
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0.46)_0%,rgba(0,0,0,0.88)_30%,rgba(0,0,0,0.96)_100%)]" />
       <div className="pt-10">
         <h1 className="editorial-title text-[44px] leading-[1.05] text-white">
@@ -3279,7 +3281,7 @@ function ContactMapCard() {
   return (
     <section className="luxury-panel relative min-h-[280px] overflow-hidden p-5" aria-label="Sushi Bliss Tokyo map">
       {mapAsset ? (
-        <Image src={mapAsset.publicUrl} alt="" fill sizes="540px" className="object-cover opacity-95" />
+        <Image src={mapAsset.publicUrl} alt="" fill priority sizes="540px" className="object-cover opacity-95" />
       ) : (
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[length:42px_42px] opacity-45" />
       )}
@@ -3314,10 +3316,10 @@ function FAQPanel({ onNavigate }: { onNavigate: (view: AppView) => void }) {
 }
 
 /** Shared cinematic page hero used by non-home app views. */
-function PageHero({ eyebrow, title, copy, image }: { eyebrow: string; title: string; copy: string; image: string }) {
+function PageHero({ eyebrow, title, copy, image, priority = false }: { eyebrow: string; title: string; copy: string; image: string; priority?: boolean }) {
   return (
     <section className="luxury-panel relative min-h-[190px] overflow-hidden rounded-[28px] p-5 sm:min-h-[320px] sm:p-8 lg:min-h-[360px]">
-      <Image src={image} alt="" fill sizes="(min-width: 1024px) 1200px, 100vw" className="object-cover opacity-72" priority={false} />
+      <Image src={image} alt="" fill priority={priority} sizes="(min-width: 1024px) 1200px, 100vw" className="object-cover opacity-72" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/58 to-black/20" />
       <div className="smoke-overlay absolute inset-0" />
       <div className="relative z-10 max-w-3xl pt-8 sm:pt-16 lg:pt-4">
@@ -3330,12 +3332,12 @@ function PageHero({ eyebrow, title, copy, image }: { eyebrow: string; title: str
 }
 
 /** Renders a full menu item card with image, pairing chip, favorite, and cart action. */
-function MenuCard({ item, isFavorite, onAddToCart, onSelectItem, onToggleFavorite }: { item: SushiMenuItem; isFavorite: boolean; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; onToggleFavorite: (id: string) => void }) {
+function MenuCard({ item, isFavorite, onAddToCart, onSelectItem, onToggleFavorite, priority = false }: { item: SushiMenuItem; isFavorite: boolean; onAddToCart: (item: SushiMenuItem) => void; onSelectItem: (item: SushiMenuItem) => void; onToggleFavorite: (id: string) => void; priority?: boolean }) {
   return (
     <article className="luxury-panel group overflow-hidden transition hover:-translate-y-1 hover:border-[var(--sb-gold)]">
       <button type="button" onClick={() => onSelectItem(item)} className="block w-full text-left">
         <div className="relative h-52 overflow-hidden">
-          <Image src={item.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
+          <Image src={item.image.publicUrl} alt="" fill priority={priority} sizes="(min-width: 1024px) 33vw, 100vw" className="object-cover transition group-hover:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
           {item.tag ? <span className="absolute left-4 top-4 rounded-full bg-[var(--sb-red)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">{item.tag}</span> : null}
           {item.standaloneImageMissing ? <span className="absolute right-4 top-4 rounded-full border border-[var(--sb-border)] bg-black/55 px-3 py-1 text-[10px] uppercase text-[var(--sb-gold)]">Pairing visual</span> : null}
@@ -3441,7 +3443,7 @@ function ProductDetailModal({
       <motion.section initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} className="app-scrollbar max-h-[94vh] w-full overflow-y-auto rounded-t-[34px] border border-[var(--sb-border)] bg-[var(--sb-bg)] p-4 text-white shadow-[0_-30px_90px_rgba(0,0,0,0.8)] lg:max-w-5xl lg:rounded-[34px] lg:p-5">
         <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
           <div className="relative min-h-[420px] overflow-hidden rounded-[28px] border border-[var(--sb-border)]">
-            <Image src={item.image.publicUrl} alt="" fill sizes="(min-width: 1024px) 480px, 100vw" className="object-cover" />
+            <Image src={item.image.publicUrl} alt="" fill priority sizes="(min-width: 1024px) 480px, 100vw" className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/88 via-black/12 to-transparent" />
             <div className="absolute left-4 top-4 rounded-full border border-[var(--sb-border)] bg-black/50 px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--sb-gold)]">{item.tag}</div>
           </div>

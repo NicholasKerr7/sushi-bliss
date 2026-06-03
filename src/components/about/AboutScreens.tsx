@@ -60,6 +60,7 @@ function EditorialHero({
   copy,
   eyebrow,
   image,
+  priority = true,
   title,
 }: {
   actions?: EditorialHeroAction[];
@@ -67,11 +68,12 @@ function EditorialHero({
   copy: string;
   eyebrow: string;
   image: string;
+  priority?: boolean;
   title: string;
 }) {
   return (
     <section className="luxury-panel relative min-h-[430px] overflow-hidden p-6 sm:p-9 lg:min-h-[520px] lg:p-14">
-      <Image src={image} alt="" fill sizes="100vw" className="object-cover opacity-74" priority={false} />
+      <Image src={image} alt="" fill priority={priority} sizes="100vw" className="object-cover opacity-74" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/94 via-black/60 to-black/10" />
       <div className="sb-wave-pattern pointer-events-none absolute left-0 top-0 h-full w-64 opacity-25" />
       <div className="smoke-overlay pointer-events-none absolute inset-0" />
@@ -131,12 +133,14 @@ function StoryImageCard({
   icon,
   image,
   onClick,
+  priority = false,
   title,
 }: {
   copy: string;
   icon?: string;
   image: string;
   onClick?: () => void;
+  priority?: boolean;
   title: string;
 }) {
   return (
@@ -145,7 +149,7 @@ function StoryImageCard({
       onClick={onClick}
       className="luxury-panel group relative min-h-[276px] overflow-hidden p-0 text-left transition hover:border-[var(--sb-gold)]"
     >
-      <Image src={image} alt="" fill sizes="(min-width: 1024px) 25vw, 100vw" className="object-cover opacity-78 transition group-hover:scale-105" />
+      <Image src={image} alt="" fill priority={priority} sizes="(min-width: 1024px) 25vw, 100vw" className="object-cover opacity-78 transition group-hover:scale-105" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/94 via-black/42 to-transparent" />
       <div className="relative z-10 flex min-h-[276px] flex-col justify-end p-5">
         <span className="grid h-14 w-14 place-items-center rounded-full border border-[var(--sb-border-strong)] bg-black/50">
@@ -195,8 +199,8 @@ export function AboutStoryView({ onNavigate }: AboutScreenProps) {
         image={heroImage}
       />
       <section className="grid gap-4 xl:grid-cols-[1fr_1fr_1fr_1.1fr]">
-        {storyCards.map((card) => (
-          <StoryImageCard key={card.title} {...card} onClick={() => onNavigate(card.target)} />
+        {storyCards.map((card, index) => (
+          <StoryImageCard key={card.title} {...card} priority={index === 0} onClick={() => onNavigate(card.target)} />
         ))}
         <section className="luxury-panel p-6">
           <h2 className="editorial-title text-2xl text-[var(--sb-gold)]">Experience Sushi Bliss</h2>
@@ -452,7 +456,7 @@ export function AtmosphereGalleryView({ onNavigate }: AboutScreenProps) {
       />
       <section className="grid gap-4 xl:grid-cols-[1fr_1fr_1.9fr]">
         {getAtmosphereCards().map((card, index) => (
-          <StoryImageCard key={card.title} {...card} onClick={() => (index < 2 ? onNavigate("reservations") : onNavigate("aboutStory"))} />
+          <StoryImageCard key={card.title} {...card} priority={index === 0} onClick={() => (index < 2 ? onNavigate("reservations") : onNavigate("aboutStory"))} />
         ))}
         <section className="luxury-panel relative overflow-hidden p-6 xl:col-span-1">
           <Image src={assetUrl(getItemById("otoro-nigiri")?.image)} alt="" fill sizes="640px" className="object-cover opacity-40" />
