@@ -60,7 +60,7 @@ try {
   const { calculateCartTotals, DEFAULT_TAX_RATE, groupCartItems } = await importFromOutdir("lib/cart-utils.js");
   const { defaultHighlightCategories, filterMenuItems, getHighlightDrops } = await importFromOutdir("lib/menu-utils.js");
   const { buildOmakaseSet } = await importFromOutdir("lib/omakase-utils.js");
-  const { buildOrderSummary, createOrderCode, getOrderEtaMinutes } = await importFromOutdir("lib/order-utils.js");
+  const { buildOrderSummary, createOrderCode, getOrderEtaMinutes, hydrateOrders } = await importFromOutdir("lib/order-utils.js");
   const {
     createDefaultReservationForm,
     createLocalDateTimeValue,
@@ -298,6 +298,53 @@ try {
     assert.strictEqual(order.customerName, "Nick");
   });
 
+  test("buildOrderSummary stores service and delivery fees separately", () => {
+    const order = buildOrderSummary({
+      id: 987654,
+      items: sampleCart,
+      subtotal: 24,
+      promoDiscount: 0,
+      tax: 2.13,
+      tip: 3,
+      serviceFee: 2.5,
+      deliveryFee: 4,
+      total: 35.63,
+      method: "Credit Card",
+      type: "Delivery",
+      placedAt: 1_900_000,
+      deliveryAddress: "123 Kai Street",
+      customerName: "Nick",
+    });
+
+    assert.strictEqual(order.tax, 2.13);
+    assert.strictEqual(order.serviceFee, 2.5);
+    assert.strictEqual(order.deliveryFee, 4);
+  });
+
+  test("hydrateOrders keeps explicit fee fields and defaults legacy fees to zero", () => {
+    const [orderWithFees, legacyOrder] = hydrateOrders([
+      {
+        id: 1,
+        items: sampleCart,
+        serviceFee: 2.5,
+        deliveryFee: 4,
+        type: "Delivery",
+        placedAt: 1_000,
+      },
+      {
+        id: 2,
+        items: sampleCart,
+        type: "Pickup",
+        placedAt: 2_000,
+      },
+    ]);
+
+    assert.strictEqual(orderWithFees.serviceFee, 2.5);
+    assert.strictEqual(orderWithFees.deliveryFee, 4);
+    assert.strictEqual(legacyOrder.serviceFee, 0);
+    assert.strictEqual(legacyOrder.deliveryFee, 0);
+  });
+
   test("getOrderEtaMinutes uses a longer delivery ETA than pickup", () => {
     assert.ok(getOrderEtaMinutes("Delivery", 3) > getOrderEtaMinutes("Pickup", 3));
   });
@@ -343,7 +390,36 @@ try {
       name: "",
       phone: "555",
     };
-    assert.strictEqual(validateReservationForm(form, []).valid, false);
+    assert.strictEqual(validateReservationForm(form, [], null, new Date(2026, 4, 26, 12, 0)).valid, false);
+  });
+
+  test("validateReservationForm rejects reservation times in the past", () => {
+    const form = {
+      ...createDefaultReservationForm(new Date(2026, 4, 26)),
+      date: "2026-05-26",
+      time: "18:30",
+      guests: 2,
+      name: "Aki Tanaka",
+      phone: "+1 555 0100",
+    };
+
+    const result = validateReservationForm(form, [], null, new Date(2026, 4, 26, 19, 0));
+    assert.strictEqual(result.valid, false);
+    assert.strictEqual(result.message, "Choose a future reservation time.");
+  });
+
+  test("validateReservationForm accepts a future slot with capacity", () => {
+    const form = {
+      ...createDefaultReservationForm(new Date(2026, 4, 26)),
+      date: "2026-05-26",
+      time: "18:30",
+      guests: 2,
+      name: "Aki Tanaka",
+      phone: "+1 555 0100",
+    };
+
+    const result = validateReservationForm(form, [], null, new Date(2026, 4, 26, 12, 0));
+    assert.strictEqual(result.valid, true);
   });
 
   test("createLocalDateTimeValue combines date and time", () => {
