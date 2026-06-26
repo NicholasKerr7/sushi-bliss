@@ -2,6 +2,12 @@
 
 A futuristic, mobile-first sushi ordering experience built with Next.js, Tailwind CSS, and Framer Motion. The app includes menu filtering, animated cart interactions, loyalty rewards, reservations, and a payment flow.
 
+## Screenshots
+
+| Desktop | Mobile |
+| --- | --- |
+| <img src="docs/screenshots/desktop.png" alt="Sushi Bliss desktop screenshot" width="720" /> | <img src="docs/screenshots/mobile.png" alt="Sushi Bliss mobile screenshot" width="260" /> |
+
 ## Features
 
 - Responsive UI (mobile, tablet, desktop)
